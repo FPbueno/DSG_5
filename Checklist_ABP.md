@@ -43,7 +43,7 @@
 ### ❌ **FALTA FAZER:**
 
 - ❌ **Hospedagem em nuvem** (AWS/GCP/Azure) (CRÍTICO)
-- ❌ Banco de dados em produção (PostgreSQL/MongoDB)
+- ❌ Segurança do arquivo Excel (criptografia + backup)
 - ❌ Configuração de ambiente de produção
 - ❌ Load balancer e escalabilidade
 
@@ -77,14 +77,13 @@
 
 ### ❌ **TUDO PENDENTE (CRÍTICO):**
 
-- ❌ **Autenticação de usuários** (JWT/OAuth)
-- ❌ **Autorização e controle de acesso**
 - ❌ **HTTPS/TLS** para dados em trânsito
 - ❌ **Criptografia de dados em repouso**
-- ❌ **Hash de senhas**
 - ❌ **Validação e sanitização de inputs**
 - ❌ **Rate limiting**
 - ❌ **Logs de segurança**
+- ❌ **Headers de segurança** (CORS, CSP, HSTS)
+- ❌ **Proteção contra XSS**
 - ❌ **Backup seguro de dados**
 
 ---
@@ -122,17 +121,17 @@
 
 ### **🔥 CRÍTICO (Fazer PRIMEIRO):**
 
-1. ❌ **Implementar autenticação básica** (JWT)
+1. ❌ **Configurar HTTPS/TLS**
 2. ❌ **Deploy da API em nuvem** (Heroku/Railway/Vercel)
-3. ❌ **Configurar HTTPS**
-4. ❌ **Criptografia básica de dados**
+3. ❌ **Criptografia de dados sensíveis**
+4. ❌ **Validação e sanitização de inputs**
 
 ### **⚠️ IMPORTANTE (Fazer SEGUNDO):**
 
 5. ❌ **Pipeline CI/CD básico**
 6. ❌ **Testes automatizados**
 7. ❌ **Docker completo** (frontend + compose)
-8. ❌ **Banco de dados em produção**
+8. ❌ **Backup seguro do Excel na nuvem**
 
 ### **📝 DESEJÁVEL (Se der tempo):**
 
@@ -159,8 +158,8 @@
 - [x] ✅ Modelo ML desenvolvido e treinado
 - [x] ✅ API REST funcional
 - [x] ✅ App mobile multiplataforma
-- [ ] ❌ **Deploy em nuvem** (OBRIGATÓRIO)
-- [ ] ❌ **Segurança básica** (OBRIGATÓRIO)
-- [ ] ❌ **Docker** (OBRIGATÓRIO)
+- [ ] ❌ **Deploy em nuvem com HTTPS** (OBRIGATÓRIO)
+- [ ] ❌ **Criptografia de dados** (OBRIGATÓRIO)
+- [ ] ❌ **Docker completo** (OBRIGATÓRIO)
 
 ---
