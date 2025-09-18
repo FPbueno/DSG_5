@@ -1,0 +1,9 @@
+@echo off
+echo Limpando projeto...
+flutter clean
+echo.
+echo Instalando dependencias...
+flutter pub get
+echo.
+echo Executando em modo release...
+flutter run --release
