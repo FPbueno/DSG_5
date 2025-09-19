@@ -128,9 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Arquivos Excel com dados sensíveis
-quotes_data.xlsx
-*.xlsx
 
 # Arquivos temporários
 temp/
