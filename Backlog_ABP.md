@@ -1,19 +1,49 @@
-# 📋 CARDS TRELLO - Projeto ABP WorcaFlow
+# 📋 BACKLOG - Projeto ABP WorcaFlow
 
-## Organização em 3 Sprints
+## 🎯 **VISÃO GERAL DO PROJETO**
+
+**Objetivo:** Sistema completo de orçamentos com ML, autenticação segura e deploy em nuvem
+
+**Arquitetura:** Híbrida - PostgreSQL (usuários) + Excel (dados ML)
+
+**Status:** 60% concluído - Base técnica sólida, faltam segurança e deploy
 
 ---
 
-## 🏃‍♂️ **SPRINT 1 - Segurança e Deploy Básico**
+## 🏷️ **ÉPICOS**
 
-_Foco: Tornar a aplicação segura e acessível na nuvem_
+### 🔒 **ÉPICO 1: Segurança e Autenticação**
 
-### 🔒 **SEGURANÇA CRÍTICA**
+- **Descrição:** Implementar sistema completo de segurança e gestão de usuários
+- **Prioridade:** 🔥 CRÍTICA
 
-**Card 1: Configurar HTTPS/TLS**
+### ☁️ **ÉPICO 2: Deploy e Infraestrutura**
 
-- **Descrição:** Implementar comunicação segura
-- **Tarefas:**
+- **Descrição:** Hospedar aplicação na nuvem com segurança
+- **Prioridade:** 🔥 CRÍTICA
+
+### 🐳 **ÉPICO 3: Containerização e CI/CD**
+
+- **Descrição:** Automatizar processos de desenvolvimento
+- **Prioridade:** ⚠️ ALTA
+
+### 🧪 **ÉPICO 4: Qualidade e Testes**
+
+- **Descrição:** Garantir qualidade e confiabilidade
+- **Prioridade:** ⚠️ ALTA
+
+---
+
+## 📋 **USER STORIES**
+
+### 🔒 **ÉPICO 1: Segurança e Autenticação**
+
+#### **US-001: Configurar HTTPS/TLS**
+
+- **Como** desenvolvedor
+- **Quero** implementar comunicação segura
+- **Para que** os dados sejam protegidos em trânsito
+- **Critérios de Aceitação:**
   - [ ] Certificado SSL para API
   - [ ] Configurar HTTPS no servidor
   - [ ] Atualizar URLs no Flutter para HTTPS
@@ -22,10 +52,12 @@ _Foco: Tornar a aplicação segura e acessível na nuvem_
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Infraestrutura, Segurança
 
-**Card 2: Banco de Dados para Usuários**
+#### **US-002: Implementar PostgreSQL para Usuários**
 
-- **Descrição:** Implementar PostgreSQL APENAS para usuários e autenticação
-- **Tarefas:**
+- **Como** administrador do sistema
+- **Quero** ter um banco de dados para usuários
+- **Para que** possa gerenciar autenticação e permissões
+- **Critérios de Aceitação:**
   - [ ] Configurar PostgreSQL para usuários
   - [ ] Criar schema de usuários e autenticação
   - [ ] Implementar sistema de roles e permissões
@@ -35,10 +67,12 @@ _Foco: Tornar a aplicação segura e acessível na nuvem_
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Database, Segurança
 
-**Card 2.1: Criptografia de Usuários (PostgreSQL)**
+#### **US-003: Criptografia de Usuários**
 
-- **Descrição:** Criptografia para dados de usuários no PostgreSQL
-- **Tarefas:**
+- **Como** usuário do sistema
+- **Quero** que meus dados sejam criptografados
+- **Para que** estejam protegidos contra acesso não autorizado
+- **Critérios de Aceitação:**
   - [ ] Criptografia AES-256 para dados em repouso (PostgreSQL)
   - [ ] Criptografia TLS 1.3 para dados em trânsito
   - [ ] Chaves de criptografia rotativas
@@ -47,10 +81,12 @@ _Foco: Tornar a aplicação segura e acessível na nuvem_
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Segurança, Database
 
-**Card 3: Sistema de Autenticação e Autorização**
+#### **US-004: Sistema de Autenticação JWT**
 
-- **Descrição:** Implementar JWT e controle de acesso
-- **Tarefas:**
+- **Como** usuário
+- **Quero** fazer login de forma segura
+- **Para que** possa acessar o sistema com segurança
+- **Critérios de Aceitação:**
   - [ ] Implementar JWT para autenticação
   - [ ] Sistema de refresh tokens
   - [ ] Middleware de autorização por roles
@@ -60,10 +96,12 @@ _Foco: Tornar a aplicação segura e acessível na nuvem_
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Segurança, Autenticação
 
-**Card 3.1: Validação e Sanitização de Inputs**
+#### **US-005: Validação e Sanitização**
 
-- **Descrição:** Proteger contra ataques de injeção
-- **Tarefas:**
+- **Como** desenvolvedor
+- **Quero** proteger contra ataques de injeção
+- **Para que** o sistema seja seguro contra vulnerabilidades
+- **Critérios de Aceitação:**
   - [ ] Validação de dados no backend (Pydantic)
   - [ ] Sanitização de inputs SQL injection
   - [ ] Validação no frontend
@@ -72,12 +110,14 @@ _Foco: Tornar a aplicação segura e acessível na nuvem_
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** Backend, Frontend, Segurança
 
-### ☁️ **DEPLOY EM NUVEM**
+### ☁️ **ÉPICO 2: Deploy e Infraestrutura**
 
-**Card 4: Deploy da API na Nuvem**
+#### **US-006: Deploy da API na Nuvem**
 
-- **Descrição:** Hospedar API em plataforma cloud
-- **Tarefas:**
+- **Como** usuário final
+- **Quero** acessar a aplicação na internet
+- **Para que** possa usar o sistema de qualquer lugar
+- **Critérios de Aceitação:**
   - [ ] Escolher plataforma (Heroku/Railway/Render)
   - [ ] Configurar variáveis de ambiente seguras
   - [ ] Deploy do backend com HTTPS
@@ -86,10 +126,12 @@ _Foco: Tornar a aplicação segura e acessível na nuvem_
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Deploy, Infraestrutura
 
-**Card 5: Backup Seguro do PostgreSQL**
+#### **US-007: Backup Seguro do PostgreSQL**
 
-- **Descrição:** Backup seguro para PostgreSQL (usuários)
-- **Tarefas:**
+- **Como** administrador
+- **Quero** ter backup seguro dos dados de usuários
+- **Para que** não perca informações importantes
+- **Critérios de Aceitação:**
   - [ ] Backup automático do PostgreSQL (usuários) na nuvem
   - [ ] Criptografia de backups do PostgreSQL
   - [ ] Controle de acesso aos backups
@@ -98,18 +140,14 @@ _Foco: Tornar a aplicação segura e acessível na nuvem_
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Segurança, Database
 
----
+### 🐳 **ÉPICO 3: Containerização e CI/CD**
 
-## 🏃‍♂️ **SPRINT 2 - Containerização e CI/CD**
+#### **US-008: Dockerfile para Flutter**
 
-_Foco: Automatizar processos e containerizar aplicação_
-
-### 🐳 **CONTAINERIZAÇÃO COMPLETA**
-
-**Card 6: Dockerfile para Flutter**
-
-- **Descrição:** Containerizar aplicação Flutter
-- **Tarefas:**
+- **Como** desenvolvedor
+- **Quero** containerizar a aplicação Flutter
+- **Para que** seja fácil de deployar
+- **Critérios de Aceitação:**
   - [ ] Criar Dockerfile para Flutter Web
   - [ ] Otimizar build para produção
   - [ ] Configurar nginx para servir arquivos
@@ -117,10 +155,12 @@ _Foco: Automatizar processos e containerizar aplicação_
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** Frontend, Docker, Deploy
 
-**Card 7: Docker Compose com PostgreSQL**
+#### **US-009: Docker Compose com PostgreSQL**
 
-- **Descrição:** Orquestrar PostgreSQL (usuários) + Excel (dados ML)
-- **Tarefas:**
+- **Como** desenvolvedor
+- **Quero** orquestrar todos os serviços
+- **Para que** a aplicação funcione de forma integrada
+- **Critérios de Aceitação:**
   - [ ] Criar docker-compose.yml com PostgreSQL
   - [ ] Configurar rede entre containers
   - [ ] Volumes para persistência do banco de usuários
@@ -130,12 +170,12 @@ _Foco: Automatizar processos e containerizar aplicação_
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** DevOps, Docker, Database
 
-### 🔄 **CI/CD PIPELINE**
+#### **US-010: Pipeline CI/CD Backend**
 
-**Card 8: GitHub Actions - Backend**
-
-- **Descrição:** Pipeline de CI/CD para API
-- **Tarefas:**
+- **Como** desenvolvedor
+- **Quero** automatizar o deploy do backend
+- **Para que** as mudanças sejam aplicadas automaticamente
+- **Critérios de Aceitação:**
   - [ ] Workflow de build e test
   - [ ] Deploy automático para produção
   - [ ] Testes automatizados
@@ -143,10 +183,12 @@ _Foco: Automatizar processos e containerizar aplicação_
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** Backend, CI/CD, DevOps
 
-**Card 9: GitHub Actions - Frontend**
+#### **US-011: Pipeline CI/CD Frontend**
 
-- **Descrição:** Pipeline de CI/CD para Flutter
-- **Tarefas:**
+- **Como** desenvolvedor
+- **Quero** automatizar o deploy do frontend
+- **Para que** as mudanças sejam aplicadas automaticamente
+- **Critérios de Aceitação:**
   - [ ] Build automático do Flutter
   - [ ] Deploy da versão web
   - [ ] Testes de widget
@@ -154,12 +196,14 @@ _Foco: Automatizar processos e containerizar aplicação_
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** Frontend, CI/CD, DevOps
 
-### 🧪 **TESTES AUTOMATIZADOS**
+### 🧪 **ÉPICO 4: Qualidade e Testes**
 
-**Card 10: Testes Backend e PostgreSQL**
+#### **US-012: Testes Backend e PostgreSQL**
 
-- **Descrição:** Implementar testes da API, banco de usuários e dados ML
-- **Tarefas:**
+- **Como** desenvolvedor
+- **Quero** ter testes automatizados
+- **Para que** a qualidade seja garantida
+- **Critérios de Aceitação:**
   - [ ] Testes unitários dos serviços
   - [ ] Testes de integração da API
   - [ ] Testes dos modelos ML (Excel)
@@ -169,18 +213,12 @@ _Foco: Automatizar processos e containerizar aplicação_
 - **Prioridade:** 📝 MÉDIA
 - **Labels:** Backend, Testes, Qualidade, Database
 
----
+#### **US-013: Segurança Avançada**
 
-## 🏃‍♂️ **SPRINT 3 - Segurança Avançada e Finalização**
-
-_Foco: Completar requisitos e polimento final_
-
-### 🔒 **SEGURANÇA AVANÇADA**
-
-**Card 11: Segurança Avançada da API**
-
-- **Descrição:** Implementar proteções adicionais
-- **Tarefas:**
+- **Como** administrador
+- **Quero** implementar proteções adicionais
+- **Para que** o sistema seja ainda mais seguro
+- **Critérios de Aceitação:**
   - [ ] Headers de segurança (CORS, CSP, HSTS)
   - [ ] Proteção contra ataques XSS
   - [ ] Validação rigorosa de dados
@@ -188,10 +226,12 @@ _Foco: Completar requisitos e polimento final_
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** Backend, Segurança, API
 
-**Card 12: Rate Limiting e Logs de Segurança**
+#### **US-014: Monitoramento e Logs**
 
-- **Descrição:** Proteção contra ataques e monitoramento avançado
-- **Tarefas:**
+- **Como** administrador
+- **Quero** monitorar o sistema
+- **Para que** possa detectar problemas rapidamente
+- **Critérios de Aceitação:**
   - [ ] Rate limiting na API por usuário
   - [ ] Logs de segurança estruturados
   - [ ] Monitoramento de tentativas de login
@@ -201,52 +241,31 @@ _Foco: Completar requisitos e polimento final_
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** Backend, Segurança, Monitoramento
 
-### 📊 **MONITORAMENTO E LOGS**
-
-**Card 13: Sistema de Logs**
-
-- **Descrição:** Implementar logging completo
-- **Tarefas:**
-  - [ ] Logs estruturados (JSON)
-  - [ ] Níveis de log (INFO, ERROR, DEBUG)
-  - [ ] Rotação de logs
-  - [ ] Dashboard de monitoramento
-- **Prioridade:** 📝 MÉDIA
-- **Labels:** Backend, Monitoramento, DevOps
-
-### 🎯 **FINALIZAÇÃO E DOCUMENTAÇÃO**
-
-**Card 14: Documentação Técnica ML**
-
-- **Descrição:** Documentar modelos e algoritmos
-- **Tarefas:**
-  - [ ] Documentação dos modelos ML
-  - [ ] Métricas de performance
-  - [ ] Guia de retreinamento
-  - [ ] Explicação dos algoritmos
-- **Prioridade:** 📝 MÉDIA
-- **Labels:** ML, Documentação
-
-**Card 15: Testes Finais e Otimização**
-
-- **Descrição:** Preparação para entrega
-- **Tarefas:**
-  - [ ] Testes end-to-end completos
-  - [ ] Otimização de performance
-  - [ ] Verificação de todos os requisitos
-  - [ ] Documentação de deploy
-- **Prioridade:** 🔥 CRÍTICA
-- **Labels:** Testes, Performance, Documentação
-
 ---
 
-## 📊 **RESUMO DOS SPRINTS**
+## 📊 **SPRINT PLANNING**
 
 ### **SPRINT 1 - Fundação Segura Híbrida**
 
-- 🎯 **Objetivo:** Aplicação segura com PostgreSQL (usuários) + Excel (dados ML)
-- 📈 **Entregáveis:** API com HTTPS + PostgreSQL (usuários) + Excel (ML) + Autenticação + Criptografia de Usuários
-- 🔥 **Cards Críticos:** 1, 2, 2.1, 3, 4, 5
+**Objetivo:** Aplicação segura com PostgreSQL (usuários) + Excel (dados ML)
+
+**User Stories:**
+
+- US-001: Configurar HTTPS/TLS
+- US-002: Implementar PostgreSQL para Usuários
+- US-003: Criptografia Híbrida
+- US-004: Sistema de Autenticação JWT
+- US-005: Validação e Sanitização
+- US-006: Deploy da API na Nuvem
+- US-007: Backup Seguro Híbrido
+
+**Entregáveis:**
+
+- API com HTTPS
+- PostgreSQL (usuários) + Excel (ML)
+- Autenticação JWT
+- Criptografia completa
+- Deploy em nuvem
 
 #### **📦 ENTREGAS DA SPRINT 1:**
 
@@ -261,9 +280,20 @@ _Foco: Completar requisitos e polimento final_
 
 ### **SPRINT 2 - Automação**
 
-- 🎯 **Objetivo:** Processos automatizados
-- 📈 **Entregáveis:** Docker + CI/CD + Testes
-- ⚠️ **Cards Importantes:** 6, 7, 8, 9
+**Objetivo:** Processos automatizados
+
+**User Stories:**
+
+- US-008: Dockerfile para Flutter
+- US-009: Docker Compose Híbrido
+- US-010: Pipeline CI/CD Backend
+- US-011: Pipeline CI/CD Frontend
+
+**Entregáveis:**
+
+- Docker completo
+- CI/CD pipelines
+- Automação de deploy
 
 #### **📦 ENTREGAS DA SPRINT 2:**
 
@@ -278,9 +308,19 @@ _Foco: Completar requisitos e polimento final_
 
 ### **SPRINT 3 - Excelência**
 
-- 🎯 **Objetivo:** Segurança total + Qualidade
-- 📈 **Entregáveis:** Criptografia + Logs + Docs
-- 🏆 **Cards Finais:** 11, 12, 15
+**Objetivo:** Segurança total + Qualidade
+
+**User Stories:**
+
+- US-012: Testes Híbridos
+- US-013: Segurança Avançada
+- US-014: Monitoramento e Logs
+
+**Entregáveis:**
+
+- Testes automatizados
+- Segurança avançada
+- Monitoramento completo
 
 #### **📦 ENTREGAS DA SPRINT 3:**
 
@@ -295,7 +335,43 @@ _Foco: Completar requisitos e polimento final_
 
 ---
 
-## 🏷️ **LABELS SUGERIDAS PARA TRELLO**
+## 🎯 **DEFINITION OF DONE**
+
+Para cada User Story ser considerada "Done":
+
+- [ ] Código implementado e testado
+- [ ] Pull request aprovado
+- [ ] Deploy realizado (se aplicável)
+- [ ] Documentação atualizada
+- [ ] Testes passando
+- [ ] Review de segurança (stories críticas)
+
+---
+
+## 📈 **MÉTRICAS DE PROGRESSO**
+
+### **Por Épico:**
+
+- 🔒 **Segurança e Autenticação:** 0/5 stories (0%)
+- ☁️ **Deploy e Infraestrutura:** 0/2 stories (0%)
+- 🐳 **Containerização e CI/CD:** 0/4 stories (0%)
+- 🧪 **Qualidade e Testes:** 0/3 stories (0%)
+
+### **Por Prioridade:**
+
+- 🔥 **CRÍTICA:** 0/7 stories (0%)
+- ⚠️ **ALTA:** 0/5 stories (0%)
+- 📝 **MÉDIA:** 0/2 stories (0%)
+
+### **Por Sprint:**
+
+- **Sprint 1:** 0/7 stories (0%)
+- **Sprint 2:** 0/4 stories (0%)
+- **Sprint 3:** 0/3 stories (0%)
+
+---
+
+## 🏷️ **LABELS E TAGS**
 
 ### **Por Área:**
 
@@ -304,6 +380,7 @@ _Foco: Completar requisitos e polimento final_
 - 🟡 **DevOps** - Infraestrutura e deploy
 - 🟢 **ML** - Machine Learning
 - 🟣 **Database** - Banco de dados
+- 🔒 **Segurança** - Aspectos de segurança
 
 ### **Por Prioridade:**
 
@@ -313,18 +390,10 @@ _Foco: Completar requisitos e polimento final_
 
 ### **Por Tipo:**
 
-- 🔒 **Segurança** - Aspectos de segurança
 - 🚀 **Deploy** - Publicação e infraestrutura
 - 🧪 **Testes** - Qualidade e validação
 - 📚 **Documentação** - Docs e manuais
-
----
-
-## ⏱️ **CRONOGRAMA SUGERIDO**
-
-- **Semana 1:** Sprint 1 (Seg-Sex)
-- **Semana 2:** Sprint 2 (Seg-Qui)
-- **Semana 2:** Sprint 3 (Sex-Dom)
+- 🔐 **Autenticação** - Sistema de usuários
 
 ---
 
@@ -332,10 +401,11 @@ _Foco: Completar requisitos e polimento final_
 
 ### **Para considerado COMPLETO:**
 
-- [ ] **ML modelo funcionando em produção**
-- [ ] **API hospedada em nuvem com HTTPS**
+- [ ] **ML modelo funcionando em produção (Excel)**
+- [ ] **API hospedada em nuvem e acessível**
 - [ ] **App mobile funcionando**
-- [ ] **Dados protegidos com criptografia**
+- [ ] **Sistema de usuários (PostgreSQL)**
+- [ ] **Dados protegidos com criptografia (PostgreSQL)**
 - [ ] **Pipeline CI/CD ativo**
 - [ ] **Containerização completa**
 
@@ -349,16 +419,3 @@ _Foco: Completar requisitos e polimento final_
 - [ ] ❌ **Sistema de usuários e autenticação** (OBRIGATÓRIO)
 - [ ] ❌ **Criptografia de usuários (PostgreSQL)** (OBRIGATÓRIO)
 - [ ] ❌ **Docker completo** (OBRIGATÓRIO)
-
----
-
-## 🎯 **DEFINITION OF DONE**
-
-Para cada card ser considerado "Done":
-
-- [ ] Código implementado e testado
-- [ ] Pull request aprovado
-- [ ] Deploy realizado (se aplicável)
-- [ ] Documentação atualizada
-- [ ] Testes passando
-- [ ] Review de segurança (cards críticos)

@@ -28,7 +28,21 @@
 
 ---
 
-## 2. ☁️ **BACKEND EM NUVEM**
+## 2. 🗄️ **BANCO DE DADOS E GESTÃO DE USUÁRIOS**
+
+### ❌ **TUDO PENDENTE (CRÍTICO):**
+
+- ❌ **PostgreSQL para usuários e autenticação** (CRÍTICO)
+- ❌ **Sistema de usuários e autenticação** (CRÍTICO)
+- ❌ **Sistema de roles e permissões** (CRÍTICO)
+- ❌ **Backup automático do banco de usuários** (CRÍTICO)
+- ❌ **Auditoria de ações dos usuários** (CRÍTICO)
+- ❌ **Criptografia de senhas com bcrypt** (CRÍTICO)
+- ❌ **JWT para autenticação** (CRÍTICO)
+- ❌ **Controle de sessões ativas** (CRÍTICO)
+- ❌ **Integração PostgreSQL + Excel (dados ML)** (CRÍTICO)
+
+## 3. ☁️ **BACKEND EM NUVEM**
 
 ### ✅ **FEITO:**
 
@@ -43,7 +57,9 @@
 ### ❌ **FALTA FAZER:**
 
 - ❌ **Hospedagem em nuvem** (AWS/GCP/Azure) (CRÍTICO)
-- ❌ Segurança do arquivo Excel (criptografia + backup)
+- ❌ **Integração PostgreSQL (usuários) + Excel (dados ML)** (CRÍTICO)
+- ❌ **Sistema de autenticação JWT** (CRÍTICO)
+- ❌ **Segurança do arquivo Excel (dados ML)** (CRÍTICO)
 - ❌ Configuração de ambiente de produção
 - ❌ Load balancer e escalabilidade
 
@@ -123,22 +139,23 @@
 
 1. ❌ **Configurar HTTPS/TLS**
 2. ❌ **Deploy da API em nuvem** (Heroku/Railway/Vercel)
-3. ❌ **Criptografia de dados sensíveis**
-4. ❌ **Validação e sanitização de inputs**
+3. ❌ **PostgreSQL para usuários e autenticação**
+4. ❌ **Criptografia de dados sensíveis (PostgreSQL)**
+5. ❌ **Validação e sanitização de inputs**
 
 ### **⚠️ IMPORTANTE (Fazer SEGUNDO):**
 
-5. ❌ **Pipeline CI/CD básico**
-6. ❌ **Testes automatizados**
-7. ❌ **Docker completo** (frontend + compose)
-8. ❌ **Backup seguro do Excel na nuvem**
+6. ❌ **Pipeline CI/CD básico**
+7. ❌ **Testes automatizados**
+8. ❌ **Docker completo** (frontend + PostgreSQL + Excel)
+9. ❌ **Backup seguro do Excel (dados ML) na nuvem**
 
 ### **📝 DESEJÁVEL (Se der tempo):**
 
-9. ❌ Monitoramento e logs
-10. ❌ Backup automatizado
-11. ❌ Documentação técnica completa
-12. ❌ Otimizações de performance
+10. ❌ Monitoramento e logs
+11. ❌ Backup automatizado (PostgreSQL + Excel)
+12. ❌ Documentação técnica completa
+13. ❌ Otimizações de performance
 
 ---
 
@@ -146,10 +163,11 @@
 
 ### **Para considerado COMPLETO:**
 
-- [ ] **ML modelo funcionando em produção**
+- [ ] **ML modelo funcionando em produção (Excel)**
 - [ ] **API hospedada em nuvem e acessível**
 - [ ] **App mobile funcionando**
-- [ ] **Dados protegidos com criptografia**
+- [ ] **Sistema de usuários (PostgreSQL)**
+- [ ] **Dados protegidos com criptografia (PostgreSQL)**
 - [ ] **Pipeline CI/CD ativo**
 - [ ] **Containerização completa**
 
@@ -159,7 +177,8 @@
 - [x] ✅ API REST funcional
 - [x] ✅ App mobile multiplataforma
 - [ ] ❌ **Deploy em nuvem com HTTPS** (OBRIGATÓRIO)
-- [ ] ❌ **Criptografia de dados** (OBRIGATÓRIO)
+- [ ] ❌ **PostgreSQL para usuários** (OBRIGATÓRIO)
+- [ ] ❌ **Criptografia de dados (PostgreSQL)** (OBRIGATÓRIO)
 - [ ] ❌ **Docker completo** (OBRIGATÓRIO)
 
 ---
