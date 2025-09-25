@@ -524,6 +524,44 @@ class MLService:
         else:
             return f"Orçamento {client_name} - {len(services)} serviços"
     
+    def generate_professional_title(self, service_name: str, category: str = None) -> str:
+        """Gera título profissional baseado no tipo de serviço"""
+        if not category:
+            category = self.predict_category(service_name)
+        
+        # Títulos profissionais por categoria
+        professional_titles = {
+            'eletrica': f"Análise Técnica - Serviços Elétricos",
+            'hidraulica': f"Proposta Técnica - Serviços Hidráulicos", 
+            'pintura': f"Orçamento Especializado - Serviços de Pintura",
+            'construcao': f"Projeto Técnico - Serviços de Construção",
+            'carpintaria': f"Proposta Artesanal - Trabalhos em Madeira",
+            'jardinagem': f"Projeto Paisagístico - Serviços de Jardinagem",
+            'limpeza': f"Proposta Profissional - Serviços de Limpeza",
+            'manutencao': f"Diagnóstico Técnico - Serviços de Manutenção"
+        }
+        
+        return professional_titles.get(category, "Proposta Técnica - Serviços Residenciais")
+    
+    def generate_professional_description(self, service_name: str, category: str = None) -> str:
+        """Gera descrição profissional baseada no serviço"""
+        if not category:
+            category = self.predict_category(service_name)
+        
+        # Descrições profissionais por categoria
+        professional_descriptions = {
+            'eletrica': f"Especialização em instalações elétricas residenciais com materiais certificados e mão de obra qualificada. Garantimos segurança e eficiência energética.",
+            'hidraulica': f"Serviços hidráulicos especializados com tubulações de primeira linha e técnicas modernas. Soluções completas para seu imóvel.",
+            'pintura': f"Pintura profissional com tintas premium e técnicas especializadas. Acabamento perfeito e durabilidade garantida.",
+            'construcao': f"Serviços de construção com materiais certificados e técnicas modernas. Qualidade e segurança em cada etapa do projeto.",
+            'carpintaria': f"Trabalhos em madeira com acabamento artesanal e materiais selecionados. Móveis e estruturas sob medida com qualidade excepcional.",
+            'jardinagem': f"Projetos paisagísticos com plantas de qualidade e técnicas especializadas. Transformamos seu espaço em um ambiente único.",
+            'limpeza': f"Serviços de limpeza profissional com produtos e equipamentos adequados. Resultados impecáveis e duradouros.",
+            'manutencao': f"Manutenção especializada com diagnóstico preciso e reparo definitivo. Soluções eficazes para manter seu imóvel em perfeito estado."
+        }
+        
+        return professional_descriptions.get(category, "Serviço residencial especializado com qualidade garantida e mão de obra qualificada.")
+    
     def suggest_quote_notes(self, services: List[str], total_value: float) -> str:
         """Sugere observações para o orçamento"""
         notes = []

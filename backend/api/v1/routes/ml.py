@@ -22,18 +22,22 @@ async def smart_create_item(
         # Prediz preço
         price_prediction = ml_service.predict_price(name, category)
         
-        # Gera descrição
-        description = ml_service.generate_service_description(name, category)
+        # Gera descrição profissional
+        professional_description = ml_service.generate_professional_description(name, category)
         if user_description:
-            description = user_description
+            professional_description = user_description
+        
+        # Gera título profissional
+        professional_title = ml_service.generate_professional_title(name, category)
         
         # Monta sugestões no formato esperado
         suggestions = {
             "ml_predictions": {
                 "name": name,
-                "description": description,
+                "description": professional_description,
                 "category": category,
-                "price_suggestion": price_prediction
+                "price_suggestion": price_prediction,
+                "professional_title": professional_title
             }
         }
         

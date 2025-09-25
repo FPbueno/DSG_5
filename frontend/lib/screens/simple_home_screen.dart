@@ -500,12 +500,13 @@ class _SimpleHomeScreenState extends State<SimpleHomeScreen> {
                                           MainAxisAlignment.center,
                                       children: [
                                         const Text(
-                                          '🤖',
+                                          '⚡',
                                           style: TextStyle(fontSize: 20),
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          'Predições do ML',
+                                          _mlResponse!['ml_predictions']?['professional_title'] ??
+                                              'Análise Técnica',
                                           style: Theme.of(
                                             context,
                                           ).textTheme.headlineSmall,
@@ -515,34 +516,34 @@ class _SimpleHomeScreenState extends State<SimpleHomeScreen> {
                                     const SizedBox(height: 16),
 
                                     _buildResultItem(
-                                      'Nome do Serviço:',
+                                      'Serviço:',
                                       _mlResponse!['ml_predictions']?['name'] ??
                                           'N/A',
                                     ),
                                     _buildResultItem(
-                                      'Descrição:',
+                                      'Especificação Técnica:',
                                       _mlResponse!['ml_predictions']?['description'] ??
                                           'N/A',
                                     ),
                                     _buildResultItem(
-                                      'Categoria:',
+                                      'Especialização:',
                                       _mlResponse!['ml_predictions']?['category'] ??
                                           'N/A',
                                     ),
                                     _buildResultItem(
-                                      'Preço Sugerido:',
+                                      'Valor Estimado:',
                                       'R\$ ${(_mlResponse!['ml_predictions']?['price_suggestion']?['suggested_price'] ?? 0).toStringAsFixed(2)}',
                                       isPrice: true,
                                     ),
                                     _buildResultItem(
-                                      'Faixa de Preço:',
+                                      'Classificação:',
                                       _mlResponse!['ml_predictions']?['price_suggestion']?['price_range'] ??
                                           'N/A',
                                     ),
                                     if (_mlResponse!['ml_predictions']?['price_suggestion']?['reasoning'] !=
                                         null)
                                       _buildResultItem(
-                                        'Justificativa do Preço:',
+                                        'Análise de Mercado:',
                                         _mlResponse!['ml_predictions']?['price_suggestion']?['reasoning'],
                                         isReasoning: true,
                                       ),
