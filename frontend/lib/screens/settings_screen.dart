@@ -85,44 +85,70 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFf8f9fa),
-      appBar: AppBar(
-        title: const Text('Configurações'),
-        backgroundColor: const Color(0xFF667eea),
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Seção do Perfil do Usuário
-            _buildProfileSection(),
-            const SizedBox(height: 24),
+    return Container(
+      color: const Color(0xFFf8f9fa),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x1A000000),
+                  offset: Offset(0, 2),
+                  blurRadius: 3.84,
+                ),
+              ],
+            ),
+            child: const Center(
+              child: Text(
+                'Configurações',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2D3748),
+                ),
+              ),
+            ),
+          ),
 
-            // Seção de Configurações Gerais
-            _buildGeneralSettingsSection(),
-            const SizedBox(height: 24),
+          // Content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Seção do Perfil do Usuário
+                  _buildProfileSection(),
+                  const SizedBox(height: 24),
 
-            // Seção de Configurações de ML
-            _buildMLSettingsSection(),
-            const SizedBox(height: 24),
+                  // Seção de Configurações Gerais
+                  _buildGeneralSettingsSection(),
+                  const SizedBox(height: 24),
 
-            // Seção de Configurações de API
-            _buildAPISettingsSection(),
-            const SizedBox(height: 24),
+                  // Seção de Configurações de ML
+                  _buildMLSettingsSection(),
+                  const SizedBox(height: 24),
 
-            // Seção de Configurações de Aparência
-            _buildAppearanceSettingsSection(),
-            const SizedBox(height: 24),
+                  // Seção de Configurações de API
+                  _buildAPISettingsSection(),
+                  const SizedBox(height: 24),
 
-            // Seção de Ações
-            _buildActionsSection(),
-            const SizedBox(height: 32),
-          ],
-        ),
+                  // Seção de Configurações de Aparência
+                  _buildAppearanceSettingsSection(),
+                  const SizedBox(height: 24),
+
+                  // Seção de Ações
+                  _buildActionsSection(),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -155,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.person, color: Colors.white, size: 30),
+                child: const Icon(Icons.person, color: Colors.white, size: 30),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -458,22 +484,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showLanguageDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Selecionar Idioma'),
-        content: RadioGroup<String>(
-          groupValue: _selectedLanguage,
-          onChanged: (value) {
-            setState(() {
-              _selectedLanguage = value!;
-            });
-            Navigator.of(context).pop();
-          },
-          child: Column(
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Selecionar Idioma'),
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             children: ['Português', 'English', 'Español'].map((language) {
-              return RadioListTile<String>(
+              return ListTile(
                 title: Text(language),
-                value: language,
+                leading: Radio<String>(
+                  value: language,
+                  // ignore: deprecated_member_use
+                  groupValue: _selectedLanguage,
+                  // ignore: deprecated_member_use
+                  onChanged: (value) {
+                    setDialogState(() {
+                      _selectedLanguage = value!;
+                    });
+                    setState(() {
+                      _selectedLanguage = value!;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+                onTap: () {
+                  setDialogState(() {
+                    _selectedLanguage = language;
+                  });
+                  setState(() {
+                    _selectedLanguage = language;
+                  });
+                  Navigator.of(context).pop();
+                },
               );
             }).toList(),
           ),

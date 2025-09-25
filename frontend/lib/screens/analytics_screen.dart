@@ -61,66 +61,64 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFf8f9fa),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x1A000000),
-                    offset: Offset(0, 2),
-                    blurRadius: 3.84,
-                  ),
-                ],
-              ),
-              child: Center(
-                child: const LogoWidget(size: 'large', showText: false),
-              ),
-            ),
-
-            // Tabs
-            Container(
+    return Container(
+      color: const Color(0xFFf8f9fa),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
               color: Colors.white,
-              child: TabBar(
-                controller: _tabController,
-                labelColor: const Color(0xFF6366f1),
-                unselectedLabelColor: const Color(0xFF666666),
-                indicatorColor: const Color(0xFF6366f1),
-                tabs: const [
-                  Tab(text: 'Visão Geral'),
-                  Tab(text: 'Serviços'),
-                  Tab(text: 'Clientes'),
-                ],
-              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x1A000000),
+                  offset: Offset(0, 2),
+                  blurRadius: 3.84,
+                ),
+              ],
             ),
+            child: Center(
+              child: const LogoWidget(size: 'large', showText: false),
+            ),
+          ),
 
-            // Content
-            Expanded(
-              child: _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF6366f1),
-                        ),
-                      ),
-                    )
-                  : TabBarView(
-                      controller: _tabController,
-                      children: [
-                        _buildOverviewTab(),
-                        _buildServicesTab(),
-                        _buildClientsTab(),
-                      ],
-                    ),
+          // Tabs
+          Container(
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: const Color(0xFF6366f1),
+              unselectedLabelColor: const Color(0xFF666666),
+              indicatorColor: const Color(0xFF6366f1),
+              tabs: const [
+                Tab(text: 'Visão Geral'),
+                Tab(text: 'Serviços'),
+                Tab(text: 'Clientes'),
+              ],
             ),
-          ],
-        ),
+          ),
+
+          // Content
+          Expanded(
+            child: _isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFF6366f1),
+                      ),
+                    ),
+                  )
+                : TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _buildOverviewTab(),
+                      _buildServicesTab(),
+                      _buildClientsTab(),
+                    ],
+                  ),
+          ),
+        ],
       ),
     );
   }
