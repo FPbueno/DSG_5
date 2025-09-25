@@ -61,9 +61,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFf8f9fa),
-      child: Column(
+    return Scaffold(
+      backgroundColor: const Color(0xFFf8f9fa),
+      body: Column(
         children: [
           // Header
           Container(
