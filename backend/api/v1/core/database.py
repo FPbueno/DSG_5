@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
 # Carrega variáveis de ambiente
-load_dotenv('config.env')
+load_dotenv('.env')
 
 # Configuração do banco de dados MySQL
 DATABASE_URL = os.getenv(
