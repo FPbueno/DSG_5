@@ -18,18 +18,16 @@ def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     
-    username = verify_token(credentials.credentials)
-    if username is None:
+    user_id = verify_token(credentials.credentials)
+    if user_id is None:
         raise credentials_exception
     
-    user = db.query(User).filter(User.username == username).first()
+    user = db.query(User).filter(User.id == int(user_id)).first()
     if user is None:
         raise credentials_exception
     
     return user
 
 def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
-    """Obtém o usuário ativo atual"""
-    if not current_user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
+    """Obtém o usuário atual"""
     return current_user

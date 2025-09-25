@@ -50,13 +50,16 @@ class AuthService {
 
   // Login do usuário
   static Future<Map<String, dynamic>> login(
-    String username,
+    String email,
     String password,
   ) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/login'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {'username': username, 'password': password},
+      body: {
+        'username': email,
+        'password': password,
+      }, // OAuth2PasswordRequestForm usa 'username' mas enviamos email
     );
 
     if (response.statusCode == 200) {
@@ -90,18 +93,14 @@ class AuthService {
 
   // Registro do usuário
   static Future<Map<String, dynamic>> register(
-    String username,
+    String name,
     String email,
     String password,
   ) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/register'),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'username': username,
-        'email': email,
-        'password': password,
-      }),
+      body: json.encode({'name': name, 'email': email, 'password': password}),
     );
 
     if (response.statusCode == 201) {

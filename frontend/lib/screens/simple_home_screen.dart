@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import '../services/auth_service.dart';
 import '../widgets/logo_widget.dart';
 import '../constants/app_constants.dart';
+import 'login_screen.dart';
 
 class SimpleHomeScreen extends StatefulWidget {
   const SimpleHomeScreen({super.key});
@@ -187,10 +189,32 @@ class _SimpleHomeScreenState extends State<SimpleHomeScreen> {
     });
   }
 
+  Future<void> _logout() async {
+    await AuthService.logout();
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFf8f9fa),
+      appBar: AppBar(
+        title: const Text('WorcaFlow'),
+        backgroundColor: const Color(0xFF667eea),
+        foregroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout,
+            tooltip: 'Sair',
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [

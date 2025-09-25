@@ -11,7 +11,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -21,7 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -37,7 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       final result = await AuthService.register(
-        _usernameController.text.trim(),
+        _nameController.text.trim(),
         _emailController.text.trim(),
         _passwordController.text,
       );
@@ -117,17 +117,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Campo de usuário
+                // Campo de nome
                 TextFormField(
-                  controller: _usernameController,
+                  controller: _nameController,
                   decoration: const InputDecoration(
-                    labelText: 'Usuário',
+                    labelText: 'Nome Completo',
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, digite seu usuário';
+                      return 'Por favor, digite seu nome';
                     }
                     return null;
                   },

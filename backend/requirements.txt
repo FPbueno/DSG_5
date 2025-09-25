@@ -6,3 +6,9 @@ pydantic
 python-multipart
 scikit-learn
 numpy
+sqlalchemy
+pymysql
+python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+cryptography

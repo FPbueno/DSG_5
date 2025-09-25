@@ -7,6 +7,7 @@ class FooterMenu extends StatelessWidget {
   final VoidCallback onNavigateToHome;
   final VoidCallback onNavigateToHistory;
   final VoidCallback onNavigateToDashboard;
+  final VoidCallback onNavigateToSettings;
 
   const FooterMenu({
     super.key,
@@ -14,6 +15,7 @@ class FooterMenu extends StatelessWidget {
     required this.onNavigateToHome,
     required this.onNavigateToHistory,
     required this.onNavigateToDashboard,
+    required this.onNavigateToSettings,
   });
 
   @override
@@ -67,6 +69,13 @@ class FooterMenu extends StatelessWidget {
                 label: 'Analytics',
                 isActive: currentScreen == 'Dashboard',
                 onTap: onNavigateToDashboard,
+              ),
+              _buildMenuItem(
+                icon: Icons.settings_outlined,
+                activeIcon: Icons.settings,
+                label: 'Config',
+                isActive: currentScreen == 'Settings',
+                onTap: onNavigateToSettings,
               ),
             ],
           ),

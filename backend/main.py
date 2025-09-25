@@ -6,6 +6,7 @@ from api.v1.core.config import (
     CORS_ORIGINS, CORS_ALLOW_CREDENTIALS, 
     CORS_ALLOW_METHODS, CORS_ALLOW_HEADERS
 )
+from api.v1.core.database import create_tables
 
 app = FastAPI(
     title=API_TITLE,
@@ -22,12 +23,17 @@ app.add_middleware(
     allow_headers=CORS_ALLOW_HEADERS,
 )
 
+# Cria as tabelas do banco de dados na inicialização
+@app.on_event("startup")
+async def startup_event():
+    create_tables()
+
 # Inclui as rotas
 app.include_router(router, prefix="/api/v1")
 
 @app.get("/")
 async def root():
-    return {"message": "API de Itens funcionando!"}
+    return {"message": "API de Orçamentos Residenciais funcionando!"}
 
 @app.get("/health")
 async def health_check():
