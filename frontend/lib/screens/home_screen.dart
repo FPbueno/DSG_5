@@ -189,9 +189,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFf8f9fa),
-      child: Column(
+    return Scaffold(
+      backgroundColor: const Color(0xFFf8f9fa),
+      body: Column(
         children: [
           // Header
           Container(
@@ -206,8 +206,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            child: Center(
-              child: const LogoWidget(size: 'large', showText: false),
+            child: const Center(
+              child: LogoWidget(size: 'large', showText: false),
             ),
           ),
 
