@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../widgets/logo_widget.dart';
+import '../widgets/footer_menu.dart';
 import '../utils/format_utils.dart';
+import 'home_screen.dart';
+import 'history_screen.dart';
+import 'settings_screen.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -17,6 +21,27 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Map<String, dynamic>? _overviewData;
   Map<String, dynamic>? _servicesData;
   Map<String, dynamic>? _clientsData;
+
+  void _navigateToHome() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
+  }
+
+  void _navigateToHistory() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HistoryScreen()),
+    );
+  }
+
+  void _navigateToSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SettingsScreen()),
+    );
+  }
 
   @override
   void initState() {
@@ -63,60 +88,81 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFf8f9fa),
-      body: Column(
+      body: Stack(
         children: [
-          // Header
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x1A000000),
-                  offset: Offset(0, 2),
-                  blurRadius: 3.84,
+          // Conteúdo principal
+          Positioned.fill(
+            bottom: 70, // Espaço para o footer
+            child: Column(
+              children: [
+                // Header
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x1A000000),
+                        offset: Offset(0, 2),
+                        blurRadius: 3.84,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: const LogoWidget(size: 'large', showText: false),
+                  ),
+                ),
+
+                // Tabs
+                Container(
+                  color: Colors.white,
+                  child: TabBar(
+                    controller: _tabController,
+                    labelColor: const Color(0xFF6366f1),
+                    unselectedLabelColor: const Color(0xFF666666),
+                    indicatorColor: const Color(0xFF6366f1),
+                    tabs: const [
+                      Tab(text: 'Visão Geral'),
+                      Tab(text: 'Serviços'),
+                      Tab(text: 'Clientes'),
+                    ],
+                  ),
+                ),
+
+                // Content
+                Expanded(
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Color(0xFF6366f1),
+                            ),
+                          ),
+                        )
+                      : TabBarView(
+                          controller: _tabController,
+                          children: [
+                            _buildOverviewTab(),
+                            _buildServicesTab(),
+                            _buildClientsTab(),
+                          ],
+                        ),
                 ),
               ],
             ),
-            child: Center(
-              child: const LogoWidget(size: 'large', showText: false),
-            ),
           ),
-
-          // Tabs
-          Container(
-            color: Colors.white,
-            child: TabBar(
-              controller: _tabController,
-              labelColor: const Color(0xFF6366f1),
-              unselectedLabelColor: const Color(0xFF666666),
-              indicatorColor: const Color(0xFF6366f1),
-              tabs: const [
-                Tab(text: 'Visão Geral'),
-                Tab(text: 'Serviços'),
-                Tab(text: 'Clientes'),
-              ],
+          // Footer menu
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: FooterMenu(
+              currentScreen: 'Dashboard',
+              onNavigateToHome: _navigateToHome,
+              onNavigateToHistory: _navigateToHistory,
+              onNavigateToDashboard: () {}, // Já estamos na analytics
+              onNavigateToSettings: _navigateToSettings,
             ),
-          ),
-
-          // Content
-          Expanded(
-            child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFF6366f1),
-                      ),
-                    ),
-                  )
-                : TabBarView(
-                    controller: _tabController,
-                    children: [
-                      _buildOverviewTab(),
-                      _buildServicesTab(),
-                      _buildClientsTab(),
-                    ],
-                  ),
           ),
         ],
       ),
