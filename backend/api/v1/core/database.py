@@ -7,13 +7,11 @@ from dotenv import load_dotenv
 # Carrega variáveis de ambiente
 load_dotenv('.env')
 
-# Configuração do banco de dados MySQL
-DATABASE_URL = os.getenv(
-    "DATABASE_URL", 
-    "mysql+pymysql://username:password@localhost:3306/database_name"
-)
+# Configuração do banco de dados MySQL na nuvem
+# URL obtida das variáveis de ambiente para segurança
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Criar engine do SQLAlchemy com configurações SSL específicas
+# Criar engine do SQLAlchemy com configurações SSL para MySQL na nuvem
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,
