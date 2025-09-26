@@ -1,17 +1,12 @@
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
-
-# Carrega variáveis de ambiente
-load_dotenv('.env')
+from .config import DATABASE_URL
 
 # Configuração do banco de dados MySQL na nuvem
-# URL obtida das variáveis de ambiente para segurança
-DATABASE_URL = os.getenv("DATABASE_URL")
+# URL obtida das configurações para segurança
 
-# Criar engine do SQLAlchemy com configurações SSL para MySQL na nuvem
+# Criar engine do SQLAlchemy com configurações SSL para MySQL na nuvem (Aiven)
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,
