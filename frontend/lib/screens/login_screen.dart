@@ -75,62 +75,56 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          color: Colors.black,
-        ),
+        decoration: const BoxDecoration(color: Colors.black),
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height,
+                minHeight:
+                    MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom,
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo - AUMENTEI MUITO e subi mais
-                  Column(
-                    children: [
-                      Image.asset(
-                        'assets/images/Worca.png',
-                        height: 490,
-                        width: 650,   
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.home_work,
-                            size: 500,  // AUMENTEI BASTANTE
-                            color: Color(0xFFf5c116),
-                          );
-                        },
-                      ),
-                      // ESPAÇO MÍNIMO entre logo e texto
-                      const SizedBox(height: 10),
-
-                      // Título - BEM PRÓXIMO do logo
-                      const Text(
-                        'Bem-vindo de volta!',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 1),  // ESPAÇO MÍNIMO
-
-                      Text(
-                        'Faça login para continuar',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[300],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  
                   const SizedBox(height: 40),
+
+                  // Logo
+                  Image.asset(
+                    'assets/images/Worca.png',
+                    height: 300,
+                    width: 350,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.home_work,
+                        size: 300,
+                        color: Color(0xFFf5c116),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Título
+                  const Text(
+                    'Bem-vindo de volta!',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+
+                  Text(
+                    'Faça login para continuar',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[300]),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 32),
 
                   // Formulário
                   Form(
@@ -142,10 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 10,
                                 offset: const Offset(0, 5),
                               ),
@@ -189,10 +183,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 10,
                                 offset: const Offset(0, 5),
                               ),
@@ -250,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Color(0xFFf5c116).withOpacity(0.3),
+                                color: Color(0xFFf5c116).withValues(alpha: 0.3),
                                 blurRadius: 15,
                                 offset: const Offset(0, 8),
                               ),

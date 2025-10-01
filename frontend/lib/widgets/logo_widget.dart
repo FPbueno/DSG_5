@@ -32,8 +32,7 @@ class LogoWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(logoSize / 2),
             boxShadow: [
               BoxShadow(
-                // ignore: deprecated_member_use
-                color: const Color(0xFF2196F3).withOpacity(0.3),
+                color: const Color(0xFF2196F3).withValues(alpha: 0.3),
                 blurRadius: 20,
                 spreadRadius: 2,
               ),

@@ -22,30 +22,24 @@ class FooterMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Color(0xFFf5c116).withValues(alpha: 0.2),
             offset: const Offset(0, -4),
             blurRadius: 12,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            offset: const Offset(0, -1),
-            blurRadius: 4,
             spreadRadius: 0,
           ),
         ],
       ),
       child: SafeArea(
         child: Container(
-          height: 70,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          height: 65,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -96,14 +90,14 @@ class FooterMenu extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF6366f1) : Colors.transparent,
+          color: isActive ? const Color(0xFFf5c116) : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: const Color(0xFF6366f1).withOpacity(0.3),
+                    color: const Color(0xFFf5c116).withValues(alpha: 0.3),
                     offset: const Offset(0, 2),
                     blurRadius: 8,
                     spreadRadius: 0,
@@ -120,18 +114,18 @@ class FooterMenu extends StatelessWidget {
               child: Icon(
                 isActive ? activeIcon : icon,
                 key: ValueKey(isActive),
-                size: 22,
-                color: isActive ? Colors.white : const Color(0xFF64748b),
+                size: 20,
+                color: isActive ? Colors.black : const Color(0xFFf5c116),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 3),
             Text(
               label,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 10,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
-                color: isActive ? Colors.white : const Color(0xFF64748b),
-                letterSpacing: 0.2,
+                color: isActive ? Colors.black : Colors.grey[400],
+                letterSpacing: 0.1,
               ),
             ),
           ],

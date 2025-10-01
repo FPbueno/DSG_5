@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
-import '../widgets/logo_widget.dart';
-import '../widgets/footer_menu.dart';
 import '../utils/format_utils.dart';
-import 'home_screen.dart';
-import 'history_screen.dart';
-import 'settings_screen.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -21,27 +16,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Map<String, dynamic>? _overviewData;
   Map<String, dynamic>? _servicesData;
   Map<String, dynamic>? _clientsData;
-
-  void _navigateToHome() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
-  }
-
-  void _navigateToHistory() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HistoryScreen()),
-    );
-  }
-
-  void _navigateToSettings() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SettingsScreen()),
-    );
-  }
 
   @override
   void initState() {
@@ -87,82 +61,64 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFf8f9fa),
-      body: Stack(
+      backgroundColor: Colors.black,
+      body: Column(
         children: [
-          // Conteúdo principal
-          Positioned.fill(
-            bottom: 70, // Espaço para o footer
-            child: Column(
-              children: [
-                // Header
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0x1A000000),
-                        offset: Offset(0, 2),
-                        blurRadius: 3.84,
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: const LogoWidget(size: 'large', showText: false),
-                  ),
-                ),
+          // Header
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(color: Colors.black),
+            child: Center(
+              child: Image.asset(
+                'assets/images/Worca.png',
+                height: 120,
+                width: 150,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.home_work,
+                    size: 120,
+                    color: Color(0xFFf5c116),
+                  );
+                },
+              ),
+            ),
+          ),
 
-                // Tabs
-                Container(
-                  color: Colors.white,
-                  child: TabBar(
-                    controller: _tabController,
-                    labelColor: const Color(0xFF6366f1),
-                    unselectedLabelColor: const Color(0xFF666666),
-                    indicatorColor: const Color(0xFF6366f1),
-                    tabs: const [
-                      Tab(text: 'Visão Geral'),
-                      Tab(text: 'Serviços'),
-                      Tab(text: 'Clientes'),
-                    ],
-                  ),
-                ),
-
-                // Content
-                Expanded(
-                  child: _isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xFF6366f1),
-                            ),
-                          ),
-                        )
-                      : TabBarView(
-                          controller: _tabController,
-                          children: [
-                            _buildOverviewTab(),
-                            _buildServicesTab(),
-                            _buildClientsTab(),
-                          ],
-                        ),
-                ),
+          // Tabs
+          Container(
+            color: Colors.black,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: const Color(0xFFf5c116),
+              unselectedLabelColor: Colors.grey[400],
+              indicatorColor: const Color(0xFFf5c116),
+              tabs: const [
+                Tab(text: 'Visão Geral'),
+                Tab(text: 'Serviços'),
+                Tab(text: 'Clientes'),
               ],
             ),
           ),
-          // Footer menu
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: FooterMenu(
-              currentScreen: 'Dashboard',
-              onNavigateToHome: _navigateToHome,
-              onNavigateToHistory: _navigateToHistory,
-              onNavigateToDashboard: () {}, // Já estamos na analytics
-              onNavigateToSettings: _navigateToSettings,
-            ),
+
+          // Content
+          Expanded(
+            child: _isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFF6366f1),
+                      ),
+                    ),
+                  )
+                : TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _buildOverviewTab(),
+                      _buildServicesTab(),
+                      _buildClientsTab(),
+                    ],
+                  ),
           ),
         ],
       ),
@@ -264,11 +220,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFF1a1a1a),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: const Color(0x1A000000),
+            color: Color(0xFFf5c116).withValues(alpha: 0.1),
             offset: const Offset(0, 2),
             blurRadius: 3.84,
           ),
@@ -286,7 +242,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                   title,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF666666),
+                    color: Color(0xFFBDBDBD),
                     fontFamily: 'Poppins',
                   ),
                 ),
@@ -299,7 +255,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: color,
+              color: Colors.white,
               fontFamily: 'Quicksand',
             ),
           ),
@@ -312,11 +268,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFF1a1a1a),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: const Color(0x1A000000),
+            color: Color(0xFFf5c116).withValues(alpha: 0.1),
             offset: const Offset(0, 2),
             blurRadius: 3.84,
           ),
@@ -330,6 +286,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontFamily: 'Quicksand',
               fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 16),
@@ -372,7 +329,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                     style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 12,
-                      color: Color(0xFF666666),
+                      color: Color(0xFFBDBDBD),
                     ),
                   ),
                 ],
@@ -388,11 +345,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFF1a1a1a),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: const Color(0x1A000000),
+            color: Color(0xFFf5c116).withValues(alpha: 0.1),
             offset: const Offset(0, 2),
             blurRadius: 3.84,
           ),
@@ -406,6 +363,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontFamily: 'Quicksand',
               fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 16),
@@ -419,7 +377,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFf8f9fa),
+                color: const Color(0xFF252525),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -450,6 +408,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                         fontFamily: 'Poppins',
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -458,7 +417,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                     style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 12,
-                      color: Color(0xFF666666),
+                      color: Color(0xFFBDBDBD),
                     ),
                   ),
                 ],
@@ -474,11 +433,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFF1a1a1a),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: const Color(0x1A000000),
+            color: Color(0xFFf5c116).withValues(alpha: 0.1),
             offset: const Offset(0, 2),
             blurRadius: 3.84,
           ),
@@ -492,6 +451,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontFamily: 'Quicksand',
               fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 16),
@@ -504,7 +464,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFf8f9fa),
+                color: const Color(0xFF252525),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -516,6 +476,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                         fontFamily: 'Poppins',
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -524,7 +485,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                     style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 12,
-                      color: Color(0xFF666666),
+                      color: Color(0xFFBDBDBD),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -533,7 +494,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                     style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 12,
-                      color: Color(0xFF10b981),
+                      color: Color(0xFFf5c116),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -564,11 +525,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Color(0xFF1a1a1a),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0x1A000000),
+                  color: Color(0xFFf5c116).withValues(alpha: 0.1),
                   offset: const Offset(0, 2),
                   blurRadius: 3.84,
                 ),
@@ -610,11 +571,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFF1a1a1a),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: const Color(0x1A000000),
+            color: Color(0xFFf5c116).withValues(alpha: 0.1),
             offset: const Offset(0, 2),
             blurRadius: 3.84,
           ),
@@ -632,19 +593,20 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                     fontFamily: 'Quicksand',
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF10b981),
+                  color: const Color(0xFFf5c116),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   '${service['times_used'] ?? 0} usos',
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -689,7 +651,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           style: const TextStyle(
             fontFamily: 'Poppins',
             fontSize: 12,
-            color: Color(0xFF666666),
+            color: Color(0xFFBDBDBD),
           ),
         ),
         const SizedBox(height: 4),
@@ -699,6 +661,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             fontFamily: 'Poppins',
             fontSize: 14,
             fontWeight: FontWeight.w500,
+            color: Colors.white,
           ),
         ),
       ],
@@ -723,11 +686,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Color(0xFF1a1a1a),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0x1A000000),
+                  color: Color(0xFFf5c116).withValues(alpha: 0.1),
                   offset: const Offset(0, 2),
                   blurRadius: 3.84,
                 ),
@@ -769,11 +732,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFF1a1a1a),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: const Color(0x1A000000),
+            color: Color(0xFFf5c116).withValues(alpha: 0.1),
             offset: const Offset(0, 2),
             blurRadius: 3.84,
           ),
@@ -791,19 +754,20 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                     fontFamily: 'Quicksand',
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF6366f1),
+                  color: const Color(0xFFf5c116),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   '${client['quotes_count'] ?? 0} orçamentos',
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),

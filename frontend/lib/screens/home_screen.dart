@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
-import '../widgets/logo_widget.dart';
-import '../widgets/footer_menu.dart';
 import '../constants/app_constants.dart';
-import 'history_screen.dart';
-import 'analytics_screen.dart';
-import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,27 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _showResult = false;
   Map<String, dynamic>? _mlResponse;
 
-  void _navigateToHistory() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HistoryScreen()),
-    );
-  }
-
-  void _navigateToAnalytics() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AnalyticsScreen()),
-    );
-  }
-
-  void _navigateToSettings() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SettingsScreen()),
-    );
-  }
-
   @override
   void dispose() {
     _clientNameController.dispose();
@@ -63,7 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Selecionar Categoria',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: Colors.white),
             ),
             const SizedBox(height: 16),
             ...AppConstants.categoryOptions.map(
@@ -103,7 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Selecionar Subcategoria',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: Colors.white),
             ),
             const SizedBox(height: 16),
             ...subcategories.map(
@@ -133,11 +111,11 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              colorScheme: const ColorScheme.light(
-                primary: Color(0xFF6366f1),
-                onPrimary: Colors.white,
-                surface: Colors.white,
-                onSurface: Colors.black,
+              colorScheme: const ColorScheme.dark(
+                primary: Color(0xFFf5c116),
+                onPrimary: Colors.black,
+                surface: Color(0xFF1a1a1a),
+                onSurface: Colors.white,
               ),
             ),
             child: child!,
@@ -215,435 +193,404 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFf8f9fa),
-      body: Stack(
+      backgroundColor: Colors.black,
+      body: Column(
         children: [
-          // Conteúdo principal
-          Positioned.fill(
-            bottom: 70, // Espaço para o footer
-            child: Column(
-              children: [
-                // Header
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0x1A000000),
-                        offset: Offset(0, 2),
-                        blurRadius: 3.84,
+          // Header
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(color: Colors.black),
+            child: Center(
+              child: Image.asset(
+                'assets/images/Worca.png',
+                height: 120,
+                width: 150,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.home_work,
+                    size: 120,
+                    color: Color(0xFFf5c116),
+                  );
+                },
+              ),
+            ),
+          ),
+
+          // Content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!_showResult) ...[
+                    // Title Section
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF1a1a1a),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0x1A000000),
+                            offset: const Offset(0, 2),
+                            blurRadius: 3.84,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: const Center(
-                    child: LogoWidget(size: 'large', showText: false),
-                  ),
-                ),
-
-                // Content
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (!_showResult) ...[
-                          // Title Section
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0x1A000000),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 3.84,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Criar Novo Orçamento',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.displaySmall,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Preencha os dados. O ML criará o orçamento completo automaticamente!',
-                                  style: Theme.of(context).textTheme.bodyLarge
-                                      ?.copyWith(
-                                        color: const Color(0xFF666666),
-                                      ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Criar Novo Orçamento',
+                            style: Theme.of(context).textTheme.displaySmall
+                                ?.copyWith(color: Colors.white),
+                            textAlign: TextAlign.center,
                           ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Preencha os dados. O ML criará o orçamento completo automaticamente!',
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: const Color(0xFFBDBDBD)),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
 
-                          const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                          // Form
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0x1A000000),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 3.84,
-                                ),
-                              ],
+                    // Form
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF1a1a1a),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0x1A000000),
+                            offset: const Offset(0, 2),
+                            blurRadius: 3.84,
+                          ),
+                        ],
+                      ),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            Text(
+                              'Solicitação de Serviço',
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(color: Colors.white),
+                              textAlign: TextAlign.center,
                             ),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '📋 Solicitação de Serviço',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.headlineSmall,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 24),
+                            const SizedBox(height: 24),
 
-                                  // Nome do Cliente
-                                  TextFormField(
-                                    controller: _clientNameController,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Nome da Pessoa *',
-                                      hintText: 'Ex: João Silva',
-                                    ),
-                                    validator: (value) {
-                                      if (value == null ||
-                                          value.trim().isEmpty) {
-                                        return 'Nome é obrigatório';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  // Data da Solicitação
-                                  GestureDetector(
-                                    onTap: _selectDate,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                          color: const Color(0xFFDDDDDD),
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.calendar_today,
-                                            color: Color(0xFF6366f1),
-                                            size: 20,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Text(
-                                              _requestDateController
-                                                      .text
-                                                      .isEmpty
-                                                  ? 'Selecione uma data'
-                                                  : _requestDateController.text,
-                                              style: TextStyle(
-                                                color:
-                                                    _requestDateController
-                                                        .text
-                                                        .isEmpty
-                                                    ? const Color(0xFF999999)
-                                                    : const Color(0xFF333333),
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                          const Icon(
-                                            Icons.keyboard_arrow_down,
-                                            color: Color(0xFF6366f1),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  // Categoria
-                                  GestureDetector(
-                                    onTap: _showCategoryPicker,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                          color: const Color(0xFFDDDDDD),
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              _selectedCategory.isEmpty
-                                                  ? 'Selecione uma categoria...'
-                                                  : AppConstants.categoryOptions
-                                                        .firstWhere(
-                                                          (opt) =>
-                                                              opt['value'] ==
-                                                              _selectedCategory,
-                                                        )['label']!,
-                                              style: TextStyle(
-                                                color: _selectedCategory.isEmpty
-                                                    ? const Color(0xFF999999)
-                                                    : const Color(0xFF333333),
-                                              ),
-                                            ),
-                                          ),
-                                          const Icon(Icons.keyboard_arrow_down),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  // Subcategoria
-                                  GestureDetector(
-                                    onTap: _selectedCategory.isNotEmpty
-                                        ? _showSubcategoryPicker
-                                        : null,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: _selectedCategory.isEmpty
-                                            ? const Color(0xFFf8f9fa)
-                                            : Colors.white,
-                                        border: Border.all(
-                                          color: _selectedCategory.isEmpty
-                                              ? const Color(0xFFe9ecef)
-                                              : const Color(0xFFDDDDDD),
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              _selectedCategory.isEmpty
-                                                  ? 'Selecione uma categoria primeiro'
-                                                  : _selectedSubcategory.isEmpty
-                                                  ? 'Selecione uma subcategoria...'
-                                                  : AppConstants
-                                                        .serviceCategories[_selectedCategory]!
-                                                        .firstWhere(
-                                                          (opt) =>
-                                                              opt['value'] ==
-                                                              _selectedSubcategory,
-                                                        )['label']!,
-                                              style: TextStyle(
-                                                color: _selectedCategory.isEmpty
-                                                    ? const Color(0xFF6c757d)
-                                                    : _selectedSubcategory
-                                                          .isEmpty
-                                                    ? const Color(0xFF999999)
-                                                    : const Color(0xFF333333),
-                                              ),
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.keyboard_arrow_down,
-                                            color: _selectedCategory.isEmpty
-                                                ? const Color(0xFF6c757d)
-                                                : const Color(0xFF666666),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 24),
-
-                                  // Botão Gerar Orçamento
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: _isLoading
-                                          ? null
-                                          : _generateQuote,
-                                      child: _isLoading
-                                          ? const SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                      Color
-                                                    >(Colors.white),
-                                              ),
-                                            )
-                                          : const Text('Gerar Orçamento'),
-                                    ),
-                                  ),
-                                ],
+                            // Nome do Cliente
+                            TextFormField(
+                              controller: _clientNameController,
+                              decoration: const InputDecoration(
+                                labelText: 'Nome da Pessoa *',
+                                hintText: 'Ex: João Silva',
                               ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Nome é obrigatório';
+                                }
+                                return null;
+                              },
                             ),
-                          ),
-                        ] else ...[
-                          // Resultado do ML
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0x1A000000),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 3.84,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  '🤖 Resultado do ML',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.headlineSmall,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
-                                if (_mlResponse != null) ...[
-                                  Container(
-                                    padding: const EdgeInsets.all(20),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFf8f9fa),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: const Color(0xFFe9ecef),
-                                      ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Text(
-                                              '⚡',
-                                              style: TextStyle(fontSize: 20),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              _mlResponse!['ml_predictions']?['professional_title'] ??
-                                                  'Análise Técnica',
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.headlineSmall,
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 16),
-
-                                        _buildResultItem(
-                                          'Serviço:',
-                                          _mlResponse!['ml_predictions']?['name'] ??
-                                              'N/A',
-                                        ),
-                                        _buildResultItem(
-                                          'Especificação Técnica:',
-                                          _mlResponse!['ml_predictions']?['description'] ??
-                                              'N/A',
-                                        ),
-                                        _buildResultItem(
-                                          'Especialização:',
-                                          _mlResponse!['ml_predictions']?['category'] ??
-                                              'N/A',
-                                        ),
-                                        _buildResultItem(
-                                          'Valor Estimado:',
-                                          'R\$ ${(_mlResponse!['ml_predictions']?['price_suggestion']?['suggested_price'] ?? 0).toStringAsFixed(2)}',
-                                          isPrice: true,
-                                        ),
-                                        _buildResultItem(
-                                          'Classificação:',
-                                          _mlResponse!['ml_predictions']?['price_suggestion']?['price_range'] ??
-                                              'N/A',
-                                        ),
-                                        if (_mlResponse!['ml_predictions']?['price_suggestion']?['reasoning'] !=
-                                            null)
-                                          _buildResultItem(
-                                            'Análise de Mercado:',
-                                            _mlResponse!['ml_predictions']?['price_suggestion']?['reasoning'],
-                                            isReasoning: true,
-                                          ),
-                                      ],
-                                    ),
+                            // Data da Solicitação
+                            GestureDetector(
+                              onTap: _selectDate,
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF1a1a1a),
+                                  border: Border.all(
+                                    color: const Color(0xFFDDDDDD),
                                   ),
-                                ],
-
-                                const SizedBox(height: 20),
-
-                                // Botões
-                                Row(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
                                   children: [
-                                    Expanded(
-                                      child: OutlinedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            _showResult = false;
-                                          });
-                                        },
-                                        child: const Text('Voltar'),
-                                      ),
+                                    const Icon(
+                                      Icons.calendar_today,
+                                      color: Color(0xFFf5c116),
+                                      size: 20,
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: _resetForm,
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(
-                                            0xFF7c3aed,
-                                          ),
+                                      child: Text(
+                                        _requestDateController.text.isEmpty
+                                            ? 'Selecione uma data'
+                                            : _requestDateController.text,
+                                        style: TextStyle(
+                                          color:
+                                              _requestDateController
+                                                  .text
+                                                  .isEmpty
+                                              ? const Color(0xFF9E9E9E)
+                                              : const Color(0xFFFFFFFF),
+                                          fontSize: 16,
                                         ),
-                                        child: const Text('Novo Orçamento'),
                                       ),
+                                    ),
+                                    const Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: Color(0xFFf5c116),
                                     ),
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
+                            const SizedBox(height: 20),
+
+                            // Categoria
+                            GestureDetector(
+                              onTap: _showCategoryPicker,
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF1a1a1a),
+                                  border: Border.all(
+                                    color: const Color(0xFFDDDDDD),
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        _selectedCategory.isEmpty
+                                            ? 'Selecione uma categoria...'
+                                            : AppConstants.categoryOptions
+                                                  .firstWhere(
+                                                    (opt) =>
+                                                        opt['value'] ==
+                                                        _selectedCategory,
+                                                  )['label']!,
+                                        style: TextStyle(
+                                          color: _selectedCategory.isEmpty
+                                              ? const Color(0xFF9E9E9E)
+                                              : const Color(0xFFFFFFFF),
+                                        ),
+                                      ),
+                                    ),
+                                    const Icon(Icons.keyboard_arrow_down),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Subcategoria
+                            GestureDetector(
+                              onTap: _selectedCategory.isNotEmpty
+                                  ? _showSubcategoryPicker
+                                  : null,
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF1a1a1a),
+                                  border: Border.all(
+                                    color: _selectedCategory.isEmpty
+                                        ? const Color(0xFF333333)
+                                        : const Color(0xFFDDDDDD),
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        _selectedCategory.isEmpty
+                                            ? 'Selecione uma categoria primeiro'
+                                            : _selectedSubcategory.isEmpty
+                                            ? 'Selecione uma subcategoria...'
+                                            : AppConstants
+                                                  .serviceCategories[_selectedCategory]!
+                                                  .firstWhere(
+                                                    (opt) =>
+                                                        opt['value'] ==
+                                                        _selectedSubcategory,
+                                                  )['label']!,
+                                        style: TextStyle(
+                                          color: _selectedCategory.isEmpty
+                                              ? const Color(0xFF6c757d)
+                                              : _selectedSubcategory.isEmpty
+                                              ? const Color(0xFF9E9E9E)
+                                              : const Color(0xFFFFFFFF),
+                                        ),
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: _selectedCategory.isEmpty
+                                          ? const Color(0xFF6c757d)
+                                          : const Color(0xFFBDBDBD),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Botão Gerar Orçamento
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: _isLoading ? null : _generateQuote,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xFFf5c116),
+                                  foregroundColor: Colors.black,
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: _isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                Colors.black,
+                                              ),
+                                        ),
+                                      )
+                                    : const Text(
+                                        'Gerar Orçamento',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ] else ...[
+                    // Resultado do ML
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF1a1a1a),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0x1A000000),
+                            offset: const Offset(0, 2),
+                            blurRadius: 3.84,
                           ),
                         ],
-                      ],
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Resultado do ML',
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 20),
+
+                          if (_mlResponse != null) ...[
+                            Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF252525),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: const Color(0xFF333333),
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    _mlResponse!['ml_predictions']?['professional_title'] ??
+                                        'Análise Técnica',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall
+                                        ?.copyWith(color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  _buildResultItem(
+                                    'Serviço:',
+                                    _mlResponse!['ml_predictions']?['name'] ??
+                                        'N/A',
+                                  ),
+                                  _buildResultItem(
+                                    'Especificação Técnica:',
+                                    _mlResponse!['ml_predictions']?['description'] ??
+                                        'N/A',
+                                  ),
+                                  _buildResultItem(
+                                    'Especialização:',
+                                    _mlResponse!['ml_predictions']?['category'] ??
+                                        'N/A',
+                                  ),
+                                  _buildResultItem(
+                                    'Valor Estimado:',
+                                    'R\$ ${(_mlResponse!['ml_predictions']?['price_suggestion']?['suggested_price'] ?? 0).toStringAsFixed(2)}',
+                                    isPrice: true,
+                                  ),
+                                  _buildResultItem(
+                                    'Classificação:',
+                                    _mlResponse!['ml_predictions']?['price_suggestion']?['price_range'] ??
+                                        'N/A',
+                                  ),
+                                  if (_mlResponse!['ml_predictions']?['price_suggestion']?['reasoning'] !=
+                                      null)
+                                    _buildResultItem(
+                                      'Análise de Mercado:',
+                                      _mlResponse!['ml_predictions']?['price_suggestion']?['reasoning'],
+                                      isReasoning: true,
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+
+                          const SizedBox(height: 20),
+
+                          // Botões
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _showResult = false;
+                                    });
+                                  },
+                                  child: const Text('Voltar'),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: _resetForm,
+                                  child: const Text('Novo'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Footer menu
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: FooterMenu(
-              currentScreen: 'Home',
-              onNavigateToHome: () {}, // Já estamos na home
-              onNavigateToHistory: _navigateToHistory,
-              onNavigateToDashboard: _navigateToAnalytics,
-              onNavigateToSettings: _navigateToSettings,
+                  ],
+                ],
+              ),
             ),
           ),
         ],
@@ -667,7 +614,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF666666),
+              color: const Color(0xFFBDBDBD),
             ),
           ),
           const SizedBox(height: 4),
@@ -675,7 +622,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: isReasoning ? const EdgeInsets.all(12) : null,
             decoration: isReasoning
                 ? BoxDecoration(
-                    color: const Color(0xFFf8f9fa),
+                    color: const Color(0xFF1a1a1a),
                     borderRadius: BorderRadius.circular(8),
                   )
                 : null,
@@ -685,8 +632,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontSize: isPrice ? 24 : 16,
                 fontWeight: isPrice ? FontWeight.bold : FontWeight.normal,
                 color: isPrice
-                    ? const Color(0xFF1e40af)
-                    : const Color(0xFF333333),
+                    ? const Color(0xFFf5c116)
+                    : const Color(0xFFFFFFFF),
                 fontStyle: isReasoning ? FontStyle.italic : FontStyle.normal,
               ),
             ),
