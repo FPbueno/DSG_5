@@ -13,6 +13,7 @@ sys.path.append(str(project_root))
 
 from api.v1.core.database import create_tables, engine
 from api.v1.models.user import User
+from api.v1.models.db_models import Cliente, Prestador, Solicitacao, Orcamento
 
 def main():
     """Função principal para configurar o banco de dados"""
@@ -33,6 +34,10 @@ def main():
         print("\n🎉 Banco de dados configurado com sucesso!")
         print("📊 Tabelas disponíveis:")
         print("   - users (usuários)")
+        print("   - clientes (novos perfis de cliente)")
+        print("   - prestadores (novos perfis de prestador)")
+        print("   - solicitacoes (solicitações de orçamento)")
+        print("   - orcamentos (orçamentos dos prestadores)")
         print("\n🚀 Você pode agora iniciar a API com: python main.py")
         
     except Exception as e:

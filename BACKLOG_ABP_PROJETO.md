@@ -2,9 +2,9 @@
 
 ## 📊 Visão Geral do Projeto
 
-**Objetivo:** Desenvolver uma aplicação completa de Machine Learning com interface mobile, API segura e deploy em nuvem, utilizando PostgreSQL para usuários e Excel para dados ML.
+**Objetivo:** Desenvolver uma aplicação completa de Machine Learning com interface mobile, API segura e deploy em nuvem, utilizando MySQL para dados de aplicação.
 
-**Arquitetura:** Flutter (Frontend) + FastAPI (Backend) + PostgreSQL (Usuários) + Excel (Dados ML)
+**Arquitetura:** Flutter (Frontend) + FastAPI (Backend) + MySQL (Dados) + Modelos ML (.pkl)
 
 ---
 
@@ -36,31 +36,32 @@ Estabelecer a base segura da aplicação com autenticação, criptografia e depl
 
 ---
 
-#### US002 - Implementar Banco PostgreSQL para Usuários
+#### US002 - Implementar Banco MySQL para Dados ✅
 
 **Como** desenvolvedor  
-**Eu quero** configurar PostgreSQL exclusivamente para usuários e autenticação  
-**Para que** os dados de usuários sejam armazenados de forma segura e estruturada
+**Eu quero** configurar MySQL para dados de usuários e transações  
+**Para que** os dados sejam armazenados de forma segura e estruturada
 
 **Critérios de Aceitação:**
 
-- [ ] PostgreSQL configurado para usuários
-- [ ] Schema de usuários e autenticação criado
-- [ ] Sistema de roles e permissões implementado
-- [ ] Dados ML mantidos no Excel (não migrados)
-- [ ] Backup automático do banco de usuários configurado
+- [x] MySQL configurado para a aplicação
+- [x] Schema de usuários e autenticação criado
+- [x] Sistema de roles e permissões implementado (tipo_usuario)
+- [x] Modelos ML mantidos separados (arquivos .pkl)
+- [ ] Backup automático do banco configurado
 - [ ] Auditoria de ações dos usuários implementada
 
 **Prioridade:** 🔥 CRÍTICA  
 **Story Points:** 13  
-**Labels:** Backend, Database, Segurança
+**Labels:** Backend, Database, Segurança  
+**Status:** ✅ CONCLUÍDO (Parcialmente - Backup e Auditoria pendentes)
 
 ---
 
-#### US003 - Criptografia de Dados de Usuários
+#### US003 - Criptografia de Dados de Usuários ⚠️
 
 **Como** desenvolvedor  
-**Eu quero** implementar criptografia robusta para dados de usuários no PostgreSQL  
+**Eu quero** implementar criptografia robusta para dados de usuários no MySQL  
 **Para que** informações sensíveis sejam protegidas mesmo em caso de vazamento
 
 **Critérios de Aceitação:**
@@ -68,16 +69,17 @@ Estabelecer a base segura da aplicação com autenticação, criptografia e depl
 - [ ] Criptografia AES-256 para dados em repouso
 - [ ] Criptografia TLS 1.3 para dados em trânsito
 - [ ] Sistema de chaves de criptografia rotativas
-- [ ] Validação de integridade dos dados
-- [ ] Criptografia de senhas com bcrypt
+- [x] Validação de integridade dos dados (Pydantic)
+- [x] Criptografia de senhas com bcrypt
 
 **Prioridade:** 🔥 CRÍTICA  
 **Story Points:** 8  
-**Labels:** Backend, Segurança, Database
+**Labels:** Backend, Segurança, Database  
+**Status:** ⚠️ EM ANDAMENTO (Senhas OK, TLS pendente)
 
 ---
 
-#### US004 - Sistema de Autenticação e Autorização
+#### US004 - Sistema de Autenticação e Autorização ⚠️
 
 **Como** usuário  
 **Eu quero** um sistema seguro de login e controle de acesso  
@@ -87,18 +89,19 @@ Estabelecer a base segura da aplicação com autenticação, criptografia e depl
 
 - [ ] JWT implementado para autenticação
 - [ ] Sistema de refresh tokens funcional
-- [ ] Middleware de autorização por roles
+- [x] Middleware de autorização por roles (tipo_usuario)
 - [ ] Controle de sessões ativas
 - [ ] Logout seguro e invalidação de tokens
 - [ ] Rate limiting por usuário
 
 **Prioridade:** 🔥 CRÍTICA  
 **Story Points:** 13  
-**Labels:** Backend, Segurança, Autenticação
+**Labels:** Backend, Segurança, Autenticação  
+**Status:** ⚠️ EM ANDAMENTO (Sistema básico OK, JWT pendente)
 
 ---
 
-#### US005 - Validação e Sanitização de Inputs
+#### US005 - Validação e Sanitização de Inputs ✅
 
 **Como** desenvolvedor  
 **Eu quero** validar e sanitizar todos os inputs da aplicação  
@@ -106,15 +109,16 @@ Estabelecer a base segura da aplicação com autenticação, criptografia e depl
 
 **Critérios de Aceitação:**
 
-- [ ] Validação de dados no backend (Pydantic)
-- [ ] Sanitização contra SQL injection
-- [ ] Validação no frontend implementada
-- [ ] Mensagens de erro padronizadas
-- [ ] Validação específica para dados de usuário
+- [x] Validação de dados no backend (Pydantic)
+- [x] Sanitização contra SQL injection (SQLAlchemy ORM)
+- [x] Validação no frontend implementada
+- [x] Mensagens de erro padronizadas
+- [x] Validação específica para dados de usuário
 
 **Prioridade:** ⚠️ ALTA  
 **Story Points:** 5  
-**Labels:** Backend, Frontend, Segurança
+**Labels:** Backend, Frontend, Segurança  
+**Status:** ✅ CONCLUÍDO
 
 ---
 
@@ -138,15 +142,15 @@ Estabelecer a base segura da aplicação com autenticação, criptografia e depl
 
 ---
 
-#### US007 - Backup Seguro do PostgreSQL
+#### US007 - Backup Seguro do MySQL
 
 **Como** administrador  
-**Eu quero** ter backups automáticos e seguros do PostgreSQL  
-**Para que** os dados de usuários sejam protegidos contra perda
+**Eu quero** ter backups automáticos e seguros do MySQL  
+**Para que** os dados sejam protegidos contra perda
 
 **Critérios de Aceitação:**
 
-- [ ] Backup automático do PostgreSQL configurado na nuvem
+- [ ] Backup automático do MySQL configurado na nuvem
 - [ ] Criptografia de backups implementada
 - [ ] Controle de acesso aos backups configurado
 - [ ] Validação de integridade dos backups
@@ -189,15 +193,15 @@ Automatizar processos de desenvolvimento e containerizar a aplicação completa.
 #### US009 - Orquestração com Docker Compose
 
 **Como** desenvolvedor  
-**Eu quero** orquestrar PostgreSQL e dados Excel com Docker Compose  
+**Eu quero** orquestrar MySQL e aplicação com Docker Compose  
 **Para que** toda a aplicação funcione de forma integrada e local
 
 **Critérios de Aceitação:**
 
-- [ ] docker-compose.yml criado com PostgreSQL
+- [ ] docker-compose.yml criado com MySQL
 - [ ] Rede entre containers configurada
-- [ ] Volumes para persistência do banco de usuários
-- [ ] Volume para arquivo Excel (dados ML)
+- [ ] Volumes para persistência do banco
+- [ ] Volume para modelos ML (.pkl)
 - [ ] Variáveis de ambiente seguras configuradas
 - [ ] Scripts de inicialização do banco
 
@@ -257,9 +261,9 @@ Automatizar processos de desenvolvimento e containerizar a aplicação completa.
 
 - [ ] Testes unitários dos serviços implementados
 - [ ] Testes de integração da API funcionando
-- [ ] Testes dos modelos ML (Excel) implementados
-- [ ] Testes de autenticação e autorização (PostgreSQL)
-- [ ] Testes de criptografia (PostgreSQL)
+- [ ] Testes dos modelos ML implementados
+- [ ] Testes de autenticação e autorização (MySQL)
+- [ ] Testes de criptografia (MySQL)
 - [ ] Coverage report configurado
 
 **Prioridade:** 📝 MÉDIA  
@@ -452,10 +456,12 @@ Para cada User Story ser considerada "Done":
 ### Mínimo para APROVAÇÃO:
 
 - [x] ✅ Modelo ML desenvolvido e treinado
-- [x] ✅ API REST funcional
+- [x] ✅ API REST funcional com CRUD completo
 - [x] ✅ App mobile multiplataforma
+- [x] ✅ **MySQL para dados** (OBRIGATÓRIO)
+- [x] ✅ **Sistema de usuários e autenticação básico** (OBRIGATÓRIO)
+- [x] ✅ **Criptografia de senhas bcrypt** (OBRIGATÓRIO)
+- [x] ✅ **Sistema completo: Usuários, Solicitações, Orçamentos, Avaliações**
 - [ ] ❌ **Deploy em nuvem com HTTPS** (OBRIGATÓRIO)
-- [ ] ❌ **PostgreSQL para usuários** (OBRIGATÓRIO)
-- [ ] ❌ **Sistema de usuários e autenticação** (OBRIGATÓRIO)
-- [ ] ❌ **Criptografia de usuários (PostgreSQL)** (OBRIGATÓRIO)
+- [ ] ⚠️ **JWT tokens** (ALTA PRIORIDADE)
 - [ ] ❌ **Docker completo** (OBRIGATÓRIO)

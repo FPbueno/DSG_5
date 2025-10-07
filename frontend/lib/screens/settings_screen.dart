@@ -31,7 +31,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await AuthService.logout();
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(tipoUsuario: ''),
+          ),
         );
       }
     }

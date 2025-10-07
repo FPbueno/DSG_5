@@ -25,6 +25,7 @@ class AppConstants {
 
   // API
   static const String apiBaseUrl = 'http://localhost:8000/api/v1';
+  static const String baseUrl = apiBaseUrl; // Alias para compatibilidade
 
   // Categorias de serviços
   static const Map<String, List<Map<String, String>>> serviceCategories = {

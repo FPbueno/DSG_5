@@ -1,42 +1,45 @@
-# WorcaFlow - Sistema de Orçamentos Residenciais
+# WorcaFlow - Plataforma de Solicitação de Serviços
 
-Sistema completo para gerenciamento de orçamentos residenciais com Machine Learning, desenvolvido com FastAPI (backend) e Flutter (frontend).
+Sistema completo de marketplace de serviços residenciais conectando clientes a prestadores, com Machine Learning para previsão de preços e categorias. Desenvolvido com FastAPI (backend), MySQL (banco) e Flutter (frontend).
 
 ## 🏗️ Arquitetura do Sistema
 
 ```
-┌─────────────────┐    HTTP/REST    ┌─────────────────┐
-│   Frontend      │◄──────────────►│   Backend       │
-│   (Flutter)     │                 │   (FastAPI)     │
-│                 │                 │                 │
-│ • Mobile App    │                 │ • REST API      │
-│ • Web App       │                 │ • ML Local      │
-│ • Desktop App   │                 │ • Excel DB      │
-└─────────────────┘                 └─────────────────┘
+┌─────────────────┐    HTTP/REST    ┌─────────────────┐    SQL    ┌─────────────┐
+│   Frontend      │◄──────────────►│   Backend       │◄─────────►│   MySQL     │
+│   (Flutter)     │                 │   (FastAPI)     │            │             │
+│                 │                 │                 │            │ • Usuários  │
+│ • Mobile App    │                 │ • REST API      │            │ • Solicit.  │
+│ • Web App       │                 │ • Auth/JWT      │            │ • Orçam.    │
+│ • Desktop App   │                 │ • ML Models     │            │ • Aval.     │
+└─────────────────┘                 └─────────────────┘            └─────────────┘
 ```
 
 ## 📁 Estrutura do Projeto
 
 ```
 ABP/
-├── backend/                    # API FastAPI
+├── backend/                    # API FastAPI + MySQL
 │   ├── api/v1/                # Versão 1 da API
-│   │   ├── core/              # Configurações
-│   │   ├── models/            # Modelos de dados
-│   │   ├── routes/            # Endpoints da API
-│   │   └── services/          # Lógica de negócio
+│   │   ├── core/              # Configurações (DB, Auth)
+│   │   ├── models/            # Modelos ORM (SQLAlchemy)
+│   │   ├── routes/            # Endpoints REST
+│   │   ├── schemas/           # Schemas Pydantic
+│   │   └── services/          # Lógica de negócio + ML
+│   ├── models/                # Modelos ML treinados (.pkl)
 │   ├── main.py                # Servidor principal
-│   ├── requirements.txt       # Dependências Python
-│   └── README.md              # Documentação do Backend
+│   ├── setup_db.py            # Inicialização do banco
+│   └── requirements.txt       # Dependências Python
 ├── frontend/                  # App Flutter
 │   ├── lib/                   # Código fonte Dart
-│   │   ├── screens/           # Telas da aplicação
-│   │   ├── services/          # Serviços de API
+│   │   ├── screens/           # Telas (Cliente/Prestador)
 │   │   ├── models/            # Modelos de dados
-│   │   └── widgets/           # Componentes reutilizáveis
+│   │   ├── services/          # Serviços de API
+│   │   ├── widgets/           # Componentes reutilizáveis
+│   │   ├── constants/         # Constantes e temas
+│   │   └── utils/             # Utilitários
 │   ├── assets/                # Recursos (imagens, fontes)
-│   ├── pubspec.yaml           # Dependências Flutter
-│   └── README.md              # Documentação do Frontend
+│   └── pubspec.yaml           # Dependências Flutter
 └── README.md                  # Este arquivo
 ```
 
@@ -63,36 +66,51 @@ flutter run -d chrome --web-port 8080
 
 ## 🔧 Como Funciona o Backend
 
-### **Arquitetura FastAPI**
+### **Arquitetura FastAPI + MySQL**
 
-O backend é uma API REST construída com FastAPI que funciona como servidor de dados:
+O backend é uma API REST construída com FastAPI e MySQL:
 
-- **📊 Banco de Dados**: Usa Excel como banco de dados (arquivo `quotes_data.xlsx`)
-- **🤖 ML Integrado**: Machine Learning local para gerar serviços inteligentes
-- **📡 API REST**: Endpoints para CRUD de clientes, serviços e orçamentos
-- **📈 Analytics**: Gera relatórios e estatísticas dos dados
+- **📊 Banco MySQL**: Armazena usuários, solicitações, orçamentos e avaliações
+- **🤖 ML Integrado**: Modelos para previsão de categoria e preço de serviços
+- **🔒 Autenticação**: Sistema de login com bcrypt para senhas
+- **📡 API REST**: Endpoints completos com validação Pydantic
+- **⭐ Avaliações**: Sistema de rating para prestadores
 
 ### **Endpoints Principais**
 
 ```
-GET    /api/v1/clients          # Listar clientes
-POST   /api/v1/clients          # Criar cliente
-GET    /api/v1/services         # Listar serviços
-POST   /api/v1/services         # Criar serviço
-GET    /api/v1/quotes           # Listar orçamentos
-POST   /api/v1/quotes           # Criar orçamento
-PUT    /api/v1/quotes/{id}      # Atualizar orçamento
-DELETE /api/v1/quotes/{id}      # Excluir orçamento
-POST   /api/v1/ml/smart-create  # Criar serviço com ML
-GET    /api/v1/analytics/*      # Relatórios e estatísticas
+# Usuários
+POST   /api/v1/usuarios/registro       # Registrar usuário
+POST   /api/v1/usuarios/login          # Login
+GET    /api/v1/usuarios/{id}           # Buscar usuário
+
+# Solicitações (Cliente)
+POST   /api/v1/solicitacoes/           # Criar solicitação
+GET    /api/v1/solicitacoes/minhas     # Minhas solicitações
+GET    /api/v1/solicitacoes/disponiveis # Solicitações disponíveis
+
+# Orçamentos (Prestador)
+POST   /api/v1/orcamentos/             # Enviar orçamento
+GET    /api/v1/orcamentos/solicitacao/{id} # Orçamentos de solicitação
+PUT    /api/v1/orcamentos/{id}/aceitar # Aceitar orçamento
+PUT    /api/v1/orcamentos/{id}/realizado # Marcar como realizado
+
+# Avaliações
+POST   /api/v1/avaliacoes/             # Avaliar serviço
+GET    /api/v1/avaliacoes/prestador/{id} # Avaliações do prestador
+
+# Machine Learning
+POST   /api/v1/ml/predict-category     # Prever categoria
+POST   /api/v1/ml/predict-price        # Prever preço
 ```
 
 ### **Fluxo de Dados**
 
-1. **Recebe requisição** do frontend via HTTP
-2. **Processa dados** usando serviços Python
-3. **Salva no Excel** usando Pandas + OpenPyXL
-4. **Retorna resposta** em formato JSON
+1. **Recebe requisição** do frontend via HTTP/REST
+2. **Valida dados** usando schemas Pydantic
+3. **Processa** com lógica de negócio e ML
+4. **Persiste no MySQL** via SQLAlchemy ORM
+5. **Retorna resposta** JSON padronizada
 
 ## 📱 Como Funciona o Frontend
 
@@ -100,33 +118,58 @@ GET    /api/v1/analytics/*      # Relatórios e estatísticas
 
 O frontend é um app multiplataforma construído com Flutter:
 
-- **🎨 UI Responsiva**: Interface adaptável para mobile, web e desktop
-- **📡 Comunicação**: Faz requisições HTTP para o backend
-- **💾 Estado Local**: Gerencia estado da aplicação
-- **🔄 Navegação**: Sistema de navegação entre telas
+- **🎨 UI Dark Theme**: Interface moderna com tema escuro
+- **📡 Comunicação HTTP**: Requisições REST para o backend
+- **👥 Dois Perfis**: Cliente e Prestador com telas específicas
+- **🔄 Navegação por Tabs**: Sistema de navegação intuitivo
+- **📱 Modais Interativos**: Detalhes e ações em modais
 
-### **Telas Principais**
+### **Telas Cliente**
 
-- **🏠 Home**: Criação de orçamentos com IA
-- **📋 Histórico**: Lista e edição de orçamentos
-- **📊 Analytics**: Relatórios e estatísticas
+- **🏠 Home**: Lista de solicitações ativas + criar nova
+- **📋 Orçamentos**: Visualizar e aceitar orçamentos recebidos (modal)
+- **⭐ Avaliações**: Avaliar serviços realizados (modal)
+- **📜 Histórico**: Ver histórico completo (somente leitura)
+- **⚙️ Configurações**: Perfil e preferências
+
+### **Telas Prestador**
+
+- **🏠 Home**: Solicitações disponíveis + enviar orçamentos
+- **💼 Meus Orçamentos**: Orçamentos enviados e status
+- **📜 Histórico**: Serviços realizados
+- **⚙️ Configurações**: Perfil e avaliações
 
 ### **Fluxo de Dados**
 
-1. **Usuário interage** com a interface
-2. **App faz requisição** para o backend
-3. **Recebe dados** em formato JSON
-4. **Atualiza interface** com os dados recebidos
+1. **Login/Registro** com autenticação
+2. **Navegação por tipo** de usuário
+3. **Requisições REST** para backend
+4. **Atualização em tempo real** com pull-to-refresh
 
 ## ✨ Funcionalidades Principais
 
-- 🤖 **Machine Learning**: Predições inteligentes baseadas em dados históricos
-- 📊 **Analytics**: Relatórios e estatísticas em tempo real
+### Para Clientes
+
+- 📝 **Criar Solicitações**: Descrever serviço necessário
+- 💰 **Receber Orçamentos**: Múltiplos prestadores respondem
+- ✅ **Aceitar Orçamentos**: Escolher melhor proposta
+- ⭐ **Avaliar Serviços**: Dar feedback após conclusão
+- 📜 **Histórico Completo**: Ver todas solicitações
+
+### Para Prestadores
+
+- 👀 **Ver Solicitações**: Buscar novos trabalhos
+- 💼 **Enviar Orçamentos**: Propor valor e prazo
+- 📊 **Acompanhar Status**: Ver orçamentos aceitos
+- 🏆 **Receber Avaliações**: Construir reputação
+
+### Tecnologia
+
+- 🤖 **ML para Preços**: Sugestão inteligente de valores
+- 🔒 **Autenticação Segura**: Login com bcrypt
 - 📱 **Multiplataforma**: Android, iOS, Web, Desktop
-- 💾 **Excel como DB**: Banco de dados em planilha
-- 🎨 **UI Moderna**: Interface responsiva e intuitiva
-- ✏️ **CRUD Completo**: Criar, ler, atualizar e excluir dados
-- 🔄 **Tempo Real**: Atualizações automáticas
+- 💾 **MySQL**: Banco de dados robusto
+- 🎨 **UI Dark**: Interface moderna e intuitiva
 
 ## 🛠️ Tecnologias
 
@@ -134,21 +177,32 @@ O frontend é um app multiplataforma construído com Flutter:
 
 - **FastAPI**: Framework web moderno e rápido
 - **Python 3.8+**: Linguagem de programação
-- **Scikit-learn**: Machine Learning
-- **Pandas + OpenPyXL**: Manipulação de Excel
-- **Pydantic**: Validação de dados
+- **MySQL**: Banco de dados relacional
+- **SQLAlchemy**: ORM para Python
+- **Scikit-learn**: Machine Learning (Random Forest)
+- **Pydantic**: Validação de dados e schemas
+- **Bcrypt**: Criptografia de senhas
+- **CORS**: Configuração de segurança
 
 ### Frontend
 
 - **Flutter 3.0+**: Framework multiplataforma
 - **Dart 3.0+**: Linguagem de programação
-- **Material Design**: Design system do Google
-- **HTTP**: Comunicação com API
+- **Material Design**: Design system moderno
+- **HTTP**: Comunicação REST com API
 
 ## ⚙️ Configuração
 
-1. **Backend**: Não requer configuração adicional
-2. **Frontend**: Conecta automaticamente com o backend local
+### Backend
+
+1. Configure MySQL com as credenciais em `backend/api/v1/core/config.py`
+2. Execute `python setup_db.py` para criar as tabelas
+3. Modelos ML já estão treinados em `backend/models/`
+
+### Frontend
+
+1. Configure a URL da API em `frontend/lib/constants/app_constants.dart`
+2. Por padrão, conecta em `http://localhost:8000`
 
 ## 🔗 URLs de Desenvolvimento
 

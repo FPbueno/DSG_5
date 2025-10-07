@@ -5,17 +5,15 @@ import 'package:flutter/material.dart';
 class FooterMenu extends StatelessWidget {
   final String currentScreen;
   final VoidCallback onNavigateToHome;
-  final VoidCallback onNavigateToHistory;
-  final VoidCallback onNavigateToDashboard;
   final VoidCallback onNavigateToSettings;
+  final VoidCallback onNavigateToHistorico;
 
   const FooterMenu({
     super.key,
     required this.currentScreen,
     required this.onNavigateToHome,
-    required this.onNavigateToHistory,
-    required this.onNavigateToDashboard,
     required this.onNavigateToSettings,
+    required this.onNavigateToHistorico,
   });
 
   @override
@@ -46,7 +44,7 @@ class FooterMenu extends StatelessWidget {
               _buildMenuItem(
                 icon: Icons.home_outlined,
                 activeIcon: Icons.home,
-                label: 'Home',
+                label: 'Início',
                 isActive: currentScreen == 'Home',
                 onTap: onNavigateToHome,
               ),
@@ -54,15 +52,8 @@ class FooterMenu extends StatelessWidget {
                 icon: Icons.history_outlined,
                 activeIcon: Icons.history,
                 label: 'Histórico',
-                isActive: currentScreen == 'History',
-                onTap: onNavigateToHistory,
-              ),
-              _buildMenuItem(
-                icon: Icons.analytics_outlined,
-                activeIcon: Icons.analytics,
-                label: 'Analytics',
-                isActive: currentScreen == 'Dashboard',
-                onTap: onNavigateToDashboard,
+                isActive: currentScreen == 'Historico',
+                onTap: onNavigateToHistorico,
               ),
               _buildMenuItem(
                 icon: Icons.settings_outlined,

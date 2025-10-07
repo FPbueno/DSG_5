@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/footer_menu.dart';
 import 'home_screen.dart';
-import 'history_screen.dart';
-import 'analytics_screen.dart';
 import 'settings_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -18,8 +16,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const HistoryScreen(),
-    const AnalyticsScreen(),
+    const HomeScreen(),
     const SettingsScreen(),
   ];
 
@@ -30,23 +27,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     });
   }
 
-  void _onNavigateToHistory() {
+  void _onNavigateToHistorico() {
     setState(() {
       _currentIndex = 1;
-      _currentScreen = 'History';
-    });
-  }
-
-  void _onNavigateToDashboard() {
-    setState(() {
-      _currentIndex = 2;
-      _currentScreen = 'Dashboard';
+      _currentScreen = 'Historico';
     });
   }
 
   void _onNavigateToSettings() {
     setState(() {
-      _currentIndex = 3;
+      _currentIndex = 2;
       _currentScreen = 'Settings';
     });
   }
@@ -69,9 +59,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             child: FooterMenu(
               currentScreen: _currentScreen,
               onNavigateToHome: _onNavigateToHome,
-              onNavigateToHistory: _onNavigateToHistory,
-              onNavigateToDashboard: _onNavigateToDashboard,
               onNavigateToSettings: _onNavigateToSettings,
+              onNavigateToHistorico: _onNavigateToHistorico,
             ),
           ),
         ],

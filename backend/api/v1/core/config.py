@@ -2,11 +2,12 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Carrega variáveis de ambiente
-load_dotenv('.env')
+# Carrega variáveis de ambiente a partir da raiz do projeto
+# BASE_DIR resolvido primeiro, depois usamos para localizar o .env
 
 # Configurações da aplicação
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+load_dotenv(BASE_DIR / '.env')
 EXCEL_FILE = "quotes_data.xlsx"
 
 # Configurações do Banco de Dados

@@ -1,64 +1,80 @@
 # 📋 CARDS TRELLO - Projeto ABP WorcaFlow
 
+## NOVO MODELO: Marketplace com Cliente e Prestador
+
 ## Organização em 3 Sprints
 
 ---
 
-## 🏃‍♂️ **SPRINT 1 - Segurança e Deploy Básico**
+## 🏃‍♂️ **SPRINT 1 - Novo Modelo de Negócio**
 
-_Foco: Tornar a aplicação segura e acessível na nuvem_
+_Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
 
-### 🔒 **SEGURANÇA CRÍTICA**
+### 👥 **GESTÃO DE PERFIS**
 
-**Card 1: Configurar HTTPS/TLS**
+**Card 1: Modelo de Usuários (Cliente e Prestador)**
 
-- **Descrição:** Implementar comunicação segura
+- **Descrição:** Adaptar MySQL para dois tipos de perfil
 - **Tarefas:**
-  - [ ] Certificado SSL para API
-  - [ ] Configurar HTTPS no servidor
-  - [ ] Atualizar URLs no Flutter para HTTPS
-  - [ ] Testar comunicação segura
-  - [ ] Forçar redirecionamento HTTP → HTTPS
-- **Prioridade:** 🔥 CRÍTICA
-- **Labels:** Backend, Infraestrutura, Segurança
-
-**Card 2: Banco de Dados para Usuários**
-
-- **Descrição:** Implementar PostgreSQL APENAS para usuários e autenticação
-- **Tarefas:**
-  - [ ] Configurar PostgreSQL para usuários
-  - [ ] Criar schema de usuários e autenticação
-  - [ ] Implementar sistema de roles e permissões
-  - [ ] Manter dados ML no Excel (não migrar)
-  - [ ] Configurar backup automático do banco de usuários
-  - [ ] Implementar auditoria de ações dos usuários
+  - [ ] Migrar schema MySQL para novo modelo
+  - [ ] Tabela de Clientes (nome, email, cpf, endereço)
+  - [ ] Tabela de Prestadores (categorias, regiões)
+  - [ ] Sistema de autenticação por tipo de perfil
+  - [ ] Validação de CPF/CNPJ
+  - [ ] Criptografia de dados sensíveis
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Database, Segurança
 
-**Card 2.1: Criptografia de Usuários (PostgreSQL)**
+**Card 2: Sistema de Solicitações de Orçamento**
 
-- **Descrição:** Criptografia para dados de usuários no PostgreSQL
+- **Descrição:** Cliente solicita orçamentos
 - **Tarefas:**
-  - [ ] Criptografia AES-256 para dados em repouso (PostgreSQL)
-  - [ ] Criptografia TLS 1.3 para dados em trânsito
-  - [ ] Chaves de criptografia rotativas
-  - [ ] Validação de integridade dos dados
-  - [ ] Criptografia de senhas com bcrypt (PostgreSQL)
+  - [ ] Tabela de Solicitações no MySQL
+  - [ ] Endpoint POST /solicitacoes/criar
+  - [ ] Endpoint GET /solicitacoes/minhas
+  - [ ] Estados da solicitação (aguardando/com orçamentos/fechada)
+  - [ ] Validação de dados da solicitação
+  - [ ] Tela Flutter: Criar Solicitação
 - **Prioridade:** 🔥 CRÍTICA
-- **Labels:** Backend, Segurança, Database
+- **Labels:** Backend, Frontend, Database
 
-**Card 3: Sistema de Autenticação e Autorização**
+**Card 3: ML com Limites de Preço**
 
-- **Descrição:** Implementar JWT e controle de acesso
+- **Descrição:** ML calcula mínimo, sugerido e máximo
 - **Tarefas:**
-  - [ ] Implementar JWT para autenticação
-  - [ ] Sistema de refresh tokens
-  - [ ] Middleware de autorização por roles
-  - [ ] Controle de sessões ativas
-  - [ ] Logout seguro e invalidação de tokens
-  - [ ] Rate limiting por usuário
+  - [ ] Adaptar modelo ML para calcular 3 valores
+  - [ ] Endpoint POST /ml/calcular-limites-preco
+  - [ ] Lógica: mínimo = sugerido × 0.7, máximo = sugerido × 1.5
+  - [ ] Retornar limites junto com predição
+  - [ ] Documentar algoritmo de limites
 - **Prioridade:** 🔥 CRÍTICA
-- **Labels:** Backend, Segurança, Autenticação
+- **Labels:** Backend, ML
+
+**Card 4: Sistema de Orçamentos (Prestador)**
+
+- **Descrição:** Prestador envia orçamento com limites
+- **Tarefas:**
+  - [ ] Tabela de Orçamentos no MySQL
+  - [ ] Endpoint GET /solicitacoes/disponiveis (filtro por área)
+  - [ ] Endpoint POST /orcamentos/criar
+  - [ ] Validação: valor >= mínimo e <= máximo
+  - [ ] Relacionar orçamento com solicitação
+  - [ ] Tela Flutter: Criar Orçamento com limites visíveis
+- **Prioridade:** 🔥 CRÍTICA
+- **Labels:** Backend, Frontend, Database
+
+**Card 5: Comparação e Seleção de Orçamentos (Cliente)**
+
+- **Descrição:** Cliente compara e escolhe orçamento
+- **Tarefas:**
+  - [ ] Endpoint GET /solicitacoes/{id}/orcamentos
+  - [ ] Endpoint PUT /solicitacoes/{id}/aceitar-orcamento
+  - [ ] Atualizar status dos orçamentos (aceito/recusado)
+  - [ ] Notificar prestador selecionado
+  - [ ] Tela Flutter: Comparar Orçamentos
+  - [ ] Tela Flutter: Detalhes do Prestador
+- **Prioridade:** 🔥 CRÍTICA
+- **Labels:** Backend, Frontend
 
 **Card 3.1: Validação e Sanitização de Inputs**
 

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
-import 'home_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../constants/app_constants.dart';
+import 'cliente/main_cliente_screen.dart';
+import 'prestador/main_prestador_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final String tipoUsuario;
+
+  const LoginScreen({super.key, required this.tipoUsuario});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -27,27 +32,49 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      final result = await AuthService.login(
-        _emailController.text.trim(),
-        _passwordController.text,
+      final response = await http.post(
+        Uri.parse('${AppConstants.baseUrl}/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': _emailController.text.trim(),
+          'senha': _passwordController.text,
+          'tipo_usuario': widget.tipoUsuario,
+        }),
       );
 
-      if (result['success']) {
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
         if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
+          // Navega para home específica do tipo de usuário
+          if (widget.tipoUsuario == 'cliente') {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => MainClienteScreen(
+                  usuarioId: data['usuario_id'],
+                  nome: data['nome'],
+                ),
+              ),
+            );
+          } else {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => MainPrestadorScreen(
+                  usuarioId: data['usuario_id'],
+                  nome: data['nome'],
+                ),
+              ),
+            );
+          }
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result['error'] ?? 'Erro no login'),
+            const SnackBar(
+              content: Text('Email ou senha incorretos'),
               backgroundColor: Colors.red,
             ),
           );
@@ -56,23 +83,18 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erro de conexão: $e'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text('Erro: $e'), backgroundColor: Colors.red),
         );
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isCliente = widget.tipoUsuario == 'cliente';
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(color: Colors.black),
@@ -88,186 +110,97 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: Column(
                 children: [
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
+
+                  // Botão Voltar
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Color(0xFFf5c116),
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
 
                   // Logo
                   Image.asset(
                     'assets/images/Worca.png',
-                    height: 300,
-                    width: 350,
+                    height: 200,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(
-                        Icons.home_work,
-                        size: 300,
-                        color: Color(0xFFf5c116),
-                      );
-                    },
+                    errorBuilder: (_, __, ___) => Icon(
+                      Icons.home_work,
+                      size: 200,
+                      color: Color(0xFFf5c116),
+                    ),
                   ),
                   const SizedBox(height: 20),
 
-                  // Título
-                  const Text(
-                    'Bem-vindo de volta!',
-                    style: TextStyle(
+                  // Título com tipo de usuário
+                  Text(
+                    isCliente ? 'Login Cliente' : 'Login Prestador',
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
-
-                  Text(
-                    'Faça login para continuar',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[300]),
-                    textAlign: TextAlign.center,
-                  ),
-
                   const SizedBox(height: 32),
 
                   // Formulário
                   Form(
                     key: _formKey,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Campo de email
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.white.withValues(alpha: 0.9),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
-                          ),
-                          child: TextFormField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                              labelStyle: TextStyle(color: Colors.grey[600]),
-                              prefixIcon: Icon(
-                                Icons.email,
-                                color: Colors.grey[600],
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide.none,
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 16,
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor, digite seu email';
-                              }
-                              if (!value.contains('@')) {
-                                return 'Por favor, digite um email válido';
-                              }
-                              return null;
-                            },
-                          ),
+                        _buildTextField(
+                          controller: _emailController,
+                          label: 'Email',
+                          icon: Icons.email,
+                          validator: (v) => v!.isEmpty || !v.contains('@')
+                              ? 'Email inválido'
+                              : null,
                         ),
                         const SizedBox(height: 20),
 
-                        // Campo de senha
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.white.withValues(alpha: 0.9),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
-                          ),
-                          child: TextFormField(
-                            controller: _passwordController,
-                            obscureText: _obscurePassword,
-                            decoration: InputDecoration(
-                              labelText: 'Senha',
-                              labelStyle: TextStyle(color: Colors.grey[600]),
-                              prefixIcon: Icon(
-                                Icons.lock,
-                                color: Colors.grey[600],
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: Colors.grey[600],
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide.none,
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 16,
-                              ),
+                        _buildTextField(
+                          controller: _passwordController,
+                          label: 'Senha',
+                          icon: Icons.lock,
+                          obscure: _obscurePassword,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.grey[600],
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor, digite sua senha';
-                              }
-                              return null;
-                            },
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
                           ),
+                          validator: (v) =>
+                              v!.isEmpty ? 'Senha obrigatória' : null,
                         ),
                         const SizedBox(height: 30),
 
-                        // Botão de login
-                        Container(
+                        // Botão Login
+                        SizedBox(
+                          width: double.infinity,
                           height: 56,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFf5c116),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFFf5c116).withValues(alpha: 0.3),
-                                blurRadius: 15,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
                           child: ElevatedButton(
                             onPressed: _isLoading ? null : _login,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFf5c116),
-                              foregroundColor: Colors.black,
-                              shadowColor: Colors.transparent,
+                              backgroundColor: const Color(0xFFf5c116),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                             child: _isLoading
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.black,
-                                    ),
+                                ? const CircularProgressIndicator(
+                                    color: Colors.black,
                                   )
                                 : const Text(
                                     'Entrar',
@@ -283,15 +216,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // Link para registro
                         TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterScreen(),
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => RegisterScreen(
+                                tipoUsuario: widget.tipoUsuario,
                               ),
-                            );
-                          },
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
                           ),
                           child: RichText(
                             text: TextSpan(
@@ -300,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fontSize: 16,
                               ),
                               children: [
-                                const TextSpan(text: 'Não tem uma conta? '),
+                                const TextSpan(text: 'Não tem conta? '),
                                 TextSpan(
                                   text: 'Cadastre-se',
                                   style: TextStyle(
@@ -315,12 +246,52 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    bool obscure = false,
+    Widget? suffixIcon,
+    String? Function(String?)? validator,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withValues(alpha: 0.9),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscure,
+        style: const TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.grey[600]),
+          prefixIcon: Icon(icon, color: Colors.grey[600]),
+          suffixIcon: suffixIcon,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
+        ),
+        validator: validator,
       ),
     );
   }

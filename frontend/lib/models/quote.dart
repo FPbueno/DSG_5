@@ -98,7 +98,7 @@ class Quote {
       clientId: json['client_id'],
       title: json['title'],
       description: json['description'],
-      status: json['status'],
+      status: (json['status'] as String).toLowerCase(),
       total: (json['total'] as num).toDouble(),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),

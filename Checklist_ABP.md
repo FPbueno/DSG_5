@@ -2,9 +2,9 @@
 
 ## 📋 **RESUMO GERAL**
 
-- ✅ **60% CONCLUÍDO** - Base técnica sólida
-- ⚠️ **20% EM ANDAMENTO** - Deploy e infraestrutura
-- ❌ **20% PENDENTE** - Segurança e CI/CD
+- ✅ **75% CONCLUÍDO** - Sistema funcional completo
+- ⚠️ **15% EM ANDAMENTO** - Deploy e infraestrutura
+- ❌ **10% PENDENTE** - CI/CD e otimizações
 
 ---
 
@@ -30,36 +30,49 @@
 
 ## 2. 🗄️ **BANCO DE DADOS E GESTÃO DE USUÁRIOS**
 
-### ❌ **TUDO PENDENTE (CRÍTICO):**
+### ✅ **FEITO:**
 
-- ❌ **PostgreSQL para usuários e autenticação** (CRÍTICO)
-- ❌ **Sistema de usuários e autenticação** (CRÍTICO)
-- ❌ **Sistema de roles e permissões** (CRÍTICO)
-- ❌ **Backup automático do banco de usuários** (CRÍTICO)
-- ❌ **Auditoria de ações dos usuários** (CRÍTICO)
-- ❌ **Criptografia de senhas com bcrypt** (CRÍTICO)
-- ❌ **JWT para autenticação** (CRÍTICO)
-- ❌ **Controle de sessões ativas** (CRÍTICO)
-- ❌ **Integração PostgreSQL + Excel (dados ML)** (CRÍTICO)
+- ✅ **MySQL para usuários e autenticação** (CRÍTICO)
+- ✅ **Sistema de usuários (Cliente e Prestador)** (CRÍTICO)
+- ✅ **Sistema de roles (tipo_usuario)** (CRÍTICO)
+- ✅ **Criptografia de senhas com bcrypt** (CRÍTICO)
+- ✅ **Sistema de autenticação básico** (CRÍTICO)
+- ✅ **Integração MySQL + Modelos ML** (CRÍTICO)
+- ✅ **CRUD completo de usuários**
+- ✅ **Sistema de solicitações de serviço**
+- ✅ **Sistema de orçamentos**
+- ✅ **Sistema de avaliações**
+
+### ❌ **FALTA FAZER:**
+
+- ❌ **JWT para autenticação** (ALTA PRIORIDADE)
+- ❌ **Controle de sessões ativas** (ALTA PRIORIDADE)
+- ❌ **Backup automático do banco** (CRÍTICO)
+- ❌ **Auditoria de ações dos usuários** (MÉDIA)
 
 ## 3. ☁️ **BACKEND EM NUVEM**
 
 ### ✅ **FEITO:**
 
 - ✅ API REST completa com FastAPI
-- ✅ Endpoints CRUD para clientes, serviços, orçamentos
-- ✅ Integração com modelos ML
-- ✅ Sistema de analytics
-- ✅ Persistência de dados (Excel)
+- ✅ Endpoints CRUD para usuários (clientes e prestadores)
+- ✅ Endpoints para solicitações de serviço
+- ✅ Endpoints para orçamentos
+- ✅ Endpoints para avaliações
+- ✅ Integração com modelos ML (previsão de categoria e preço)
+- ✅ Persistência em MySQL
+- ✅ Modelos ML salvos e carregáveis
 - ✅ Documentação automática (Swagger)
 - ✅ Configuração CORS
+- ✅ Schemas Pydantic para validação
+- ✅ Sistema de relacionamentos entre entidades
+- ✅ Cálculo de avaliações médias
 
 ### ❌ **FALTA FAZER:**
 
-- ❌ **Hospedagem em nuvem** (AWS/GCP/Azure) (CRÍTICO)
-- ❌ **Integração PostgreSQL (usuários) + Excel (dados ML)** (CRÍTICO)
-- ❌ **Sistema de autenticação JWT** (CRÍTICO)
-- ❌ **Segurança do arquivo Excel (dados ML)** (CRÍTICO)
+- ❌ **Hospedagem em nuvem** (Railway/Render/Heroku) (CRÍTICO)
+- ❌ **Sistema de autenticação JWT** (ALTA PRIORIDADE)
+- ❌ **HTTPS/TLS configurado** (CRÍTICO)
 - ❌ Configuração de ambiente de produção
 - ❌ Load balancer e escalabilidade
 
@@ -72,14 +85,27 @@
 - ✅ Aplicação Flutter completa
 - ✅ Multiplataforma (Android, iOS, Web, Desktop)
 - ✅ Interface responsiva e intuitiva
-- ✅ Telas principais implementadas:
-  - ✅ Home com criação de orçamentos
-  - ✅ Histórico de orçamentos
-  - ✅ Analytics e relatórios
-  - ✅ Configurações ML
+- ✅ Sistema de login e registro
+- ✅ Seleção de tipo de usuário (Cliente/Prestador)
+- ✅ Telas Cliente implementadas:
+  - ✅ Home com solicitações ativas
+  - ✅ Criação de novas solicitações
+  - ✅ Visualização de orçamentos recebidos (modal)
+  - ✅ Aceitação de orçamentos
+  - ✅ Sistema de avaliação de serviços (modal)
+  - ✅ Histórico completo (somente leitura)
+  - ✅ Configurações
+- ✅ Telas Prestador implementadas:
+  - ✅ Home com solicitações disponíveis
+  - ✅ Envio de orçamentos
+  - ✅ Meus orçamentos enviados
+  - ✅ Histórico de serviços
+  - ✅ Configurações
 - ✅ Comunicação com API REST
-- ✅ Material Design
-- ✅ Widgets reutilizáveis
+- ✅ Material Design com tema escuro
+- ✅ Widgets reutilizáveis (footer, logo)
+- ✅ Navegação por tabs
+- ✅ Modais interativos
 
 ### ❌ **FALTA FAZER:**
 
@@ -91,16 +117,21 @@
 
 ## 4. 🔒 **SEGURANÇA DA INFORMAÇÃO**
 
-### ❌ **TUDO PENDENTE (CRÍTICO):**
+### ✅ **FEITO:**
 
-- ❌ **HTTPS/TLS** para dados em trânsito
-- ❌ **Criptografia de dados em repouso**
-- ❌ **Validação e sanitização de inputs**
-- ❌ **Rate limiting**
-- ❌ **Logs de segurança**
-- ❌ **Headers de segurança** (CORS, CSP, HSTS)
-- ❌ **Proteção contra XSS**
-- ❌ **Backup seguro de dados**
+- ✅ **Criptografia de senhas com bcrypt**
+- ✅ **Validação de inputs** (Pydantic schemas)
+- ✅ **Configuração CORS**
+- ✅ **Proteção SQL Injection** (SQLAlchemy ORM)
+
+### ❌ **FALTA FAZER:**
+
+- ❌ **HTTPS/TLS** para dados em trânsito (CRÍTICO)
+- ❌ **JWT tokens** (ALTA PRIORIDADE)
+- ❌ **Rate limiting** (ALTA)
+- ❌ **Logs de segurança** (MÉDIA)
+- ❌ **Headers de segurança completos** (CSP, HSTS)
+- ❌ **Backup automático de dados** (CRÍTICO)
 
 ---
 
@@ -163,22 +194,25 @@
 
 ### **Para considerado COMPLETO:**
 
-- [ ] **ML modelo funcionando em produção (Excel)**
+- [ ] **ML modelo funcionando em produção**
 - [ ] **API hospedada em nuvem e acessível**
 - [ ] **App mobile funcionando**
-- [ ] **Sistema de usuários (PostgreSQL)**
-- [ ] **Dados protegidos com criptografia (PostgreSQL)**
+- [ ] **Sistema de usuários (MySQL)**
+- [ ] **Dados protegidos com criptografia (MySQL)**
 - [ ] **Pipeline CI/CD ativo**
 - [ ] **Containerização completa**
 
 ### **Mínimo para APROVAÇÃO:**
 
 - [x] ✅ Modelo ML desenvolvido e treinado
-- [x] ✅ API REST funcional
+- [x] ✅ API REST funcional com CRUD completo
 - [x] ✅ App mobile multiplataforma
+- [x] ✅ **MySQL para usuários** (OBRIGATÓRIO)
+- [x] ✅ **Sistema de autenticação básico** (OBRIGATÓRIO)
+- [x] ✅ **Criptografia de senhas** (OBRIGATÓRIO)
+- [x] ✅ **Sistema completo de usuários, solicitações, orçamentos e avaliações**
 - [ ] ❌ **Deploy em nuvem com HTTPS** (OBRIGATÓRIO)
-- [ ] ❌ **PostgreSQL para usuários** (OBRIGATÓRIO)
-- [ ] ❌ **Criptografia de dados (PostgreSQL)** (OBRIGATÓRIO)
+- [ ] ⚠️ **JWT tokens** (ALTA PRIORIDADE)
 - [ ] ❌ **Docker completo** (OBRIGATÓRIO)
 
 ---
