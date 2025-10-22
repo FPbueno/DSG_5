@@ -11,9 +11,12 @@ load_dotenv(BASE_DIR / '.env')
 EXCEL_FILE = "quotes_data.xlsx"
 
 # Configurações do Banco de Dados
-DATABASE_URL = os.getenv(
-    "DATABASE_URL"
-)
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Configurações do Supabase
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 # Configurações de CORS
 CORS_ORIGINS = ["*"]  # Em produção, especifique os domínios permitidos

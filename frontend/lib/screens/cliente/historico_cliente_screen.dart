@@ -78,6 +78,8 @@ class _HistoricoClienteScreenState extends State<HistoricoClienteScreen> {
 
   List<Solicitacao> get _solicitacoesFiltradas {
     if (_filtro == 'todas') return _solicitacoes;
+    if (_filtro == 'realizados' || _filtro == 'fechada')
+      return []; // Realizados e fechadas são mostrados separadamente
     return _solicitacoes.where((s) => s.status == _filtro).toList();
   }
 
@@ -179,7 +181,7 @@ class _HistoricoClienteScreenState extends State<HistoricoClienteScreen> {
       );
     }
 
-    if (_filtro == 'realizados') {
+    if (_filtro == 'realizados' || _filtro == 'fechada') {
       if (_orcamentosRealizados.isEmpty) {
         return Center(
           child: Column(
@@ -188,7 +190,9 @@ class _HistoricoClienteScreenState extends State<HistoricoClienteScreen> {
               Icon(Icons.check_circle, size: 80, color: Colors.grey[700]),
               const SizedBox(height: 16),
               Text(
-                'Nenhum serviço realizado',
+                _filtro == 'realizados'
+                    ? 'Nenhum serviço realizado'
+                    : 'Nenhuma solicitação fechada',
                 style: TextStyle(fontSize: 18, color: Colors.grey[400]),
               ),
             ],

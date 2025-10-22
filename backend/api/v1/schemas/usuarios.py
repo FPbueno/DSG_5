@@ -25,7 +25,7 @@ class ClienteUpdate(BaseModel):
 class ClienteResponse(ClienteBase):
     id: int
     avaliacao_media: float
-    created_at: datetime
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -59,7 +59,7 @@ class PrestadorResponse(PrestadorBase):
     id: int
     avaliacao_media: float
     portfolio: Optional[List[dict]] = None
-    created_at: datetime
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

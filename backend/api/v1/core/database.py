@@ -3,19 +3,17 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from .config import DATABASE_URL
 
-# Configuração do banco de dados MySQL na nuvem
+# Configuração do banco de dados PostgreSQL (Supabase)
 # URL obtida das configurações para segurança
 
-# Criar engine do SQLAlchemy com configurações SSL para MySQL na nuvem (Aiven)
+# Criar engine do SQLAlchemy com configurações para PostgreSQL (Supabase)
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,
     pool_recycle=300,
     echo=False,  # Mude para True para ver queries SQL no log
     connect_args={
-        "ssl_disabled": False,
-        "ssl_verify_cert": False,
-        "ssl_verify_identity": False
+        "sslmode": "require"
     }
 )
 

@@ -704,8 +704,9 @@ class _HomeClienteScreenState extends State<HomeClienteScreen> {
                           backgroundColor: Colors.green,
                         ),
                       );
+                      // Recarrega tudo após avaliação
+                      _carregarSolicitacoes();
                     }
-                    _carregarSolicitacoes();
                   }
                 } catch (e) {
                   if (!mounted) return;

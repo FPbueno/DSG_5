@@ -26,7 +26,12 @@ app.add_middleware(
 # Cria as tabelas do banco de dados na inicialização
 @app.on_event("startup")
 async def startup_event():
-    create_tables()
+    try:
+        create_tables()
+        print("✅ Tabelas verificadas/criadas com sucesso!")
+    except Exception as e:
+        print(f"⚠️  Aviso: Não foi possível conectar ao banco na inicialização: {e}")
+        print("💡 As tabelas já foram criadas manualmente no Supabase")
 
 # Inclui as rotas
 app.include_router(router, prefix="/api/v1")
