@@ -78,8 +78,9 @@ class _HistoricoClienteScreenState extends State<HistoricoClienteScreen> {
 
   List<Solicitacao> get _solicitacoesFiltradas {
     if (_filtro == 'todas') return _solicitacoes;
-    if (_filtro == 'realizados' || _filtro == 'fechada')
+    if (_filtro == 'realizados' || _filtro == 'fechada') {
       return []; // Realizados e fechadas são mostrados separadamente
+    }
     return _solicitacoes.where((s) => s.status == _filtro).toList();
   }
 
