@@ -120,134 +120,208 @@ _Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
 
 _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
 
-### 🤖 **TREINAR MACHINE LEARNING**
+### 🤖 **AM - APRENDIZAGEM DE MÁQUINA**
 
-**Card 5.1: Retreinamento e Otimização dos Modelos ML**
+**Card AM-001: Análise e Diagnóstico dos Modelos Atuais**
 
-- **Descrição:** Melhorar e otimizar os modelos de Machine Learning
+- **Descrição:** Avaliar performance e identificar pontos de melhoria
 - **Tarefas:**
-  - [ ] Análise de performance dos modelos atuais
-  - [ ] Coleta de novos dados para treinamento
-  - [ ] Retreinamento dos modelos com dados atualizados
-  - [ ] Validação cruzada e métricas de performance
-  - [ ] Otimização de hiperparâmetros
-  - [ ] Testes A/B dos novos modelos
-  - [ ] Documentação das melhorias implementadas
+  - [ ] AM-001.1: Análise de métricas atuais (precisão, recall, F1-score)
+  - [ ] AM-001.2: Identificação de gaps nos dados de treinamento
+  - [ ] AM-001.3: Análise de viés nos modelos existentes
+  - [ ] AM-001.4: Documentação dos problemas identificados
 - **Prioridade:** 🔥 CRÍTICA
-- **Labels:** ML, Backend, Qualidade
+- **Labels:** AM, Backend, Qualidade
 
-### 🔐 **CRIPTOGRAFIA DE PONTA A PONTA**
+**Card AM-002: Coleta e Preparação de Dados**
 
-**Card 5.2: Implementação de Criptografia E2E**
-
-- **Descrição:** Implementar criptografia end-to-end para proteção máxima
+- **Descrição:** Coletar e preparar novos dados para retreinamento
 - **Tarefas:**
-  - [ ] Criptografia end-to-end no frontend Flutter
-  - [ ] Chaves de criptografia geradas no cliente
-  - [ ] Dados criptografados antes do envio para API
-  - [ ] Descriptografia segura no backend
-  - [ ] Rotação automática de chaves
-  - [ ] Zero-knowledge para dados sensíveis
-  - [ ] Testes de segurança da criptografia
+  - [ ] AM-002.1: Coleta de dados históricos adicionais
+  - [ ] AM-002.2: Limpeza e normalização dos dados
+  - [ ] AM-002.3: Feature engineering e seleção de variáveis
+  - [ ] AM-002.4: Divisão em conjuntos de treino/validação/teste
 - **Prioridade:** 🔥 CRÍTICA
-- **Labels:** Frontend, Backend, Segurança
+- **Labels:** AM, Backend, Qualidade
 
-### 🔑 **CRIAÇÃO DE 2FA**
+**Card AM-003: Retreinamento e Otimização**
 
-**Card 5.3: Autenticação de 2 Fatores (2FA)**
-
-- **Descrição:** Implementar 2FA para proteção adicional das contas
+- **Descrição:** Retreinar modelos com dados atualizados
 - **Tarefas:**
-  - [ ] Integração com Google Authenticator/TOTP
-  - [ ] Códigos QR para configuração inicial
-  - [ ] Backup codes para recuperação
-  - [ ] SMS como método alternativo (opcional)
-  - [ ] Interface Flutter para ativar/desativar 2FA
-  - [ ] Validação obrigatória em login
-  - [ ] Testes de segurança do 2FA
+  - [ ] AM-003.1: Retreinamento do modelo de categorias
+  - [ ] AM-003.2: Retreinamento do modelo de preços
+  - [ ] AM-003.3: Otimização de hiperparâmetros
+  - [ ] AM-003.4: Validação cruzada e métricas de performance
 - **Prioridade:** 🔥 CRÍTICA
-- **Labels:** Frontend, Backend, Segurança
+- **Labels:** AM, Backend, Qualidade
+
+**Card AM-004: Testes e Validação dos Modelos**
+
+- **Descrição:** Validar novos modelos antes do deploy
+- **Tarefas:**
+  - [ ] AM-004.1: Testes A/B dos novos modelos
+  - [ ] AM-004.2: Comparação de performance (antes vs depois)
+  - [ ] AM-004.3: Testes de robustez e edge cases
+  - [ ] AM-004.4: Documentação das melhorias implementadas
+- **Prioridade:** 🔥 CRÍTICA
+- **Labels:** AM, Backend, Qualidade
+
+### 🔐 **SD - SEGURANÇA DE DADOS**
+
+**Card SD-001: Implementação de Criptografia E2E Frontend**
+
+- **Descrição:** Implementar criptografia no lado do cliente
+- **Tarefas:**
+  - [ ] SD-001.1: Implementar biblioteca de criptografia no Flutter
+  - [ ] SD-001.2: Gerar chaves de criptografia no cliente
+  - [ ] SD-001.3: Criptografar dados sensíveis antes do envio
+  - [ ] SD-001.4: Implementar rotação automática de chaves
+- **Prioridade:** 🔥 CRÍTICA
+- **Labels:** SD, Frontend, Segurança
+
+**Card SD-002: Implementação de Criptografia E2E Backend**
+
+- **Descrição:** Implementar descriptografia segura no servidor
+- **Tarefas:**
+  - [ ] SD-002.1: Implementar descriptografia no backend
+  - [ ] SD-002.2: Gerenciamento seguro de chaves no servidor
+  - [ ] SD-002.3: Implementar zero-knowledge para dados sensíveis
+  - [ ] SD-002.4: Logs de auditoria para operações de criptografia
+- **Prioridade:** 🔥 CRÍTICA
+- **Labels:** SD, Backend, Segurança
+
+**Card SD-003: Autenticação de 2 Fatores (2FA)**
+
+- **Descrição:** Implementar 2FA para proteção adicional
+- **Tarefas:**
+  - [ ] SD-003.1: Integração com Google Authenticator/TOTP
+  - [ ] SD-003.2: Geração de códigos QR para configuração
+  - [ ] SD-003.3: Implementar backup codes para recuperação
+  - [ ] SD-003.4: Interface Flutter para ativar/desativar 2FA
+  - [ ] SD-003.5: Validação obrigatória em login
+- **Prioridade:** 🔥 CRÍTICA
+- **Labels:** SD, Frontend, Backend, Segurança
+
+**Card SD-004: Testes de Segurança**
+
+- **Descrição:** Implementar testes abrangentes de segurança
+- **Tarefas:**
+  - [ ] SD-004.1: Testes de penetração da criptografia E2E
+  - [ ] SD-004.2: Testes de segurança do sistema 2FA
+  - [ ] SD-004.3: Testes de vulnerabilidades comuns (OWASP)
+  - [ ] SD-004.4: Auditoria de segurança dos dados
+- **Prioridade:** ⚠️ ALTA
+- **Labels:** SD, Backend, Frontend, Testes, Segurança
 
 ### 🧪 **TESTES AUTOMATIZADOS**
 
-**Card 5.4: Suite Completa de Testes**
+**Card AM-005: Testes de Machine Learning**
 
-- **Descrição:** Implementar testes abrangentes para toda a aplicação
+- **Descrição:** Implementar testes específicos para modelos ML
 - **Tarefas:**
-  - [ ] Testes unitários dos serviços ML
-  - [ ] Testes de integração da API
-  - [ ] Testes de segurança (criptografia e 2FA)
-  - [ ] Testes de autenticação e autorização
-  - [ ] Testes de performance dos modelos ML
-  - [ ] Coverage report configurado
-  - [ ] Testes automatizados no CI/CD
+  - [ ] AM-005.1: Testes unitários dos serviços ML
+  - [ ] AM-005.2: Testes de performance dos modelos
+  - [ ] AM-005.3: Testes de precisão e recall
+  - [ ] AM-005.4: Testes de integração com a API
 - **Prioridade:** ⚠️ ALTA
-- **Labels:** Backend, Frontend, Testes, Qualidade
+- **Labels:** AM, Backend, Testes, Qualidade
 
-### 🐳 **CONTAINERIZAÇÃO COMPLETA**
+**Card SD-005: Testes de Segurança e Autenticação**
 
-**Card 6: Dockerfile para Flutter**
-
-- **Descrição:** Containerizar aplicação Flutter
+- **Descrição:** Implementar testes de segurança abrangentes
 - **Tarefas:**
-  - [ ] Criar Dockerfile para Flutter Web
-  - [ ] Otimizar build para produção
-  - [ ] Configurar nginx para servir arquivos
-  - [ ] Testar container localmente
+  - [ ] SD-005.1: Testes de autenticação e autorização
+  - [ ] SD-005.2: Testes de integração da API
+  - [ ] SD-005.3: Testes de criptografia e 2FA
+  - [ ] SD-005.4: Coverage report configurado
 - **Prioridade:** ⚠️ ALTA
-- **Labels:** Frontend, Docker, Deploy
+- **Labels:** SD, Backend, Frontend, Testes, Qualidade
 
-**Card 7: Docker Compose com PostgreSQL**
+### ☁️ **CN - COMPUTAÇÃO EM NUVEM**
 
-- **Descrição:** Orquestrar PostgreSQL (usuários) + Excel (dados ML)
+**Card CN-001: Containerização da Aplicação Flutter**
+
+- **Descrição:** Containerizar aplicação Flutter para deploy em nuvem
 - **Tarefas:**
-  - [ ] Criar docker-compose.yml com PostgreSQL
-  - [ ] Configurar rede entre containers
-  - [ ] Volumes para persistência do banco de usuários
-  - [ ] Volume para arquivo Excel (dados ML)
-  - [ ] Variáveis de ambiente seguras
-  - [ ] Scripts de inicialização do banco
+  - [ ] CN-001.1: Criar Dockerfile para Flutter Web
+  - [ ] CN-001.2: Otimizar build para produção
+  - [ ] CN-001.3: Configurar nginx para servir arquivos
+  - [ ] CN-001.4: Testar container localmente
+  - [ ] CN-001.5: Configurar variáveis de ambiente
 - **Prioridade:** ⚠️ ALTA
-- **Labels:** DevOps, Docker, Database
+- **Labels:** CN, Frontend, Docker, Deploy
 
-### 🔄 **CI/CD PIPELINE**
+**Card CN-002: Orquestração com Docker Compose**
 
-**Card 8: GitHub Actions - Backend**
-
-- **Descrição:** Pipeline de CI/CD para API
+- **Descrição:** Orquestrar PostgreSQL + Excel (dados ML) em containers
 - **Tarefas:**
-  - [ ] Workflow de build e test
-  - [ ] Deploy automático para produção
-  - [ ] Testes automatizados
-  - [ ] Notificações de status
+  - [ ] CN-002.1: Criar docker-compose.yml com PostgreSQL
+  - [ ] CN-002.2: Configurar rede entre containers
+  - [ ] CN-002.3: Volumes para persistência do banco de usuários
+  - [ ] CN-002.4: Volume para arquivo Excel (dados ML)
+  - [ ] CN-002.5: Variáveis de ambiente seguras
+  - [ ] CN-002.6: Scripts de inicialização do banco
 - **Prioridade:** ⚠️ ALTA
-- **Labels:** Backend, CI/CD, DevOps
+- **Labels:** CN, DevOps, Docker, Database
 
-**Card 9: GitHub Actions - Frontend**
+**Card CN-003: Pipeline CI/CD Backend**
 
-- **Descrição:** Pipeline de CI/CD para Flutter
+- **Descrição:** Implementar pipeline de CI/CD para API
 - **Tarefas:**
-  - [ ] Build automático do Flutter
-  - [ ] Deploy da versão web
-  - [ ] Testes de widget
-  - [ ] Versionamento automático
+  - [ ] CN-003.1: Configurar workflow de build e test
+  - [ ] CN-003.2: Implementar deploy automático para produção
+  - [ ] CN-003.3: Integrar testes automatizados no pipeline
+  - [ ] CN-003.4: Configurar notificações de status
+  - [ ] CN-003.5: Implementar rollback automático em caso de falha
 - **Prioridade:** ⚠️ ALTA
-- **Labels:** Frontend, CI/CD, DevOps
+- **Labels:** CN, Backend, CI/CD, DevOps
 
-### 🧪 **TESTES AUTOMATIZADOS**
+**Card CN-004: Pipeline CI/CD Frontend**
 
-**Card 10: Testes Backend e PostgreSQL**
-
-- **Descrição:** Implementar testes da API, banco de usuários e dados ML
+- **Descrição:** Implementar pipeline de CI/CD para Flutter
 - **Tarefas:**
-  - [ ] Testes unitários dos serviços
-  - [ ] Testes de integração da API
-  - [ ] Testes dos modelos ML (Excel)
-  - [ ] Testes de autenticação e autorização (PostgreSQL)
-  - [ ] Testes de criptografia (PostgreSQL)
-  - [ ] Coverage report
-- **Prioridade:** 📝 MÉDIA
-- **Labels:** Backend, Testes, Qualidade, Database
+  - [ ] CN-004.1: Configurar build automático do Flutter
+  - [ ] CN-004.2: Implementar deploy da versão web
+  - [ ] CN-004.3: Integrar testes de widget
+  - [ ] CN-004.4: Configurar versionamento automático
+  - [ ] CN-004.5: Otimizar cache de dependências
+- **Prioridade:** ⚠️ ALTA
+- **Labels:** CN, Frontend, CI/CD, DevOps
+
+### 📱 **PD - PROGRAMAÇÃO DISPOSITIVOS MÓVEIS**
+
+**Card PD-001: Otimização da Interface Mobile**
+
+- **Descrição:** Melhorar experiência do usuário em dispositivos móveis
+- **Tarefas:**
+  - [ ] PD-001.1: Otimizar layouts para diferentes tamanhos de tela
+  - [ ] PD-001.2: Implementar gestos touch nativos
+  - [ ] PD-001.3: Melhorar performance em dispositivos móveis
+  - [ ] PD-001.4: Implementar cache offline para dados essenciais
+- **Prioridade:** ⚠️ ALTA
+- **Labels:** PD, Frontend, Mobile, UX
+
+**Card PD-002: Integração com Recursos Mobile**
+
+- **Descrição:** Aproveitar recursos específicos de dispositivos móveis
+- **Tarefas:**
+  - [ ] PD-002.1: Implementar notificações push
+  - [ ] PD-002.2: Integrar com câmera para upload de imagens
+  - [ ] PD-002.3: Implementar geolocalização para prestadores
+  - [ ] PD-002.4: Configurar biometria para autenticação
+- **Prioridade:** ⚠️ ALTA
+- **Labels:** PD, Frontend, Mobile, Segurança
+
+**Card PD-003: Testes em Dispositivos Móveis**
+
+- **Descrição:** Implementar testes específicos para mobile
+- **Tarefas:**
+  - [ ] PD-003.1: Testes de widget em diferentes dispositivos
+  - [ ] PD-003.2: Testes de performance mobile
+  - [ ] PD-003.3: Testes de usabilidade em dispositivos reais
+  - [ ] PD-003.4: Testes de compatibilidade com diferentes versões
+- **Prioridade:** ⚠️ ALTA
+- **Labels:** PD, Frontend, Mobile, Testes, Qualidade
 
 ---
 
@@ -341,23 +415,41 @@ _Foco: Completar requisitos e polimento final_
 
 ### **SPRINT 2 - Segurança Avançada e Automação**
 
-- 🎯 **Objetivo:** Treinar ML, Criptografia E2E, 2FA, Testes e Containerização
-- 📈 **Entregáveis:** ML Otimizado + Criptografia E2E + 2FA + Testes + Docker + CI/CD
-- 🔥 **Cards Críticos:** 5.1 (ML), 5.2 (Criptografia), 5.3 (2FA)
-- ⚠️ **Cards Importantes:** 5.4 (Testes), 6, 7, 8, 9
+- 🎯 **Objetivo:** AM (ML) + SD (Segurança) + CN (Nuvem) + PD (Mobile)
+- 📈 **Entregáveis:** ML Otimizado + Criptografia E2E + 2FA + Testes + Docker + CI/CD + Mobile
+- 🔥 **Cards Críticos:** AM-001 a AM-004, SD-001 a SD-003
+- ⚠️ **Cards Importantes:** CN-001 a CN-004, PD-001 a PD-003, AM-005, SD-004, SD-005
 
 #### **📦 ENTREGAS DA SPRINT 2:**
 
-- [ ] **🤖 Modelos ML Retreinados** e otimizados
-- [ ] **🔐 Criptografia de Ponta a Ponta** implementada
-- [ ] **🔑 Autenticação de 2 Fatores (2FA)** funcionando
-- [ ] **🧪 Suite Completa de Testes** implementada
-- [ ] **🐳 Dockerfile para Flutter** criado e testado
-- [ ] **🐳 Docker Compose** com PostgreSQL configurado
-- [ ] **🔄 Pipeline CI/CD Backend** funcionando
-- [ ] **🔄 Pipeline CI/CD Frontend** funcionando
-- [ ] **📊 Deploy automático** configurado
-- [ ] **📚 Documentação** de deploy e CI/CD
+**🤖 AM - APRENDIZAGEM DE MÁQUINA:**
+
+- [ ] **AM-001:** Análise e diagnóstico dos modelos atuais
+- [ ] **AM-002:** Coleta e preparação de dados
+- [ ] **AM-003:** Retreinamento e otimização
+- [ ] **AM-004:** Testes e validação dos modelos
+- [ ] **AM-005:** Testes de Machine Learning
+
+**🔐 SD - SEGURANÇA DE DADOS:**
+
+- [ ] **SD-001:** Criptografia E2E Frontend
+- [ ] **SD-002:** Criptografia E2E Backend
+- [ ] **SD-003:** Autenticação de 2 Fatores (2FA)
+- [ ] **SD-004:** Testes de segurança
+- [ ] **SD-005:** Testes de segurança e autenticação
+
+**☁️ CN - COMPUTAÇÃO EM NUVEM:**
+
+- [ ] **CN-001:** Containerização da aplicação Flutter
+- [ ] **CN-002:** Orquestração com Docker Compose
+- [ ] **CN-003:** Pipeline CI/CD Backend
+- [ ] **CN-004:** Pipeline CI/CD Frontend
+
+**📱 PD - PROGRAMAÇÃO DISPOSITIVOS MÓVEIS:**
+
+- [ ] **PD-001:** Otimização da interface mobile
+- [ ] **PD-002:** Integração com recursos mobile
+- [ ] **PD-003:** Testes em dispositivos móveis
 
 ### **SPRINT 3 - Excelência**
 
@@ -403,11 +495,263 @@ _Foco: Completar requisitos e polimento final_
 
 ---
 
-## ⏱️ **CRONOGRAMA SUGERIDO**
+## ⏱️ **CRONOGRAMA DETALHADO - OUTUBRO 2025**
 
-- **Semana 1:** Sprint 1 (Seg-Sex)
-- **Semana 2:** Sprint 2 (Seg-Qui)
-- **Semana 2:** Sprint 3 (Sex-Dom)
+### 📅 **SPRINT 2 - CRONOGRAMA DETALHADO**
+
+#### **🗓️ OUTUBRO 10 (SEGUNDA-FEIRA) - INÍCIO SPRINT 2**
+
+**👥 EQUIPE - TAREFAS DISTRIBUÍDAS**
+
+**Isaac - 13/10/2025**
+
+- **AM-001:** Análise e Diagnóstico dos Modelos Atuais
+  - AM-001.1: Análise de métricas atuais (precisão, recall, F1-score)
+  - AM-001.2: Identificação de gaps nos dados de treinamento
+  - AM-001.3: Análise de viés nos modelos existentes
+  - AM-001.4: Documentação dos problemas identificados
+
+**Felipe - 15/10/2025**
+
+- **AM-002:** Coleta e Preparação de Dados
+  - AM-002.1: Coleta de dados históricos adicionais
+  - AM-002.2: Limpeza e normalização dos dados
+  - AM-002.3: Feature engineering e seleção de variáveis
+  - AM-002.4: Divisão em conjuntos de treino/validação/teste
+
+**Marcelly - 17/10/2025**
+
+- **AM-003:** Retreinamento e Otimização
+  - AM-003.1: Retreinamento do modelo de categorias
+  - AM-003.2: Retreinamento do modelo de preços
+  - AM-003.3: Otimização de hiperparâmetros
+  - AM-003.4: Validação cruzada e métricas de performance
+
+**Ana - 21/10/2025**
+
+- **SD-001:** Implementação de Criptografia E2E Frontend
+  - SD-001.1: Implementar biblioteca de criptografia no Flutter
+  - SD-001.2: Gerar chaves de criptografia no cliente
+  - SD-001.3: Criptografar dados sensíveis antes do envio
+  - SD-001.4: Implementar rotação automática de chaves
+
+**Renan - 21/10/2025**
+
+- **SD-002:** Implementação de Criptografia E2E Backend
+  - SD-002.1: Implementar descriptografia no backend
+  - SD-002.2: Gerenciamento seguro de chaves no servidor
+  - SD-002.3: Implementar zero-knowledge para dados sensíveis
+  - SD-002.4: Logs de auditoria para operações de criptografia
+
+---
+
+#### **🗓️ OUTUBRO 15 (TERÇA-FEIRA) - MEIO DA SPRINT 2**
+
+**👥 EQUIPE - CONTINUAÇÃO DAS TAREFAS**
+
+**Isaac - 21/10/2025**
+
+- **SD-003:** Autenticação de 2 Fatores (2FA)
+  - SD-003.1: Integração com Google Authenticator/TOTP
+  - SD-003.2: Geração de códigos QR para configuração
+  - SD-003.3: Implementar backup codes para recuperação
+
+**Felipe - 21/10/2025**
+
+- **AM-004:** Testes e Validação dos Modelos
+  - AM-004.1: Testes A/B dos novos modelos
+  - AM-004.2: Comparação de performance (antes vs depois)
+  - AM-004.3: Testes de robustez e edge cases
+  - AM-004.4: Documentação das melhorias implementadas
+
+**Marcelly - 21/10/2025**
+
+- **AM-005:** Testes de Machine Learning
+  - AM-005.1: Testes unitários dos serviços ML
+  - AM-005.2: Testes de performance dos modelos
+  - AM-005.3: Testes de precisão e recall
+  - AM-005.4: Testes de integração com a API
+
+**Ana - 22/10/2025**
+
+- **CN-001:** Containerização da Aplicação Flutter
+  - CN-001.1: Criar Dockerfile para Flutter Web
+  - CN-001.2: Otimizar build para produção
+  - CN-001.3: Configurar nginx para servir arquivos
+  - CN-001.4: Testar container localmente
+  - CN-001.5: Configurar variáveis de ambiente
+
+**Renan - 22/10/2025**
+
+- **CN-002:** Orquestração com Docker Compose
+  - CN-002.1: Criar docker-compose.yml com PostgreSQL
+  - CN-002.2: Configurar rede entre containers
+  - CN-002.3: Volumes para persistência do banco de usuários
+  - CN-002.4: Volume para arquivo Excel (dados ML)
+  - CN-002.5: Variáveis de ambiente seguras
+  - CN-002.6: Scripts de inicialização do banco
+
+---
+
+#### **🗓️ OUTUBRO 17 (QUINTA-FEIRA) - DESENVOLVIMENTO INTENSIVO**
+
+**👥 EQUIPE - FINALIZAÇÃO E DEPLOY**
+
+**Isaac - 22/10/2025**
+
+- **CN-003:** Pipeline CI/CD Backend
+  - CN-003.1: Configurar workflow de build e test
+  - CN-003.2: Implementar deploy automático para produção
+  - CN-003.3: Integrar testes automatizados no pipeline
+  - CN-003.4: Configurar notificações de status
+  - CN-003.5: Implementar rollback automático em caso de falha
+
+**Felipe - 22/10/2025**
+
+- **CN-004:** Pipeline CI/CD Frontend
+  - CN-004.1: Configurar build automático do Flutter
+  - CN-004.2: Implementar deploy da versão web
+  - CN-004.3: Integrar testes de widget
+  - CN-004.4: Configurar versionamento automático
+  - CN-004.5: Otimizar cache de dependências
+
+**Marcelly - 22/10/2025**
+
+- **PD-001:** Otimização da Interface Mobile
+  - PD-001.1: Otimizar layouts para diferentes tamanhos de tela
+  - PD-001.2: Implementar gestos touch nativos
+  - PD-001.3: Melhorar performance em dispositivos móveis
+  - PD-001.4: Implementar cache offline para dados essenciais
+
+**Ana - 23/10/2025**
+
+- **PD-002:** Integração com Recursos Mobile
+  - PD-002.1: Implementar notificações push
+  - PD-002.2: Integrar com câmera para upload de imagens
+  - PD-002.3: Implementar geolocalização para prestadores
+  - PD-002.4: Configurar biometria para autenticação
+
+**Renan - 23/10/2025**
+
+- **PD-003:** Testes em Dispositivos Móveis
+  - PD-003.1: Testes de widget em diferentes dispositivos
+  - PD-003.2: Testes de performance mobile
+  - PD-003.3: Testes de usabilidade em dispositivos reais
+  - PD-003.4: Testes de compatibilidade com diferentes versões
+
+---
+
+#### **🗓️ OUTUBRO 21 (SEGUNDA-FEIRA) - FINALIZAÇÃO E TESTES**
+
+**🤖 AM - APRENDIZAGEM DE MÁQUINA**
+
+- **AM-004:** Testes e Validação dos Modelos
+
+  - AM-004.1: Testes A/B dos novos modelos
+  - AM-004.2: Comparação de performance (antes vs depois)
+  - AM-004.3: Testes de robustez e edge cases
+  - AM-004.4: Documentação das melhorias implementadas
+
+- **AM-005:** Testes de Machine Learning
+  - AM-005.1: Testes unitários dos serviços ML
+  - AM-005.2: Testes de performance dos modelos
+
+**🔐 SD - SEGURANÇA DE DADOS**
+
+- **SD-003:** Continuação 2FA
+
+  - SD-003.3: Implementar backup codes para recuperação
+  - SD-003.4: Interface Flutter para ativar/desativar 2FA
+  - SD-003.5: Validação obrigatória em login
+
+- **SD-004:** Testes de Segurança
+  - SD-004.1: Testes de penetração da criptografia E2E
+  - SD-004.2: Testes de segurança do sistema 2FA
+
+**☁️ CN - COMPUTAÇÃO EM NUVEM**
+
+- **CN-002:** Continuação Docker Compose
+
+  - CN-002.3: Volumes para persistência do banco de usuários
+  - CN-002.4: Volume para arquivo Excel (dados ML)
+  - CN-002.5: Variáveis de ambiente seguras
+  - CN-002.6: Scripts de inicialização do banco
+
+- **CN-003:** Pipeline CI/CD Backend
+  - CN-003.1: Configurar workflow de build e test
+  - CN-003.2: Implementar deploy automático para produção
+
+**📱 PD - PROGRAMAÇÃO DISPOSITIVOS MÓVEIS**
+
+- **PD-001:** Continuação Interface Mobile
+
+  - PD-001.3: Melhorar performance em dispositivos móveis
+  - PD-001.4: Implementar cache offline para dados essenciais
+
+- **PD-002:** Integração com Recursos Mobile
+  - PD-002.1: Implementar notificações push
+  - PD-002.2: Integrar com câmera para upload de imagens
+
+---
+
+#### **🗓️ OUTUBRO 23 (QUARTA-FEIRA) - FINALIZAÇÃO E DEPLOY**
+
+**🔐 SD - SEGURANÇA DE DADOS**
+
+- **SD-004:** Continuação Testes de Segurança
+
+  - SD-004.3: Testes de vulnerabilidades comuns (OWASP)
+  - SD-004.4: Auditoria de segurança dos dados
+
+- **SD-005:** Testes de Segurança e Autenticação
+  - SD-005.1: Testes de autenticação e autorização
+  - SD-005.2: Testes de integração da API
+  - SD-005.3: Testes de criptografia e 2FA
+  - SD-005.4: Coverage report configurado
+
+**☁️ CN - COMPUTAÇÃO EM NUVEM**
+
+- **CN-003:** Continuação Pipeline CI/CD Backend
+
+  - CN-003.3: Integrar testes automatizados no pipeline
+  - CN-003.4: Configurar notificações de status
+  - CN-003.5: Implementar rollback automático em caso de falha
+
+- **CN-004:** Pipeline CI/CD Frontend
+  - CN-004.1: Configurar build automático do Flutter
+  - CN-004.2: Implementar deploy da versão web
+  - CN-004.3: Integrar testes de widget
+  - CN-004.4: Configurar versionamento automático
+  - CN-004.5: Otimizar cache de dependências
+
+**📱 PD - PROGRAMAÇÃO DISPOSITIVOS MÓVEIS**
+
+- **PD-002:** Continuação Recursos Mobile
+
+  - PD-002.3: Implementar geolocalização para prestadores
+  - PD-002.4: Configurar biometria para autenticação
+
+- **PD-003:** Testes em Dispositivos Móveis
+  - PD-003.1: Testes de widget em diferentes dispositivos
+  - PD-003.2: Testes de performance mobile
+  - PD-003.3: Testes de usabilidade em dispositivos reais
+  - PD-003.4: Testes de compatibilidade com diferentes versões
+
+**🤖 AM - APRENDIZAGEM DE MÁQUINA**
+
+- **AM-005:** Finalização Testes ML
+  - AM-005.3: Testes de precisão e recall
+  - AM-005.4: Testes de integração com a API
+
+---
+
+### 📊 **RESUMO DO CRONOGRAMA**
+
+- **Outubro 10:** Início - Análise ML + Criptografia Frontend
+- **Outubro 15:** Desenvolvimento - Dados ML + Criptografia + Containerização
+- **Outubro 17:** Intensivo - Retreinamento + 2FA + Docker + Mobile
+- **Outubro 21:** Testes - Validação ML + Segurança + CI/CD + Mobile
+- **Outubro 23:** Finalização - Deploy + Testes Finais + Mobile
 
 ---
 

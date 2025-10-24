@@ -1,0 +1,32 @@
+# Arquivos de configuração com tokens sensíveis
+config.py
+.env
+*.env
+
+# Tokens e chaves
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
