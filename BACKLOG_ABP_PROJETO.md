@@ -162,13 +162,55 @@ Estabelecer a base segura da aplicação com autenticação, criptografia e depl
 
 ---
 
-## 🏃‍♂️ SPRINT 2 - Containerização e Automação
+## 🏃‍♂️ SPRINT 2 - Segurança Avançada e Containerização
 
 ### 🎯 Objetivo do Sprint
 
-Automatizar processos de desenvolvimento e containerizar a aplicação completa.
+Implementar criptografia de ponta a ponta, autenticação de 2 fatores e automatizar processos de desenvolvimento.
 
 ### 📋 User Stories
+
+#### US007.1 - Criptografia de Ponta a Ponta
+
+**Como** usuário  
+**Eu quero** que meus dados sejam criptografados de ponta a ponta  
+**Para que** minhas informações estejam protegidas durante toda a transmissão
+
+**Critérios de Aceitação:**
+
+- [ ] Criptografia end-to-end implementada no frontend
+- [ ] Chaves de criptografia geradas no cliente
+- [ ] Dados criptografados antes do envio para API
+- [ ] Descriptografia segura no backend
+- [ ] Rotação automática de chaves implementada
+- [ ] Zero-knowledge para dados sensíveis
+
+**Prioridade:** 🔥 CRÍTICA  
+**Story Points:** 13  
+**Labels:** Frontend, Backend, Segurança
+
+---
+
+#### US007.2 - Autenticação de 2 Fatores (2FA)
+
+**Como** usuário  
+**Eu quero** ter autenticação de 2 fatores ativada  
+**Para que** minha conta tenha proteção adicional contra acessos não autorizados
+
+**Critérios de Aceitação:**
+
+- [ ] Integração com Google Authenticator/TOTP
+- [ ] Códigos QR para configuração inicial
+- [ ] Backup codes para recuperação
+- [ ] SMS como método alternativo (opcional)
+- [ ] Interface para ativar/desativar 2FA
+- [ ] Validação obrigatória em login
+
+**Prioridade:** 🔥 CRÍTICA  
+**Story Points:** 13  
+**Labels:** Frontend, Backend, Segurança
+
+---
 
 #### US008 - Containerização da Aplicação Flutter
 
@@ -389,11 +431,11 @@ Implementar segurança avançada, monitoramento e finalizar a aplicação para e
 - **Cards Críticos:** 7 cards (60% críticos)
 - **Principais Entregas:** HTTPS, PostgreSQL, Autenticação, Criptografia, Deploy
 
-### Sprint 2 - Automação (Total: 45 Story Points)
+### Sprint 2 - Segurança Avançada e Automação (Total: 71 Story Points)
 
-- **Foco:** Containerização e CI/CD
-- **Cards Importantes:** 5 cards (80% alta prioridade)
-- **Principais Entregas:** Docker, CI/CD, Testes Automatizados
+- **Foco:** Criptografia E2E, 2FA, Containerização e CI/CD
+- **Cards Críticos:** 2 cards de segurança + 5 cards de automação
+- **Principais Entregas:** Criptografia E2E, 2FA, Docker, CI/CD, Testes Automatizados
 
 ### Sprint 3 - Excelência (Total: 34 Story Points)
 

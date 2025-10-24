@@ -116,9 +116,73 @@ _Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
 
 ---
 
-## 🏃‍♂️ **SPRINT 2 - Containerização e CI/CD**
+## 🏃‍♂️ **SPRINT 2 - Segurança Avançada e Containerização**
 
-_Foco: Automatizar processos e containerizar aplicação_
+_Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
+
+### 🤖 **TREINAR MACHINE LEARNING**
+
+**Card 5.1: Retreinamento e Otimização dos Modelos ML**
+
+- **Descrição:** Melhorar e otimizar os modelos de Machine Learning
+- **Tarefas:**
+  - [ ] Análise de performance dos modelos atuais
+  - [ ] Coleta de novos dados para treinamento
+  - [ ] Retreinamento dos modelos com dados atualizados
+  - [ ] Validação cruzada e métricas de performance
+  - [ ] Otimização de hiperparâmetros
+  - [ ] Testes A/B dos novos modelos
+  - [ ] Documentação das melhorias implementadas
+- **Prioridade:** 🔥 CRÍTICA
+- **Labels:** ML, Backend, Qualidade
+
+### 🔐 **CRIPTOGRAFIA DE PONTA A PONTA**
+
+**Card 5.2: Implementação de Criptografia E2E**
+
+- **Descrição:** Implementar criptografia end-to-end para proteção máxima
+- **Tarefas:**
+  - [ ] Criptografia end-to-end no frontend Flutter
+  - [ ] Chaves de criptografia geradas no cliente
+  - [ ] Dados criptografados antes do envio para API
+  - [ ] Descriptografia segura no backend
+  - [ ] Rotação automática de chaves
+  - [ ] Zero-knowledge para dados sensíveis
+  - [ ] Testes de segurança da criptografia
+- **Prioridade:** 🔥 CRÍTICA
+- **Labels:** Frontend, Backend, Segurança
+
+### 🔑 **CRIAÇÃO DE 2FA**
+
+**Card 5.3: Autenticação de 2 Fatores (2FA)**
+
+- **Descrição:** Implementar 2FA para proteção adicional das contas
+- **Tarefas:**
+  - [ ] Integração com Google Authenticator/TOTP
+  - [ ] Códigos QR para configuração inicial
+  - [ ] Backup codes para recuperação
+  - [ ] SMS como método alternativo (opcional)
+  - [ ] Interface Flutter para ativar/desativar 2FA
+  - [ ] Validação obrigatória em login
+  - [ ] Testes de segurança do 2FA
+- **Prioridade:** 🔥 CRÍTICA
+- **Labels:** Frontend, Backend, Segurança
+
+### 🧪 **TESTES AUTOMATIZADOS**
+
+**Card 5.4: Suite Completa de Testes**
+
+- **Descrição:** Implementar testes abrangentes para toda a aplicação
+- **Tarefas:**
+  - [ ] Testes unitários dos serviços ML
+  - [ ] Testes de integração da API
+  - [ ] Testes de segurança (criptografia e 2FA)
+  - [ ] Testes de autenticação e autorização
+  - [ ] Testes de performance dos modelos ML
+  - [ ] Coverage report configurado
+  - [ ] Testes automatizados no CI/CD
+- **Prioridade:** ⚠️ ALTA
+- **Labels:** Backend, Frontend, Testes, Qualidade
 
 ### 🐳 **CONTAINERIZAÇÃO COMPLETA**
 
@@ -258,7 +322,7 @@ _Foco: Completar requisitos e polimento final_
 
 ## 📊 **RESUMO DOS SPRINTS**
 
-### **SPRINT 1 - Fundação Segura Híbrida**
+### **SPRINT 1 - Fundação Segura Híbrida** ✅ **CONCLUÍDA**
 
 - 🎯 **Objetivo:** Aplicação segura com PostgreSQL (usuários) + Excel (dados ML)
 - 📈 **Entregáveis:** API com HTTPS + PostgreSQL (usuários) + Excel (ML) + Autenticação + Criptografia de Usuários
@@ -275,22 +339,25 @@ _Foco: Completar requisitos e polimento final_
 - ✅ **Backup seguro** do PostgreSQL
 - ✅ **Documentação** de segurança implementada
 
-### **SPRINT 2 - Automação**
+### **SPRINT 2 - Segurança Avançada e Automação**
 
-- 🎯 **Objetivo:** Processos automatizados
-- 📈 **Entregáveis:** Docker + CI/CD + Testes
-- ⚠️ **Cards Importantes:** 6, 7, 8, 9
+- 🎯 **Objetivo:** Treinar ML, Criptografia E2E, 2FA, Testes e Containerização
+- 📈 **Entregáveis:** ML Otimizado + Criptografia E2E + 2FA + Testes + Docker + CI/CD
+- 🔥 **Cards Críticos:** 5.1 (ML), 5.2 (Criptografia), 5.3 (2FA)
+- ⚠️ **Cards Importantes:** 5.4 (Testes), 6, 7, 8, 9
 
 #### **📦 ENTREGAS DA SPRINT 2:**
 
-- ✅ **Dockerfile para Flutter** criado e testado
-- ✅ **Docker Compose** com PostgreSQL configurado
-- ✅ **Pipeline CI/CD Backend** funcionando
-- ✅ **Pipeline CI/CD Frontend** funcionando
-- ✅ **Testes automatizados** implementados
-- ✅ **Deploy automático** configurado
-- ✅ **Containerização completa** da aplicação
-- ✅ **Documentação** de deploy e CI/CD
+- [ ] **🤖 Modelos ML Retreinados** e otimizados
+- [ ] **🔐 Criptografia de Ponta a Ponta** implementada
+- [ ] **🔑 Autenticação de 2 Fatores (2FA)** funcionando
+- [ ] **🧪 Suite Completa de Testes** implementada
+- [ ] **🐳 Dockerfile para Flutter** criado e testado
+- [ ] **🐳 Docker Compose** com PostgreSQL configurado
+- [ ] **🔄 Pipeline CI/CD Backend** funcionando
+- [ ] **🔄 Pipeline CI/CD Frontend** funcionando
+- [ ] **📊 Deploy automático** configurado
+- [ ] **📚 Documentação** de deploy e CI/CD
 
 ### **SPRINT 3 - Excelência**
 
