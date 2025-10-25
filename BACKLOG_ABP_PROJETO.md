@@ -316,6 +316,8 @@ Implementar criptografia de ponta a ponta, autenticação de 2 fatores e automat
 
 ## 🏃‍♂️ SPRINT 3 - Segurança Avançada e Finalização
 
+**📅 DATAS:** 6/11 - 10/11, 12/11, 14/11, 18/11
+
 ### 🎯 Objetivo do Sprint
 
 Implementar segurança avançada, monitoramento e finalizar a aplicação para entrega.
@@ -438,6 +440,14 @@ Implementar segurança avançada, monitoramento e finalizar a aplicação para e
 - **Principais Entregas:** Criptografia E2E, 2FA, Docker, CI/CD, Testes Automatizados
 
 ### Sprint 3 - Excelência (Total: 34 Story Points)
+
+**📅 CRONOGRAMA DETALHADO:**
+
+- **🗓️ 6/11 (Quarta-feira):** Início Sprint 3 - Segurança Avançada da API
+- **🗓️ 10/11 (Domingo):** Rate Limiting e Monitoramento de Segurança
+- **🗓️ 12/11 (Terça-feira):** Sistema de Logs Completo
+- **🗓️ 14/11 (Quinta-feira):** Documentação Técnica ML
+- **🗓️ 18/11 (Segunda-feira):** Testes Finais e Otimização
 
 - **Foco:** Segurança avançada e finalização
 - **Cards Finais:** 5 cards (40% críticos)

@@ -6,7 +6,9 @@
 
 ---
 
-## 🏃‍♂️ **SPRINT 1 - Novo Modelo de Negócio**
+## 🏃‍♂️ **SPRINT 1 - FUNDAÇÃO SEGURA**
+
+**📅 DATAS:** 22/09 - 24/09, 26/09, 30/09, 02/10
 
 _Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
 
@@ -24,6 +26,7 @@ _Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
   - [ ] Criptografia de dados sensíveis
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Database, Segurança
+- **Data:** 22/09/2025
 
 **Card 2: Sistema de Solicitações de Orçamento**
 
@@ -37,6 +40,7 @@ _Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
   - [ ] Tela Flutter: Criar Solicitação
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Frontend, Database
+- **Data:** 24/09/2025
 
 **Card 3: ML com Limites de Preço**
 
@@ -49,6 +53,7 @@ _Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
   - [ ] Documentar algoritmo de limites
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, ML
+- **Data:** 24/09/2025
 
 **Card 4: Sistema de Orçamentos (Prestador)**
 
@@ -62,6 +67,7 @@ _Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
   - [ ] Tela Flutter: Criar Orçamento com limites visíveis
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Frontend, Database
+- **Data:** 26/09/2025
 
 **Card 5: Comparação e Seleção de Orçamentos (Cliente)**
 
@@ -75,8 +81,9 @@ _Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
   - [ ] Tela Flutter: Detalhes do Prestador
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Backend, Frontend
+- **Data:** 30/09/2025
 
-**Card 3.1: Validação e Sanitização de Inputs**
+**Card 6: Validação e Sanitização de Inputs**
 
 - **Descrição:** Proteger contra ataques de injeção
 - **Tarefas:**
@@ -87,36 +94,13 @@ _Foco: Implementar sistema de dois perfis e fluxo de orçamentos_
   - [ ] Validação de dados de usuário
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** Backend, Frontend, Segurança
-
-### ☁️ **DEPLOY EM NUVEM**
-
-**Card 4: Deploy da API na Nuvem**
-
-- **Descrição:** Hospedar API em plataforma cloud
-- **Tarefas:**
-  - [ ] Escolher plataforma (Heroku/Railway/Render)
-  - [ ] Configurar variáveis de ambiente seguras
-  - [ ] Deploy do backend com HTTPS
-  - [ ] Configurar domínio personalizado
-  - [ ] Testes de conectividade e segurança
-- **Prioridade:** 🔥 CRÍTICA
-- **Labels:** Backend, Deploy, Infraestrutura
-
-**Card 5: Backup Seguro do PostgreSQL**
-
-- **Descrição:** Backup seguro para PostgreSQL (usuários)
-- **Tarefas:**
-  - [ ] Backup automático do PostgreSQL (usuários) na nuvem
-  - [ ] Criptografia de backups do PostgreSQL
-  - [ ] Controle de acesso aos backups
-  - [ ] Validação de integridade dos backups
-  - [ ] Logs de acesso aos dados
-- **Prioridade:** 🔥 CRÍTICA
-- **Labels:** Backend, Segurança, Database
+- **Data:** 02/10/2025
 
 ---
 
-## 🏃‍♂️ **SPRINT 2 - Segurança Avançada e Containerização**
+## 🏃‍♂️ **SPRINT 2 - SEGURANÇA AVANÇADA E AUTOMAÇÃO**
+
+**📅 DATAS:** 13/10 - 15/10, 17/10, 21/10, 22/10, 23/10
 
 _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
 
@@ -132,6 +116,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] AM-001.4: Documentação dos problemas identificados
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** AM, Backend, Qualidade
+- **Data:** 13/10/2025
 
 **Card AM-002: Coleta e Preparação de Dados**
 
@@ -143,6 +128,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] AM-002.4: Divisão em conjuntos de treino/validação/teste
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** AM, Backend, Qualidade
+- **Data:** 15/10/2025
 
 **Card AM-003: Retreinamento e Otimização**
 
@@ -154,6 +140,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] AM-003.4: Validação cruzada e métricas de performance
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** AM, Backend, Qualidade
+- **Data:** 17/10/2025
 
 **Card AM-004: Testes e Validação dos Modelos**
 
@@ -165,6 +152,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] AM-004.4: Documentação das melhorias implementadas
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** AM, Backend, Qualidade
+- **Data:** 21/10/2025
 
 ### 🔐 **SD - SEGURANÇA DE DADOS**
 
@@ -178,6 +166,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] SD-001.4: Implementar rotação automática de chaves
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** SD, Frontend, Segurança
+- **Data:** 21/10/2025
 
 **Card SD-002: Implementação de Criptografia E2E Backend**
 
@@ -189,6 +178,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] SD-002.4: Logs de auditoria para operações de criptografia
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** SD, Backend, Segurança
+- **Data:** 21/10/2025
 
 **Card SD-003: Autenticação de 2 Fatores (2FA)**
 
@@ -201,6 +191,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] SD-003.5: Validação obrigatória em login
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** SD, Frontend, Backend, Segurança
+- **Data:** 21/10/2025
 
 **Card SD-004: Testes de Segurança**
 
@@ -212,6 +203,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] SD-004.4: Auditoria de segurança dos dados
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** SD, Backend, Frontend, Testes, Segurança
+- **Data:** 22/10/2025
 
 ### 🧪 **TESTES AUTOMATIZADOS**
 
@@ -225,6 +217,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] AM-005.4: Testes de integração com a API
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** AM, Backend, Testes, Qualidade
+- **Data:** 22/10/2025
 
 **Card SD-005: Testes de Segurança e Autenticação**
 
@@ -236,6 +229,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] SD-005.4: Coverage report configurado
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** SD, Backend, Frontend, Testes, Qualidade
+- **Data:** 22/10/2025
 
 ### ☁️ **CN - COMPUTAÇÃO EM NUVEM**
 
@@ -250,6 +244,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] CN-001.5: Configurar variáveis de ambiente
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** CN, Frontend, Docker, Deploy
+- **Data:** 22/10/2025
 
 **Card CN-002: Orquestração com Docker Compose**
 
@@ -263,6 +258,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] CN-002.6: Scripts de inicialização do banco
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** CN, DevOps, Docker, Database
+- **Data:** 22/10/2025
 
 **Card CN-003: Pipeline CI/CD Backend**
 
@@ -275,6 +271,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] CN-003.5: Implementar rollback automático em caso de falha
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** CN, Backend, CI/CD, DevOps
+- **Data:** 22/10/2025
 
 **Card CN-004: Pipeline CI/CD Frontend**
 
@@ -287,6 +284,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] CN-004.5: Otimizar cache de dependências
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** CN, Frontend, CI/CD, DevOps
+- **Data:** 22/10/2025
 
 ### 📱 **PD - PROGRAMAÇÃO DISPOSITIVOS MÓVEIS**
 
@@ -300,6 +298,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] PD-001.4: Implementar cache offline para dados essenciais
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** PD, Frontend, Mobile, UX
+- **Data:** 22/10/2025
 
 **Card PD-002: Integração com Recursos Mobile**
 
@@ -311,6 +310,7 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] PD-002.4: Configurar biometria para autenticação
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** PD, Frontend, Mobile, Segurança
+- **Data:** 23/10/2025
 
 **Card PD-003: Testes em Dispositivos Móveis**
 
@@ -322,10 +322,13 @@ _Foco: Treinar ML, Criptografia E2E, 2FA, Testes e Containerização_
   - [ ] PD-003.4: Testes de compatibilidade com diferentes versões
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** PD, Frontend, Mobile, Testes, Qualidade
+- **Data:** 23/10/2025
 
 ---
 
-## 🏃‍♂️ **SPRINT 3 - Segurança Avançada e Finalização**
+## 🏃‍♂️ **SPRINT 3 - SEGURANÇA AVANÇADA E FINALIZAÇÃO**
+
+**📅 DATAS:** 6/11 - 10/11, 12/11, 14/11, 18/11
 
 _Foco: Completar requisitos e polimento final_
 
@@ -341,6 +344,7 @@ _Foco: Completar requisitos e polimento final_
   - [ ] Configurar firewall básico
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** Backend, Segurança, API
+- **Data:** 6/11/2025
 
 **Card 12: Rate Limiting e Logs de Segurança**
 
@@ -354,6 +358,7 @@ _Foco: Completar requisitos e polimento final_
   - [ ] Detecção de atividades suspeitas
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** Backend, Segurança, Monitoramento
+- **Data:** 10/11/2025
 
 ### 📊 **MONITORAMENTO E LOGS**
 
@@ -367,6 +372,7 @@ _Foco: Completar requisitos e polimento final_
   - [ ] Dashboard de monitoramento
 - **Prioridade:** 📝 MÉDIA
 - **Labels:** Backend, Monitoramento, DevOps
+- **Data:** 12/11/2025
 
 ### 🎯 **FINALIZAÇÃO E DOCUMENTAÇÃO**
 
@@ -380,6 +386,7 @@ _Foco: Completar requisitos e polimento final_
   - [ ] Explicação dos algoritmos
 - **Prioridade:** 📝 MÉDIA
 - **Labels:** ML, Documentação
+- **Data:** 14/11/2025
 
 **Card 15: Testes Finais e Otimização**
 
@@ -391,6 +398,7 @@ _Foco: Completar requisitos e polimento final_
   - [ ] Documentação de deploy
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** Testes, Performance, Documentação
+- **Data:** 18/11/2025
 
 ---
 
@@ -398,19 +406,19 @@ _Foco: Completar requisitos e polimento final_
 
 ### **SPRINT 1 - Fundação Segura Híbrida** ✅ **CONCLUÍDA**
 
-- 🎯 **Objetivo:** Aplicação segura com PostgreSQL (usuários) + Excel (dados ML)
-- 📈 **Entregáveis:** API com HTTPS + PostgreSQL (usuários) + Excel (ML) + Autenticação + Criptografia de Usuários
+- 🎯 **Objetivo:** Aplicação segura com MySQL (usuários) + Excel (dados ML)
+- 📈 **Entregáveis:** API com HTTPS + MySQL (usuários) + Excel (ML) + Autenticação + Criptografia de Usuários
 - 🔥 **Cards Críticos:** 1, 2, 2.1, 3, 4, 5
 
 #### **📦 ENTREGAS DA SPRINT 1:**
 
 - ✅ **API com HTTPS/TLS** configurado e funcionando
-- ✅ **PostgreSQL** configurado para usuários
+- ✅ **MySQL** configurado para usuários
 - ✅ **Sistema de autenticação JWT** implementado
 - ✅ **Criptografia de usuários** (senhas e dados sensíveis)
 - ✅ **Validação e sanitização** de inputs
 - ✅ **Deploy da API** em nuvem
-- ✅ **Backup seguro** do PostgreSQL
+- ✅ **Backup seguro** do MySQL
 - ✅ **Documentação** de segurança implementada
 
 ### **SPRINT 2 - Segurança Avançada e Automação**
@@ -480,7 +488,7 @@ _Foco: Completar requisitos e polimento final_
 - 🟢 **ML** - Machine Learning
 - 🟣 **Database** - Banco de dados
 
-### **Por Prioridade:**
+### \*\*Por Prioridade:
 
 - 🔥 **CRÍTICA** - Obrigatório para aprovação
 - ⚠️ **ALTA** - Importante para qualidade
@@ -638,110 +646,6 @@ _Foco: Completar requisitos e polimento final_
   - PD-003.2: Testes de performance mobile
   - PD-003.3: Testes de usabilidade em dispositivos reais
   - PD-003.4: Testes de compatibilidade com diferentes versões
-
----
-
-#### **🗓️ OUTUBRO 21 (SEGUNDA-FEIRA) - FINALIZAÇÃO E TESTES**
-
-**🤖 AM - APRENDIZAGEM DE MÁQUINA**
-
-- **AM-004:** Testes e Validação dos Modelos
-
-  - AM-004.1: Testes A/B dos novos modelos
-  - AM-004.2: Comparação de performance (antes vs depois)
-  - AM-004.3: Testes de robustez e edge cases
-  - AM-004.4: Documentação das melhorias implementadas
-
-- **AM-005:** Testes de Machine Learning
-  - AM-005.1: Testes unitários dos serviços ML
-  - AM-005.2: Testes de performance dos modelos
-
-**🔐 SD - SEGURANÇA DE DADOS**
-
-- **SD-003:** Continuação 2FA
-
-  - SD-003.3: Implementar backup codes para recuperação
-  - SD-003.4: Interface Flutter para ativar/desativar 2FA
-  - SD-003.5: Validação obrigatória em login
-
-- **SD-004:** Testes de Segurança
-  - SD-004.1: Testes de penetração da criptografia E2E
-  - SD-004.2: Testes de segurança do sistema 2FA
-
-**☁️ CN - COMPUTAÇÃO EM NUVEM**
-
-- **CN-002:** Continuação Docker Compose
-
-  - CN-002.3: Volumes para persistência do banco de usuários
-  - CN-002.4: Volume para arquivo Excel (dados ML)
-  - CN-002.5: Variáveis de ambiente seguras
-  - CN-002.6: Scripts de inicialização do banco
-
-- **CN-003:** Pipeline CI/CD Backend
-  - CN-003.1: Configurar workflow de build e test
-  - CN-003.2: Implementar deploy automático para produção
-
-**📱 PD - PROGRAMAÇÃO DISPOSITIVOS MÓVEIS**
-
-- **PD-001:** Continuação Interface Mobile
-
-  - PD-001.3: Melhorar performance em dispositivos móveis
-  - PD-001.4: Implementar cache offline para dados essenciais
-
-- **PD-002:** Integração com Recursos Mobile
-  - PD-002.1: Implementar notificações push
-  - PD-002.2: Integrar com câmera para upload de imagens
-
----
-
-#### **🗓️ OUTUBRO 23 (QUARTA-FEIRA) - FINALIZAÇÃO E DEPLOY**
-
-**🔐 SD - SEGURANÇA DE DADOS**
-
-- **SD-004:** Continuação Testes de Segurança
-
-  - SD-004.3: Testes de vulnerabilidades comuns (OWASP)
-  - SD-004.4: Auditoria de segurança dos dados
-
-- **SD-005:** Testes de Segurança e Autenticação
-  - SD-005.1: Testes de autenticação e autorização
-  - SD-005.2: Testes de integração da API
-  - SD-005.3: Testes de criptografia e 2FA
-  - SD-005.4: Coverage report configurado
-
-**☁️ CN - COMPUTAÇÃO EM NUVEM**
-
-- **CN-003:** Continuação Pipeline CI/CD Backend
-
-  - CN-003.3: Integrar testes automatizados no pipeline
-  - CN-003.4: Configurar notificações de status
-  - CN-003.5: Implementar rollback automático em caso de falha
-
-- **CN-004:** Pipeline CI/CD Frontend
-  - CN-004.1: Configurar build automático do Flutter
-  - CN-004.2: Implementar deploy da versão web
-  - CN-004.3: Integrar testes de widget
-  - CN-004.4: Configurar versionamento automático
-  - CN-004.5: Otimizar cache de dependências
-
-**📱 PD - PROGRAMAÇÃO DISPOSITIVOS MÓVEIS**
-
-- **PD-002:** Continuação Recursos Mobile
-
-  - PD-002.3: Implementar geolocalização para prestadores
-  - PD-002.4: Configurar biometria para autenticação
-
-- **PD-003:** Testes em Dispositivos Móveis
-  - PD-003.1: Testes de widget em diferentes dispositivos
-  - PD-003.2: Testes de performance mobile
-  - PD-003.3: Testes de usabilidade em dispositivos reais
-  - PD-003.4: Testes de compatibilidade com diferentes versões
-
-**🤖 AM - APRENDIZAGEM DE MÁQUINA**
-
-- **AM-005:** Finalização Testes ML
-  - AM-005.3: Testes de precisão e recall
-  - AM-005.4: Testes de integração com a API
 
 ---
 

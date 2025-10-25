@@ -6,6 +6,18 @@
 - ⚠️ **15% EM ANDAMENTO** - Deploy e infraestrutura
 - ❌ **10% PENDENTE** - CI/CD e otimizações
 
+## 🏃‍♂️ **SPRINT 3 - SEGURANÇA AVANÇADA E FINALIZAÇÃO**
+
+**📅 DATAS:** 6/11 - 10/11, 12/11, 14/11, 18/11
+
+### 📅 **CRONOGRAMA SPRINT 3:**
+
+- **🗓️ 6/11 (Quarta-feira):** Início Sprint 3 - Segurança Avançada da API
+- **🗓️ 10/11 (Domingo):** Rate Limiting e Monitoramento de Segurança
+- **🗓️ 12/11 (Terça-feira):** Sistema de Logs Completo
+- **🗓️ 14/11 (Quinta-feira):** Documentação Técnica ML
+- **🗓️ 18/11 (Segunda-feira):** Testes Finais e Otimização
+
 ---
 
 ## 1. 🤖 **APRENDIZAGEM DE MÁQUINA**
