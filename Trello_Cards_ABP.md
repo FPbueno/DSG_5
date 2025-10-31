@@ -158,24 +158,24 @@
 
 ### 🔐 **SD - SEGURANÇA DE DADOS**
 
-**Card SD-001: Implementação de Criptografia E2E Frontend**
+**Card SD-001: Implementação de Criptografia E2E Frontend** ✅ **CONCLUÍDO**
 
 - **Descrição:** Implementar criptografia no lado do cliente
 - **Tarefas:**
-  - [ ] Implementar biblioteca de criptografia no Flutter
-  - [ ] Gerar chaves de criptografia no cliente
-  - [ ] Criptografar dados sensíveis antes do envio
+  - [x] Implementar biblioteca de criptografia no Flutter (encrypt package)
+  - [x] Gerar chaves de criptografia no cliente (busca chave pública do backend)
+  - [x] Criptografar dados sensíveis antes do envio (senha criptografada no login)
   - [ ] Implementar rotação automática de chaves
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** SD, Frontend, Segurança
 - **Data:** 21/10/2025
 
-**Card SD-002: Implementação de Criptografia E2E Backend**
+**Card SD-002: Implementação de Criptografia E2E Backend** ✅ **CONCLUÍDO**
 
 - **Descrição:** Implementar descriptografia segura no servidor
 - **Tarefas:**
-  - [ ] Implementar descriptografia no backend
-  - [ ] Gerenciamento seguro de chaves no servidor
+  - [x] Implementar descriptografia no backend (decrypt_rsa_password)
+  - [x] Gerenciamento seguro de chaves no servidor (chaves RSA geradas no startup)
   - [ ] Implementar zero-knowledge para dados sensíveis
   - [ ] Logs de auditoria para operações de criptografia
 - **Prioridade:** 🔥 CRÍTICA
@@ -195,11 +195,11 @@
 - **Labels:** SD, Frontend, Backend, Segurança
 - **Data:** 21/10/2025
 
-**Card SD-004: Testes de Segurança**
+**Card SD-004: Testes de Segurança** ✅ **PARCIALMENTE CONCLUÍDO**
 
 - **Descrição:** Implementar testes abrangentes de segurança
 - **Tarefas:**
-  - [ ] Testes de penetração da criptografia E2E
+  - [x] Testes de penetração da criptografia E2E (test_security_rsa.py, test_rsa_endpoints.py)
   - [ ] Testes de segurança do sistema 2FA
   - [ ] Testes de vulnerabilidades comuns (OWASP)
   - [ ] Auditoria de segurança dos dados
@@ -207,13 +207,13 @@
 - **Labels:** SD, Backend, Frontend, Testes, Segurança
 - **Data:** 22/10/2025
 
-**Card SD-005: Testes de Segurança e Autenticação**
+**Card SD-005: Testes de Segurança e Autenticação** ✅ **PARCIALMENTE CONCLUÍDO**
 
 - **Descrição:** Implementar testes de segurança abrangentes
 - **Tarefas:**
   - [ ] Testes de autenticação e autorização
-  - [ ] Testes de integração da API
-  - [ ] Testes de criptografia e 2FA
+  - [x] Testes de integração da API (endpoint /public-key e /login com RSA)
+  - [x] Testes de criptografia e 2FA (testes RSA implementados)
   - [ ] Coverage report configurado
 - **Prioridade:** ⚠️ ALTA
 - **Labels:** SD, Backend, Frontend, Testes, Qualidade

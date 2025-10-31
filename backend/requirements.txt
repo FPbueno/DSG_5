@@ -1,8 +1,8 @@
-fastapi
+fastapi>=0.115.0
 uvicorn
 pandas
 openpyxl
-pydantic
+pydantic>=2.11.0,<2.13.0
 python-multipart
 scikit-learn
 numpy
@@ -14,3 +14,6 @@ passlib[bcrypt]
 cryptography
 psycopg2-binary
 supabase
+pytest
+pytest-asyncio
+httpx
