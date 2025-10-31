@@ -14,6 +14,7 @@ from ..services.auth_service_supabase import (
     buscar_cliente_por_email, buscar_prestador_por_email,
     buscar_prestador_por_id
 )
+from ..core.security import get_rsa_public_key_pem, decrypt_rsa_password
 
 router = APIRouter()
 
@@ -94,13 +95,27 @@ def registrar_prestador(prestador_data: PrestadorCreate):
 
 # ============= LOGIN =============
 
+@router.get("/public-key")
+def get_public_key():
+    """Retorna a chave pública RSA para criptografia no frontend"""
+    return {"public_key": get_rsa_public_key_pem()}
+
 @router.post("/login", response_model=LoginResponse)
 def login(login_data: LoginRequest):
     """
     Login unificado para clientes e prestadores
+    Recebe senha criptografada com RSA e descriptografa antes de validar
     """
+    try:
+        senha_decrypt = decrypt_rsa_password(login_data.senha)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Erro ao descriptografar senha: {str(e)}"
+        )
+    
     if login_data.tipo_usuario == "cliente":
-        usuario = autenticar_cliente(login_data.email, login_data.senha)
+        usuario = autenticar_cliente(login_data.email, senha_decrypt)
         if not usuario:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -116,7 +131,7 @@ def login(login_data: LoginRequest):
         )
     
     elif login_data.tipo_usuario == "prestador":
-        usuario = autenticar_prestador(login_data.email, login_data.senha)
+        usuario = autenticar_prestador(login_data.email, senha_decrypt)
         if not usuario:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

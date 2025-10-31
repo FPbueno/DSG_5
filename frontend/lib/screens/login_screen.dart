@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../constants/app_constants.dart';
+import '../services/rsa_service.dart';
 import 'cliente/main_cliente_screen.dart';
 import 'prestador/main_prestador_screen.dart';
 import 'register_screen.dart';
@@ -35,12 +36,16 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
+      final senhaCriptografada = await RSAService.encryptPassword(
+        _passwordController.text,
+      );
+
       final response = await http.post(
         Uri.parse('${AppConstants.baseUrl}/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text.trim(),
-          'senha': _passwordController.text,
+          'senha': senhaCriptografada,
           'tipo_usuario': widget.tipoUsuario,
         }),
       );

@@ -7,6 +7,7 @@ from api.v1.core.config import (
     CORS_ALLOW_METHODS, CORS_ALLOW_HEADERS
 )
 from api.v1.core.database import create_tables
+from api.v1.core.security import generate_rsa_keys
 
 app = FastAPI(
     title=API_TITLE,
@@ -28,10 +29,12 @@ app.add_middleware(
 async def startup_event():
     try:
         create_tables()
-        print("✅ Tabelas verificadas/criadas com sucesso!")
-    except Exception as e:
-        print(f"⚠️  Aviso: Não foi possível conectar ao banco na inicialização: {e}")
-        print("💡 As tabelas já foram criadas manualmente no Supabase")
+    except Exception:
+        pass
+    try:
+        generate_rsa_keys()
+    except Exception:
+        pass
 
 # Inclui as rotas
 app.include_router(router, prefix="/api/v1")
