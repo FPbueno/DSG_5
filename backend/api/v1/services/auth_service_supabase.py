@@ -19,24 +19,25 @@ def verificar_senha(senha_plana: str, senha_hash: str) -> bool:
 
 # ============= CLIENTES =============
 
-def criar_cliente(cliente_data: ClienteCreate) -> Optional[dict]:
-    """Cria novo cliente usando Supabase"""
-    try:
-        cliente_dict = {
-            "nome": cliente_data.nome,
-            "email": cliente_data.email,
-            "senha_hash": hash_senha(cliente_data.senha),
-            "telefone": cliente_data.telefone,
-            "cpf": cliente_data.cpf,
-            "endereco": cliente_data.endereco,
-            "avaliacao_media": 0.0
-        }
-        
-        return supabase_service.criar_cliente(cliente_dict)
-    except Exception as e:
-        print(f"Erro ao criar cliente: {e}")
-        return None
+def criar_cliente(cliente_data: ClienteCreate, totp_secret: str = None) -> Optional[dict]:
+    """Cria novo cliente no Supabase com suporte a 2FA."""
+    senha_hash = hash_senha(cliente_data.senha)
 
+    data = {
+        "nome": cliente_data.nome,
+        "email": cliente_data.email,
+        "telefone": cliente_data.telefone,
+        "endereco": cliente_data.endereco,
+        "senha_hash": senha_hash,  # ✅ coluna existente
+        "totp_secret": totp_secret
+    }
+
+    response = supabase_service.supabase.table("clientes").insert(data).execute()
+    if response.data:
+        return response.data[0]
+    return None
+
+     
 def buscar_cliente_por_email(email: str) -> Optional[dict]:
     """Busca cliente por email usando Supabase"""
     return supabase_service.buscar_cliente_por_email(email)
@@ -66,7 +67,8 @@ def criar_prestador(prestador_data: PrestadorCreate) -> Optional[dict]:
             "categorias": prestador_data.categorias,
             "regioes_atendimento": prestador_data.regioes_atendimento,
             "avaliacao_media": 0.0,
-            "portfolio": prestador_data.portfolio
+            "portfolio": prestador_data.portfolio,
+            "totp_secret": prestador_data.totp_secret
         }
         
         return supabase_service.criar_prestador(prestador_dict)

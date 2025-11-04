@@ -38,6 +38,8 @@ class Cliente(Base):
     avaliacao_media = Column(Float, default=0.0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    totp_secret = Column(String(255), nullable=True)  # <-- Adicionado para 2FA
 
     # Relacionamentos
     solicitacoes = relationship("Solicitacao", back_populates="cliente")
@@ -55,16 +57,17 @@ class Prestador(Base):
     senha_hash = Column(String(255), nullable=False)
     telefone = Column(String(20), nullable=True)
     cpf_cnpj = Column(String(255), nullable=True)  # Será criptografado
-    categorias = Column(JSON, nullable=False, default=list)  # ["Pintura", "Elétrica"]
-    regioes_atendimento = Column(JSON, nullable=False, default=list)  # ["Zona Sul", "Centro"]
+    categorias = Column(JSON, nullable=False, default=list)
+    regioes_atendimento = Column(JSON, nullable=False, default=list)
     avaliacao_media = Column(Float, default=0.0)
-    portfolio = Column(JSON, nullable=True)  # URLs de imagens, descrições
+    portfolio = Column(JSON, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
+    totp_secret = Column(String(255), nullable=True)  # <-- Adicionado para 2FA
+
     # Relacionamentos
     orcamentos = relationship("Orcamento", back_populates="prestador")
-
     def __repr__(self):
         return f"<Prestador(id={self.id}, nome='{self.nome}', email='{self.email}')>"
 

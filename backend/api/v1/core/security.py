@@ -9,8 +9,17 @@ from cryptography.hazmat.backends import default_backend
 import base64
 import os
 from dotenv import load_dotenv
+from passlib.context import CryptContext
+
 
 load_dotenv('config.env')
+
+
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
 
 # Configurações de segurança
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")

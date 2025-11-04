@@ -101,3 +101,7 @@ SELECT table_name
 FROM information_schema.tables 
 WHERE table_schema = 'public'
 ORDER BY table_name;
+
+
+ALTER TABLE clientes ADD COLUMN IF NOT EXISTS totp_secret VARCHAR(255);
+ALTER TABLE prestadores ADD COLUMN IF NOT EXISTS totp_secret VARCHAR(255);

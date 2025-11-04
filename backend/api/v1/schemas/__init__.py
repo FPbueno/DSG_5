@@ -4,7 +4,7 @@ Schemas Package - Modelos Pydantic para validação
 from .usuarios import (
     ClienteCreate, ClienteUpdate, ClienteResponse, ClienteLogin,
     PrestadorCreate, PrestadorUpdate, PrestadorResponse, PrestadorLogin,
-    LoginRequest, LoginResponse
+    LoginRequest, LoginResponse, RegistrarClienteResponse,PrestadorRegistroResponse
 )
 from .solicitacoes import (
     SolicitacaoCreate, SolicitacaoUpdate, SolicitacaoResponse,
@@ -20,9 +20,9 @@ from .avaliacoes import (
 
 __all__ = [
     # Clientes
-    "ClienteCreate", "ClienteUpdate", "ClienteResponse", "ClienteLogin",
+    "ClienteCreate", "ClienteUpdate", "ClienteResponse", "ClienteLogin", "RegistrarClienteResponse"
     # Prestadores
-    "PrestadorCreate", "PrestadorUpdate", "PrestadorResponse", "PrestadorLogin",
+    "PrestadorCreate", "PrestadorUpdate", "PrestadorResponse", "PrestadorLogin","PrestadorRegistroResponse"
     # Login
     "LoginRequest", "LoginResponse",
     # Solicitações

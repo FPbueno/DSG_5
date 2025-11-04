@@ -48,18 +48,64 @@ class AuthService {
     return token != null;
   }
 
-  // Login do usuário
-  static Future<Map<String, dynamic>> login(
-    String email,
-    String password,
-  ) async {
+  // Login do usuário com 2FA
+  static Future<Map<String, dynamic>> login(String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/login'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: {
         'username': email,
         'password': password,
-      }, // OAuth2PasswordRequestForm usa 'username' mas enviamos email
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      // Verifica se a autenticação de 2FA é necessária
+      if (data.containsKey('two_factor_required') && data['two_factor_required']) {
+        return {'success': false, 'two_factor_required': true};
+      }
+
+      final token = data['access_token'];
+
+      // Salva o token
+      await saveToken(token);
+
+      // Busca dados do usuário
+      final userResponse = await http.get(
+        Uri.parse('$baseUrl/auth/me'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (userResponse.statusCode == 200) {
+        final userData = json.decode(userResponse.body);
+        await saveUser(userData);
+        return {'success': true, 'user': userData};
+      }
+
+      return {'success': false, 'error': 'Erro ao obter dados do usuário'};
+    } else {
+      final error = json.decode(response.body);
+      return {'success': false, 'error': error['detail'] ?? 'Erro no login'};
+    }
+  }
+
+  // Verifica o código 2FA
+  static Future<Map<String, dynamic>> verifyTwoFactorCode(
+    String email,
+    String code,
+  ) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/verify-2fa'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'username': email,
+        'code': code, // O código de 2FA fornecido pelo usuário
+      },
     );
 
     if (response.statusCode == 200) {
@@ -84,10 +130,10 @@ class AuthService {
         return {'success': true, 'user': userData};
       }
 
-      return {'success': true, 'user': null};
+      return {'success': false, 'error': 'Erro ao obter dados do usuário após 2FA'};
     } else {
       final error = json.decode(response.body);
-      return {'success': false, 'error': error['detail'] ?? 'Erro no login'};
+      return {'success': false, 'error': error['detail'] ?? 'Erro ao verificar o código 2FA'};
     }
   }
 

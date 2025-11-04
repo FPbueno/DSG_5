@@ -16,24 +16,33 @@ class ClienteBase(BaseModel):
 class ClienteCreate(ClienteBase):
     senha: str
     cpf: Optional[str] = None
+    totp_secret: Optional[str] = None
 
 class ClienteUpdate(BaseModel):
     nome: Optional[str] = None
     telefone: Optional[str] = None
     endereco: Optional[str] = None
 
-class ClienteResponse(ClienteBase):
+class ClienteResponse(BaseModel):
+    nome: str
+    email: str
+    telefone: str
+    endereco: str
     id: int
     avaliacao_media: float
-    created_at: Optional[datetime] = None
-
+    created_at: str
     class Config:
         from_attributes = True
 
 class ClienteLogin(BaseModel):
     email: EmailStr
     senha: str
-
+    codigo_2fa: str
+    
+class RegistrarClienteResponse(BaseModel):
+    cliente: ClienteResponse
+    codigo_2fa: str
+    mensagem: str
 # ============= SCHEMAS PARA PRESTADOR =============
 
 class PrestadorBase(BaseModel):
@@ -47,6 +56,7 @@ class PrestadorCreate(PrestadorBase):
     senha: str
     cpf_cnpj: Optional[str] = None
     portfolio: Optional[List[dict]] = None
+    totp_secret: Optional[str] = None
 
 class PrestadorUpdate(BaseModel):
     nome: Optional[str] = None
@@ -64,9 +74,16 @@ class PrestadorResponse(PrestadorBase):
     class Config:
         from_attributes = True
 
+class PrestadorRegistroResponse(BaseModel):
+    prestador: PrestadorResponse
+    codigo_2fa: str
+    mensagem: str
+
+
 class PrestadorLogin(BaseModel):
     email: EmailStr
     senha: str
+    codigo_2fa: str
 
 # ============= SCHEMA DE LOGIN GERAL =============
 
@@ -82,3 +99,14 @@ class LoginResponse(BaseModel):
     nome: str
     email: str
 
+class TwoFAVerifyRequest(BaseModel):
+    email: EmailStr
+    tipo_usuario: str
+    codigo: str  # 6 dígitos
+
+class Login2FARequiredResponse(BaseModel):
+    require_2fa: bool = True
+    tipo_usuario: str
+    usuario_id: int
+    nome: str
+    email: str

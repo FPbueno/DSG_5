@@ -53,27 +53,22 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        if (mounted) {
-          // Navega para home específica do tipo de usuário
-          if (widget.tipoUsuario == 'cliente') {
-            Navigator.of(context).pushReplacement(
+        // Verifica se a autenticação de 2FA é necessária
+        if (data.containsKey('two_factor_required') && data['two_factor_required']) {
+          // Navega para a tela de 2FA, passando os dados necessários
+          if (mounted) {
+            Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => MainClienteScreen(
-                  usuarioId: data['usuario_id'],
-                  nome: data['nome'],
-                ),
-              ),
-            );
-          } else {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => MainPrestadorScreen(
-                  usuarioId: data['usuario_id'],
-                  nome: data['nome'],
+                builder: (context) => TwoFactorScreen(
+                  email: _emailController.text.trim(),
+                  tipoUsuario: widget.tipoUsuario,
+                  loginData: data, // Passa os dados do login inicial se necessário
                 ),
               ),
             );
           }
+        } else {
+          _onLoginSuccess(data);  // Login completo sem 2FA
         }
       } else {
         if (mounted) {
@@ -93,6 +88,32 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  // Função que será chamada após o login bem-sucedido (com ou sem 2FA)
+  void _onLoginSuccess(Map<String, dynamic> data) {
+    if (mounted) {
+      // Navega para a tela principal específica do tipo de usuário
+      if (widget.tipoUsuario == 'cliente') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => MainClienteScreen(
+              usuarioId: data['usuario_id'],
+              nome: data['nome'],
+            ),
+          ),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => MainPrestadorScreen(
+              usuarioId: data['usuario_id'],
+              nome: data['nome'],
+            ),
+          ),
+        );
+      }
     }
   }
 
@@ -271,10 +292,247 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white.withValues(alpha: 0.9),
+        color: Colors.white.withOpacity(0.9),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscure,
+        style: const TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.grey[600]),
+          prefixIcon: Icon(icon, color: Colors.grey[600]),
+          suffixIcon: suffixIcon,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
+        ),
+        validator: validator,
+      ),
+    );
+  }
+}
+
+// Nova tela para autenticação de 2 fatores
+class TwoFactorScreen extends StatefulWidget {
+  final String email;
+  final String tipoUsuario;
+  final Map<String, dynamic> loginData;
+
+  const TwoFactorScreen({
+    super.key,
+    required this.email,
+    required this.tipoUsuario,
+    required this.loginData,
+  });
+
+  @override
+  State<TwoFactorScreen> createState() => _TwoFactorScreenState();
+}
+
+class _TwoFactorScreenState extends State<TwoFactorScreen> {
+  final _twoFactorController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _twoFactorController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _verifyTwoFactorCode() async {
+    if (_twoFactorController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, insira o código 2FA'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final response = await http.post(
+        Uri.parse('${AppConstants.baseUrl}/verify-2fa'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': widget.email,
+          'code': _twoFactorController.text,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        _onLoginSuccess(data);  // Login completo após verificar o código 2FA
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Código 2FA inválido'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro: $e'), backgroundColor: Colors.red),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _onLoginSuccess(Map<String, dynamic> data) {
+    if (mounted) {
+      // Navega para a tela principal específica do tipo de usuário
+      if (widget.tipoUsuario == 'cliente') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => MainClienteScreen(
+              usuarioId: data['usuario_id'],
+              nome: data['nome'],
+            ),
+          ),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => MainPrestadorScreen(
+              usuarioId: data['usuario_id'],
+              nome: data['nome'],
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(color: Colors.black),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom,
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+
+                  // Botão Voltar
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Color(0xFFf5c116),
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Logo
+                  Image.asset(
+                    'assets/images/Worca.png',
+                    height: 200,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => Icon(
+                      Icons.home_work,
+                      size: 200,
+                      color: Color(0xFFf5c116),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Título
+                  const Text(
+                    'Autenticação de Dois Fatores',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Campo para código 2FA
+                  _buildTextField(
+                    controller: _twoFactorController,
+                    label: 'Código 2FA',
+                    icon: Icons.lock_clock,
+                    validator: (v) => v!.isEmpty ? 'Digite o código 2FA' : null,
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Botão Verificar
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _verifyTwoFactorCode,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFf5c116),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.black,
+                            )
+                          : const Text(
+                              'Verificar',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    bool obscure = false,
+    Widget? suffixIcon,
+    String? Function(String?)? validator,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.9),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
