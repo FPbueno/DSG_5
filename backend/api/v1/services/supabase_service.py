@@ -9,10 +9,17 @@ from ..core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE
 class SupabaseService:
     """Serviço para operações com Supabase"""
     
-    def __init__(self):
+    def __init__(self, supabase_url: Optional[str] = None, supabase_key: Optional[str] = None):
         # Usa Service Role Key para operações administrativas
-        service_key = SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY
-        self.supabase: Client = create_client(SUPABASE_URL, service_key)
+        url = supabase_url or SUPABASE_URL
+        service_key = supabase_key or SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY
+        
+        if not url:
+            raise ValueError("supabase_url is required. Set SUPABASE_URL environment variable.")
+        if not service_key:
+            raise ValueError("supabase_key is required. Set SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY environment variable.")
+        
+        self.supabase: Client = create_client(url, service_key)
     
     # ============= CLIENTES =============
     
@@ -147,5 +154,38 @@ class SupabaseService:
             print(f"Erro ao buscar por email em {table_name}: {e}")
             return None
 
-# Instância global do serviço
-supabase_service = SupabaseService()
+# Instância global do serviço (lazy initialization)
+_supabase_service_instance: Optional['SupabaseService'] = None
+
+def get_supabase_service() -> 'SupabaseService':
+    """Retorna instância do serviço Supabase (singleton lazy)"""
+    global _supabase_service_instance
+    if _supabase_service_instance is None:
+        try:
+            _supabase_service_instance = SupabaseService()
+        except Exception as e:
+            # Em ambiente de teste/CI, tenta criar com valores mockados
+            import os
+            if os.getenv("CI") or os.getenv("PYTEST_CURRENT_TEST"):
+                # Usa valores mockados se disponíveis
+                mock_url = os.getenv("SUPABASE_URL", "https://mock.supabase.co")
+                mock_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY", "mock-key")
+                try:
+                    _supabase_service_instance = SupabaseService(supabase_url=mock_url, supabase_key=mock_key)
+                except Exception:
+                    # Se ainda falhar, levanta exceção com mensagem clara
+                    raise RuntimeError(
+                        "SupabaseService não pode ser inicializado. "
+                        "Configure variáveis de ambiente ou use mocks nos testes."
+                    ) from e
+            else:
+                raise
+    return _supabase_service_instance
+
+# Para compatibilidade com código existente, criamos um proxy que se comporta como instância
+class _SupabaseServiceProxy:
+    """Proxy que cria a instância real apenas quando necessário"""
+    def __getattr__(self, name):
+        return getattr(get_supabase_service(), name)
+
+supabase_service = _SupabaseServiceProxy()

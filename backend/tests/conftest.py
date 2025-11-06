@@ -11,6 +11,13 @@ from unittest.mock import Mock, MagicMock
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+# Configura variáveis de ambiente mockadas para evitar erros durante importação
+# Isso permite que módulos que dependem do Supabase sejam importados sem erro
+os.environ.setdefault("SUPABASE_URL", "https://mock.supabase.co")
+os.environ.setdefault("SUPABASE_ANON_KEY", "mock-anon-key")
+os.environ.setdefault("SUPABASE_SERVICE_ROLE_KEY", "mock-service-key")
+os.environ.setdefault("CI", "true")  # Marca como ambiente de CI
+
 
 @pytest.fixture(autouse=True)
 def setup_test_environment():
