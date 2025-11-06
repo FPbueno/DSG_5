@@ -11,6 +11,7 @@ pymysql
 python-dotenv
 python-jose[cryptography]
 passlib[bcrypt]
+bcrypt>=3.2.2,<4
 cryptography
 psycopg2-binary
 supabase
