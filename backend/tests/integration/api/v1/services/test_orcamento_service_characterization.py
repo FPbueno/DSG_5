@@ -27,7 +27,7 @@ class TestOrcamentoServiceCharacterization:
         orcamento_data = OrcamentoCreate(
             solicitacao_id=solicitacao_id,
             valor_proposto=1000.0,
-            prazo_execucao=30,
+            prazo_execucao="30",
             observacoes="Teste",
             condicoes="Condições teste"
         )
@@ -67,7 +67,7 @@ class TestOrcamentoServiceCharacterization:
         orcamento_data = OrcamentoCreate(
             solicitacao_id=solicitacao_id,
             valor_proposto=500.0,
-            prazo_execucao=15,
+            prazo_execucao="15",
             observacoes="",
             condicoes=""
         )
@@ -150,8 +150,7 @@ class TestOrcamentoServiceCharacterization:
             mock_update.eq.return_value = mock_eq
             mock_eq.execute.return_value = MagicMock(data=[{"id": 1, "status": "aceito"}])
             
-            from api.v1.services.solicitacao_service_supabase import buscar_solicitacao_por_id
-            with patch('api.v1.services.orcamento_service_supabase.buscar_solicitacao_por_id') as mock_solic:
+            with patch('api.v1.services.solicitacao_service_supabase.buscar_solicitacao_por_id') as mock_solic:
                 mock_solic.return_value = {"id": 1, "cliente_id": cliente_id}
                 resultado = aceitar_orcamento(orcamento_id, cliente_id)
         

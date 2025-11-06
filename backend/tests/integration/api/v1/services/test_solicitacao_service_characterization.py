@@ -25,7 +25,7 @@ class TestSolicitacaoServiceCharacterization:
             categoria="Pintura",
             descricao="Pintura de parede",
             localizacao="São Paulo",
-            prazo_desejado=30,
+            prazo_desejado="30",
             informacoes_adicionais="Urgente"
         )
         

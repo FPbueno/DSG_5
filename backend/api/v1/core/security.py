@@ -9,17 +9,16 @@ from cryptography.hazmat.backends import default_backend
 import base64
 import os
 from dotenv import load_dotenv
-from passlib.context import CryptContext
 
 
 load_dotenv('config.env')
 
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt_sha256"], deprecated="auto")
 
 def hash_password(password: str) -> str:
-    """Hash de senha usando bcrypt (trunca para 72 bytes se necessário)"""
+    """Hash de senha usando bcrypt_sha256 (trunca para 72 bytes se necessário)"""
     # Bcrypt tem limite de 72 bytes
     if isinstance(password, str):
         password_bytes = password.encode('utf-8')
@@ -37,7 +36,7 @@ ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", "your-encryption-key-32-chars-long"
 IV_LENGTH = int(os.getenv("IV_LENGTH", "16"))
 
 # Contexto para hash de senhas
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt_sha256"], deprecated="auto")
 
 # Chaves RSA para criptografia de ponta a ponta
 _rsa_private_key = None
@@ -121,7 +120,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password: str) -> str:
-    """Gera hash da senha (trunca para 72 bytes se necessário)"""
+    """Gera hash da senha usando bcrypt_sha256 (trunca para 72 bytes se necessário)"""
     # Bcrypt tem limite de 72 bytes
     if isinstance(password, str):
         password_bytes = password.encode('utf-8')

@@ -7,10 +7,11 @@ from typing import Optional, Union
 from .supabase_service import supabase_service
 
 # Contexto de criptografia de senha
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt_sha256"], deprecated="auto")
+
 
 def hash_senha(senha: str) -> str:
-    """Hash de senha usando bcrypt (trunca para 72 bytes se necessário)"""
+    """Hash de senha usando bcrypt_sha256 (trunca para 72 bytes se necessário)"""
     # Bcrypt tem limite de 72 bytes
     if isinstance(senha, str):
         senha_bytes = senha.encode('utf-8')

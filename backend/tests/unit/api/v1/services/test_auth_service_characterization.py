@@ -30,9 +30,9 @@ class TestAuthServiceCharacterization:
         # ASSERT - Captura comportamento: bcrypt gera hash diferente a cada vez
         assert hash1 != senha
         assert hash2 != senha
-        # Hash deve começar com $2b$ (bcrypt)
-        assert hash1.startswith("$2b$")
-        assert hash2.startswith("$2b$")
+        # Hash deve começar com prefixo bcrypt
+        assert hash1.startswith("$bcrypt")
+        assert hash2.startswith("$bcrypt")
     
     def test_verificar_senha_valida_corretamente(self):
         """Testa verificação de senha"""
@@ -129,7 +129,7 @@ class TestAuthServiceCharacterization:
             cpf_cnpj="12345678901",
             categorias=["Pintura", "Limpeza"],
             regioes_atendimento=["São Paulo"],
-            portfolio=["Portfolio teste"]
+            portfolio=[{"descricao": "Portfolio teste"}]
         )
         
         # ACT
