@@ -186,11 +186,11 @@
 
 - **Descrição:** Implementar 2FA para proteção adicional
 - **Tarefas:**
-  - [ ] Integração com Google Authenticator/TOTP
-  - [ ] Geração de códigos QR para configuração
+  - [x] Integração com Google Authenticator/TOTP
+  - [x] Geração de códigos QR para configuração
   - [ ] Implementar backup codes para recuperação
-  - [ ] Interface Flutter para ativar/desativar 2FA
-  - [ ] Validação obrigatória em login
+  - [x] Interface Flutter para ativar/desativar 2FA
+  - [x] Validação obrigatória em login
 - **Prioridade:** 🔥 CRÍTICA
 - **Labels:** SD, Frontend, Backend, Segurança
 - **Data:** 21/10/2025
