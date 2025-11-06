@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../constants/app_constants.dart';
-import '../services/rsa_service.dart'; // Importe o serviço RSA
+import '../services/rsa_service.dart';
+import 'setup_2fa_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   final String tipoUsuario;
@@ -22,7 +23,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _categoriasController = TextEditingController(); // Para prestador
   final _regioesController = TextEditingController(); // Para prestador
   bool _isLoading = false;
-  String? _totpSecret; // Para armazenar o código 2FA retornado
 
   Future<void> _registrar() async {
     if (!_formKey.currentState!.validate()) return;
@@ -30,10 +30,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final endpoint = widget.tipoUsuario == 'cliente' ? '/registrar' : '/prestadores/registrar';
+      final endpoint = widget.tipoUsuario == 'cliente'
+          ? '/registrar'
+          : '/prestadores/registrar';
 
       // Criptografa a senha usando o RSAService
-      final senhaCriptografada = await RSAService.encryptPassword(_senhaController.text);
+      final senhaCriptografada = await RSAService.encryptPassword(
+        _senhaController.text,
+      );
 
       final body = widget.tipoUsuario == 'cliente'
           ? {
@@ -48,8 +52,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               'email': _emailController.text,
               'senha': senhaCriptografada,
               'telefone': _telefoneController.text,
-              'categorias': _categoriasController.text.split(',').map((e) => e.trim()).toList(),
-              'regioes_atendimento': _regioesController.text.split(',').map((e) => e.trim()).toList(),
+              'categorias': _categoriasController.text
+                  .split(',')
+                  .map((e) => e.trim())
+                  .toList(),
+              'regioes_atendimento': _regioesController.text
+                  .split(',')
+                  .map((e) => e.trim())
+                  .toList(),
             };
 
       final response = await http.post(
@@ -60,16 +70,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        setState(() {
-          _totpSecret = data['codigo_2fa'];
-        });
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(data['mensagem']),
-              backgroundColor: Colors.green,
+        final totpSecret = data['codigo_2fa'];
+        final qrCode = data['qr_code'] as String?;
+
+        debugPrint('QR Code recebido: ${qrCode != null ? "Sim" : "Não"}');
+
+        if (mounted && totpSecret != null) {
+          // Navega para tela de configuração do 2FA
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => Setup2FAScreen(
+                totpSecret: totpSecret,
+                email: _emailController.text.trim(),
+                tipoUsuario: widget.tipoUsuario,
+                qrCode: qrCode,
+              ),
             ),
           );
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Cadastro realizado, mas código 2FA não foi retornado',
+                ),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
         }
       } else {
         final error = jsonDecode(response.body);
@@ -103,88 +131,79 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
-            if (_totpSecret == null)
-              Column(
-                children: [
-                  _buildField(_nomeController, 'Nome Completo', Icons.person),
+            Column(
+              children: [
+                _buildField(_nomeController, 'Nome Completo', Icons.person),
+                _buildField(
+                  _emailController,
+                  'Email',
+                  Icons.email,
+                  type: TextInputType.emailAddress,
+                ),
+                _buildField(
+                  _senhaController,
+                  'Senha',
+                  Icons.lock,
+                  obscure: true,
+                ),
+                _buildField(
+                  _telefoneController,
+                  'Telefone',
+                  Icons.phone,
+                  required: false,
+                ),
+                if (widget.tipoUsuario == 'cliente')
                   _buildField(
-                    _emailController,
-                    'Email',
-                    Icons.email,
-                    type: TextInputType.emailAddress,
-                  ),
-                  _buildField(_senhaController, 'Senha', Icons.lock, obscure: true),
-                  _buildField(
-                    _telefoneController,
-                    'Telefone',
-                    Icons.phone,
+                    _enderecoController,
+                    'Endereço',
+                    Icons.location_on,
                     required: false,
                   ),
-                  if (widget.tipoUsuario == 'cliente')
-                    _buildField(_enderecoController, 'Endereço', Icons.location_on),
-                  if (widget.tipoUsuario == 'prestador') ...[
-                    _buildField(_categoriasController, 'Categorias (separadas por vírgula)', Icons.category),
-                    _buildField(_regioesController, 'Regiões de Atendimento (separadas por vírgula)', Icons.map),
-                  ],
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _registrar,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFf5c116),
+                if (widget.tipoUsuario == 'prestador') ...[
+                  _buildField(
+                    _categoriasController,
+                    'Categorias (separadas por vírgula)',
+                    Icons.category,
+                  ),
+                  _buildField(
+                    _regioesController,
+                    'Regiões de Atendimento (separadas por vírgula)',
+                    Icons.map,
+                  ),
+                ],
+                const SizedBox(height: 24),
+                SizedBox(
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _registrar,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFf5c116),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: _isLoading
-                          ? const CircularProgressIndicator(color: Colors.black)
-                          : const Text(
-                              'Cadastrar',
-                              style: TextStyle(fontSize: 18, color: Colors.black),
+                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: Colors.black)
+                        : const Text(
+                            'Cadastrar',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
                             ),
-                    ),
+                          ),
                   ),
-                ],
-              ),
-            if (_totpSecret != null)
-              Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Text(
-                    'Cadastro realizado com sucesso! Use o código abaixo no seu app autenticador (Google Authenticator, Authy etc.) para ativar o 2FA:',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                    textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    'Já tem conta? Faça login',
+                    style: TextStyle(color: Color(0xFFf5c116)),
                   ),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      _totpSecret!,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Redirecionar para login ou home
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFf5c116),
-                      ),
-                      child: const Text(
-                        'Continuar',
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -204,7 +223,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
         ),
         child: TextFormField(
           controller: controller,

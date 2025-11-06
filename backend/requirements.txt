@@ -14,6 +14,12 @@ passlib[bcrypt]
 cryptography
 psycopg2-binary
 supabase
-pytest
-pytest-asyncio
-httpx
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.1
+httpx>=0.24.0
+faker>=19.0.0
+pyotp>=2.9.0
+qrcode[pil]>=7.4.2
+Pillow>=10.0.0

@@ -1,5 +1,8 @@
 # WorcaFlow - Plataforma de Solicitação de Serviços
 
+[![CI - Backend Tests](https://github.com/USER/REPO/workflows/CI%20-%20Backend%20Tests/badge.svg)](https://github.com/USER/REPO/actions)
+[![Coverage](https://codecov.io/gh/USER/REPO/branch/main/graph/badge.svg)](https://codecov.io/gh/USER/REPO)
+
 Sistema completo de marketplace de serviços residenciais conectando clientes a prestadores, com Machine Learning para previsão de preços e categorias. Desenvolvido com FastAPI (backend), Supabase/PostgreSQL (banco) e Flutter (frontend).
 
 ## 🏆 Funcionalidades Implementadas
@@ -250,6 +253,38 @@ O frontend é um app multiplataforma construído com Flutter:
 - **Frontend Web**: `http://localhost:3000` (quando executado)
 - **Frontend Mobile**: Dispositivo móvel conectado
 
+## 🧪 Testes e CI/CD
+
+O projeto segue práticas de **TDD (Test-Driven Development)** e **CI/CD (Continuous Integration/Continuous Deployment)**:
+
+- ✅ **Testes Automatizados**: pytest com cobertura de código
+- ✅ **CI/CD**: GitHub Actions executando testes automaticamente
+- ✅ **Estrutura Organizada**: Testes unitários, integração e E2E
+- ✅ **Documentação**: Guia completo de testes em [`backend/TESTING.md`](backend/TESTING.md)
+
+### Executando Testes
+
+```bash
+cd backend
+pytest                          # Todos os testes
+pytest --cov=api --cov-report=html  # Com cobertura
+pytest -m unit                  # Apenas unitários
+```
+
+### CI/CD
+
+Os testes são executados automaticamente via GitHub Actions em:
+
+- Push para branches principais
+- Pull Requests
+
+Veja [`.github/workflows/ci.yml`](.github/workflows/ci.yml) para detalhes.
+
+**Plano de Implementação**:
+
+- [`PLANO_TDD_CI_CD.md`](PLANO_TDD_CI_CD.md) - Roteiro detalhado completo
+- [`PROGRESSO_TDD_CI_CD.md`](PROGRESSO_TDD_CI_CD.md) - Progresso atual dos 7 dias
+
 ## 📚 Documentação Adicional
 
 Para informações detalhadas sobre cada módulo:
@@ -257,3 +292,5 @@ Para informações detalhadas sobre cada módulo:
 - [📋 Trello Cards](Trello_Cards_ABP.md) - Backlog completo do projeto
 - [📖 Backend README](backend/README.md) - Documentação completa da API
 - [📱 Frontend README](frontend/README.md) - Documentação completa do app
+- [🧪 Guia de Testes](backend/TESTING.md) - Convenções e práticas de teste
+- [🚀 Plano TDD/CI/CD](PLANO_TDD_CI_CD.md) - Roteiro de implementação

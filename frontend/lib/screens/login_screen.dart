@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../constants/app_constants.dart';
 import '../services/rsa_service.dart';
@@ -54,29 +55,31 @@ class _LoginScreenState extends State<LoginScreen> {
         final data = jsonDecode(response.body);
 
         // Verifica se a autenticação de 2FA é necessária
-        if (data.containsKey('two_factor_required') && data['two_factor_required']) {
-          // Navega para a tela de 2FA, passando os dados necessários
+        // A API retorna "require_2fa": true quando precisa de 2FA
+        if (data.containsKey('require_2fa') && data['require_2fa'] == true) {
+          // Navega para a tela de 2FA
           if (mounted) {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => TwoFactorScreen(
                   email: _emailController.text.trim(),
                   tipoUsuario: widget.tipoUsuario,
-                  loginData: data, // Passa os dados do login inicial se necessário
+                  usuarioId: data['usuario_id'] ?? 0,
                 ),
               ),
             );
           }
         } else {
-          _onLoginSuccess(data);  // Login completo sem 2FA
+          // Se não requer 2FA, já faz login completo (não deveria acontecer)
+          _onLoginSuccess(data);
         }
       } else {
+        final errorData = jsonDecode(response.body);
+        final errorMsg = errorData['detail'] ?? 'Email ou senha incorretos';
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Email ou senha incorretos'),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
           );
         }
       }
@@ -91,16 +94,27 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Função que será chamada após o login bem-sucedido (com ou sem 2FA)
-  void _onLoginSuccess(Map<String, dynamic> data) {
+  // Salva dados de login e navega
+  Future<void> _onLoginSuccess(Map<String, dynamic> data) async {
+    if (!mounted) return;
+
+    try {
+      // Salva token e dados do usuário
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', data['token'] ?? '');
+      await prefs.setString('user_data', jsonEncode(data));
+    } catch (e) {
+      debugPrint('Erro ao salvar dados: $e');
+    }
+
     if (mounted) {
       // Navega para a tela principal específica do tipo de usuário
       if (widget.tipoUsuario == 'cliente') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => MainClienteScreen(
-              usuarioId: data['usuario_id'],
-              nome: data['nome'],
+              usuarioId: data['usuario_id'] ?? 0,
+              nome: data['nome'] ?? '',
             ),
           ),
         );
@@ -108,8 +122,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => MainPrestadorScreen(
-              usuarioId: data['usuario_id'],
-              nome: data['nome'],
+              usuarioId: data['usuario_id'] ?? 0,
+              nome: data['nome'] ?? '',
             ),
           ),
         );
@@ -281,6 +295,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // Método _buildTextField para TwoFactorScreen
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -288,14 +303,16 @@ class _LoginScreenState extends State<LoginScreen> {
     bool obscure = false,
     Widget? suffixIcon,
     String? Function(String?)? validator,
+    TextInputType? keyboardType,
+    int? maxLength,
   }) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withValues(alpha: 0.9),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -304,12 +321,15 @@ class _LoginScreenState extends State<LoginScreen> {
       child: TextFormField(
         controller: controller,
         obscureText: obscure,
+        keyboardType: keyboardType,
+        maxLength: maxLength,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey[600]),
           prefixIcon: Icon(icon, color: Colors.grey[600]),
           suffixIcon: suffixIcon,
+          counterText: maxLength != null ? '' : null,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
@@ -323,17 +343,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-// Nova tela para autenticação de 2 fatores
+// Tela para autenticação de 2 fatores
 class TwoFactorScreen extends StatefulWidget {
   final String email;
   final String tipoUsuario;
-  final Map<String, dynamic> loginData;
+  final int usuarioId;
 
   const TwoFactorScreen({
     super.key,
     required this.email,
     required this.tipoUsuario,
-    required this.loginData,
+    required this.usuarioId,
   });
 
   @override
@@ -351,10 +371,12 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
   }
 
   Future<void> _verifyTwoFactorCode() async {
-    if (_twoFactorController.text.isEmpty) {
+    final code = _twoFactorController.text.trim();
+
+    if (code.isEmpty || code.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Por favor, insira o código 2FA'),
+          content: Text('Por favor, insira um código 2FA válido (6 dígitos)'),
           backgroundColor: Colors.red,
         ),
       );
@@ -364,44 +386,81 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
     setState(() => _isLoading = true);
 
     try {
+      // Chama o endpoint /login-2fa conforme a API
       final response = await http.post(
-        Uri.parse('${AppConstants.baseUrl}/verify-2fa'),
+        Uri.parse('${AppConstants.baseUrl}/login-2fa'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': widget.email,
-          'code': _twoFactorController.text,
+          'tipo_usuario': widget.tipoUsuario,
+          'codigo': code, // Código de 6 dígitos do app autenticador
         }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        _onLoginSuccess(data);  // Login completo após verificar o código 2FA
+
+        // Salva token e dados do usuário
+        await _saveLoginData(data);
+
+        _onLoginSuccess(data); // Login completo após verificar o código 2FA
       } else {
+        final errorData = jsonDecode(response.body);
+        final errorMsg = errorData['detail'] ?? 'Código 2FA inválido';
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Código 2FA inválido'),
+          SnackBar(
+            content: Text('Erro ao verificar código 2FA: $e'),
             backgroundColor: Colors.red,
           ),
         );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro: $e'), backgroundColor: Colors.red),
-      );
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
-  void _onLoginSuccess(Map<String, dynamic> data) {
+  Future<void> _saveLoginData(Map<String, dynamic> data) async {
+    try {
+      // Salva token usando SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', data['token'] ?? '');
+      await prefs.setString('user_data', jsonEncode(data));
+    } catch (e) {
+      debugPrint('Erro ao salvar dados de login: $e');
+    }
+  }
+
+  Future<void> _onLoginSuccess(Map<String, dynamic> data) async {
+    if (!mounted) return;
+
+    try {
+      // Salva token e dados do usuário
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', data['token'] ?? '');
+      await prefs.setString('user_data', jsonEncode(data));
+    } catch (e) {
+      debugPrint('Erro ao salvar dados: $e');
+    }
+
     if (mounted) {
       // Navega para a tela principal específica do tipo de usuário
       if (widget.tipoUsuario == 'cliente') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => MainClienteScreen(
-              usuarioId: data['usuario_id'],
-              nome: data['nome'],
+              usuarioId: data['usuario_id'] ?? widget.usuarioId,
+              nome: data['nome'] ?? '',
             ),
           ),
         );
@@ -409,8 +468,8 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => MainPrestadorScreen(
-              usuarioId: data['usuario_id'],
-              nome: data['nome'],
+              usuarioId: data['usuario_id'] ?? widget.usuarioId,
+              nome: data['nome'] ?? '',
             ),
           ),
         );
@@ -428,7 +487,8 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height -
+                minHeight:
+                    MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top -
                     MediaQuery.of(context).padding.bottom,
               ),
@@ -474,12 +534,30 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                   ),
                   const SizedBox(height: 32),
 
+                  // Instruções
+                  const Text(
+                    'Digite o código de 6 dígitos gerado pelo seu app autenticador (Google Authenticator, Authy, etc.)',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+
                   // Campo para código 2FA
                   _buildTextField(
                     controller: _twoFactorController,
-                    label: 'Código 2FA',
+                    label: 'Código 2FA (6 dígitos)',
                     icon: Icons.lock_clock,
-                    validator: (v) => v!.isEmpty ? 'Digite o código 2FA' : null,
+                    keyboardType: TextInputType.number,
+                    maxLength: 6,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'Digite o código 2FA';
+                      }
+                      if (v.length != 6) {
+                        return 'O código deve ter 6 dígitos';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 30),
 
@@ -496,9 +574,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                         ),
                       ),
                       child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.black,
-                            )
+                          ? const CircularProgressIndicator(color: Colors.black)
                           : const Text(
                               'Verificar',
                               style: TextStyle(
@@ -518,6 +594,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
     );
   }
 
+  // Método _buildTextField para TwoFactorScreen
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -525,14 +602,16 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
     bool obscure = false,
     Widget? suffixIcon,
     String? Function(String?)? validator,
+    TextInputType? keyboardType,
+    int? maxLength,
   }) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withValues(alpha: 0.9),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -541,12 +620,15 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
       child: TextFormField(
         controller: controller,
         obscureText: obscure,
+        keyboardType: keyboardType,
+        maxLength: maxLength,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey[600]),
           prefixIcon: Icon(icon, color: Colors.grey[600]),
           suffixIcon: suffixIcon,
+          counterText: maxLength != null ? '' : null,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
