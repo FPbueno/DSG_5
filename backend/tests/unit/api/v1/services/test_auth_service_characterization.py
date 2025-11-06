@@ -129,7 +129,7 @@ class TestAuthServiceCharacterization:
             cpf_cnpj="12345678901",
             categorias=["Pintura", "Limpeza"],
             regioes_atendimento=["São Paulo"],
-            portfolio="Portfolio teste"
+            portfolio=["Portfolio teste"]
         )
         
         # ACT

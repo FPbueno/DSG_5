@@ -19,6 +19,12 @@ load_dotenv('config.env')
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
+    """Hash de senha usando bcrypt (trunca para 72 bytes se necessário)"""
+    # Bcrypt tem limite de 72 bytes
+    if isinstance(password, str):
+        password_bytes = password.encode('utf-8')
+        if len(password_bytes) > 72:
+            password = password_bytes[:72].decode('utf-8', errors='ignore')
     return pwd_context.hash(password)
 
 # Configurações de segurança
@@ -106,11 +112,21 @@ def create_access_token(
     return encoded_jwt
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verifica se a senha está correta"""
+    """Verifica se a senha está correta (trunca para 72 bytes se necessário)"""
+    # Bcrypt tem limite de 72 bytes
+    if isinstance(plain_password, str):
+        password_bytes = plain_password.encode('utf-8')
+        if len(password_bytes) > 72:
+            plain_password = password_bytes[:72].decode('utf-8', errors='ignore')
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password: str) -> str:
-    """Gera hash da senha"""
+    """Gera hash da senha (trunca para 72 bytes se necessário)"""
+    # Bcrypt tem limite de 72 bytes
+    if isinstance(password, str):
+        password_bytes = password.encode('utf-8')
+        if len(password_bytes) > 72:
+            password = password_bytes[:72].decode('utf-8', errors='ignore')
     return pwd_context.hash(password)
 
 def encrypt_data(data: str) -> str:

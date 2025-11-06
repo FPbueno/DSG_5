@@ -140,7 +140,7 @@ def registrar_prestador(prestador_data: PrestadorCreate, db: Session = Depends(g
             categorias=prestador["categorias"],
             regioes_atendimento=prestador["regioes_atendimento"],
             avaliacao_media=prestador.get("avaliacao_media", 0.0) or 0.0,
-            portfolio=prestador.get("portfolio", ""),
+            portfolio=prestador.get("portfolio") or [],
             created_at=prestador["created_at"]
         ),
         "codigo_2fa": secret,

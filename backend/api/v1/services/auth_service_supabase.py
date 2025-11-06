@@ -10,11 +10,21 @@ from .supabase_service import supabase_service
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_senha(senha: str) -> str:
-    """Hash de senha usando bcrypt"""
+    """Hash de senha usando bcrypt (trunca para 72 bytes se necessário)"""
+    # Bcrypt tem limite de 72 bytes
+    if isinstance(senha, str):
+        senha_bytes = senha.encode('utf-8')
+        if len(senha_bytes) > 72:
+            senha = senha_bytes[:72].decode('utf-8', errors='ignore')
     return pwd_context.hash(senha)
 
 def verificar_senha(senha_plana: str, senha_hash: str) -> bool:
-    """Verifica se senha corresponde ao hash"""
+    """Verifica se senha corresponde ao hash (trunca para 72 bytes se necessário)"""
+    # Bcrypt tem limite de 72 bytes
+    if isinstance(senha_plana, str):
+        senha_bytes = senha_plana.encode('utf-8')
+        if len(senha_bytes) > 72:
+            senha_plana = senha_bytes[:72].decode('utf-8', errors='ignore')
     return pwd_context.verify(senha_plana, senha_hash)
 
 # ============= CLIENTES =============
