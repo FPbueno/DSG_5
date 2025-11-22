@@ -8,12 +8,13 @@ from ..schemas import (
     PrestadorCreate, PrestadorResponse,
     LoginRequest, LoginResponse, RegistrarClienteResponse, PrestadorRegistroResponse
 )
-from ..services.auth_service_supabase import ( 
+from ..services.auth_service_supabase import (
     criar_cliente, criar_prestador,
     autenticar_cliente, autenticar_prestador,
     buscar_cliente_por_email, buscar_prestador_por_email,
-    buscar_prestador_por_id
+    buscar_prestador_por_id,
 )
+from ..services.supabase_service import supabase_service
 from ..core.security import get_rsa_public_key_pem, decrypt_rsa_password
 from api.v1.schemas.usuarios import TwoFAVerifyRequest
 import pyotp
@@ -239,25 +240,25 @@ def login_2fa(data: TwoFAVerifyRequest, db: Session = Depends(get_db)):
 # ============= GESTÃO DE PRESTADORES =============
 
 @router.get("/prestadores/{prestador_id}", response_model=PrestadorResponse)
-def buscar_prestador(prestador_id: int, db: Session = Depends(get_db)):
+def buscar_prestador(prestador_id: int):
     """Busca dados do prestador"""
     prestador = buscar_prestador_por_id(prestador_id)
     if not prestador:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Prestador não encontrado"
+            detail="Prestador não encontrado",
         )
-    
+
     return PrestadorResponse(
-        id=prestador.id,
-        nome=prestador.nome,
-        email=prestador.email,
-        telefone=prestador.telefone,
-        categorias=prestador.categorias,
-        regioes_atendimento=prestador.regioes_atendimento,
-        avaliacao_media=prestador.avaliacao_media,
-        portfolio=prestador.portfolio,
-        created_at=prestador.created_at
+        id=prestador["id"],
+        nome=prestador["nome"],
+        email=prestador["email"],
+        telefone=prestador.get("telefone"),
+        categorias=prestador.get("categorias") or [],
+        regioes_atendimento=prestador.get("regioes_atendimento") or [],
+        avaliacao_media=prestador.get("avaliacao_media", 0.0) or 0.0,
+        portfolio=prestador.get("portfolio") or [],
+        created_at=prestador["created_at"],
     )
 
 class AtualizarCategoriasRequest(BaseModel):
@@ -267,18 +268,35 @@ class AtualizarCategoriasRequest(BaseModel):
 def atualizar_prestador(
     prestador_id: int,
     dados: AtualizarCategoriasRequest,
-    db: Session = Depends(get_db)
 ):
     """Atualiza categorias do prestador"""
     prestador = buscar_prestador_por_id(prestador_id)
     if not prestador:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Prestador não encontrado"
+            detail="Prestador não encontrado",
         )
-    
-    # Atualiza categorias no DB
-    prestador.categorias = dados.categorias
-    db.commit()
-    
+
+    try:
+        resp = (
+            supabase_service.get_client()
+            .table("prestadores")
+            .update({"categorias": dados.categorias})
+            .eq("id", prestador_id)
+            .execute()
+        )
+        if not resp.data:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Erro ao atualizar categorias do prestador",
+            )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Erro ao atualizar categorias do prestador: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro ao atualizar categorias do prestador",
+        )
+
     return {"success": True, "message": "Categorias atualizadas com sucesso"}

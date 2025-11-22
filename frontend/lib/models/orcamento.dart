@@ -11,10 +11,13 @@ class Orcamento {
   final String? condicoes;
   final String status;
   final DateTime createdAt;
+  final DateTime? datetimeInicio;
+  final DateTime? datetimeFim;
   final String? prestadorNome;
   final double? prestadorAvaliacao;
   final String? categoria;
   final String? descricao;
+  final bool jaAvaliado;
 
   Orcamento({
     required this.id,
@@ -29,10 +32,13 @@ class Orcamento {
     this.condicoes,
     required this.status,
     required this.createdAt,
+    this.datetimeInicio,
+    this.datetimeFim,
     this.prestadorNome,
     this.prestadorAvaliacao,
     this.categoria,
     this.descricao,
+    this.jaAvaliado = false,
   });
 
   factory Orcamento.fromJson(Map<String, dynamic> json) {
@@ -49,10 +55,17 @@ class Orcamento {
       condicoes: json['condicoes'],
       status: (json['status'] as String).toLowerCase(),
       createdAt: DateTime.parse(json['created_at']),
+      datetimeInicio: json['datetime_inicio'] != null
+          ? DateTime.parse(json['datetime_inicio'])
+          : null,
+      datetimeFim: json['datetime_fim'] != null
+          ? DateTime.parse(json['datetime_fim'])
+          : null,
       prestadorNome: json['prestador_nome'],
       prestadorAvaliacao: json['prestador_avaliacao']?.toDouble(),
       categoria: json['categoria'],
       descricao: json['descricao'],
+      jaAvaliado: json['ja_avaliado'] ?? false,
     );
   }
 

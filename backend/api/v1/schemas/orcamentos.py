@@ -12,6 +12,9 @@ class OrcamentoBase(BaseModel):
     prazo_execucao: str
     observacoes: Optional[str] = None
     condicoes: Optional[str] = None
+    # Janela de agendamento do serviço (opcional)
+    datetime_inicio: Optional[datetime] = None
+    datetime_fim: Optional[datetime] = None
 
 class OrcamentoCreate(OrcamentoBase):
     solicitacao_id: int

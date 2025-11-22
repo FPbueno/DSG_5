@@ -120,6 +120,8 @@ def listar_meus_orcamentos(
             "condicoes": orc['condicoes'],
             "status": orc['status'],
             "created_at": orc['created_at'],
+            "datetime_inicio": orc.get('datetime_inicio'),
+            "datetime_fim": orc.get('datetime_fim'),
             "prestador_nome": orc.get('prestadores', {}).get('nome', 'N/A'),
             "prestador_avaliacao": orc.get('prestadores', {}).get('avaliacao_media', 0.0),
             "categoria": orc.get('solicitacoes', {}).get('categoria', 'N/A'),

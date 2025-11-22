@@ -488,10 +488,10 @@ class _HistoricoClienteScreenState extends State<HistoricoClienteScreen> {
                         color: Colors.green.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Text(
-                        'REALIZADO',
+                      child: Text(
+                        orc.jaAvaliado ? 'AVALIADO' : 'REALIZADO',
                         style: TextStyle(
-                          color: Colors.green,
+                          color: orc.jaAvaliado ? Colors.amber : Colors.green,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -619,12 +619,163 @@ class _HistoricoClienteScreenState extends State<HistoricoClienteScreen> {
                         const SizedBox(height: 16),
                         _buildInfoRow('Condições', orc.condicoes!),
                       ],
+                      const SizedBox(height: 20),
+                      if (orc.status == 'realizado' && !orc.jaAvaliado)
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () => _avaliar(orc, ctx),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Color(0xFFf5c116)),
+                              foregroundColor: const Color(0xFFf5c116),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            child: const Text('Avaliar serviço'),
+                          ),
+                        )
+                      else if (orc.status == 'realizado' && orc.jaAvaliado)
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            'Já avaliado',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _avaliar(Orcamento orc, BuildContext bottomSheetContext) async {
+    int estrelas = 0;
+    final comentarioCtrl = TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          backgroundColor: const Color(0xFF1a1a1a),
+          title: const Text(
+            'Avaliar serviço',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (i) {
+                  final idx = i + 1;
+                  final ativo = estrelas >= idx;
+                  return IconButton(
+                    onPressed: () => setDialogState(() => estrelas = idx),
+                    icon: Icon(
+                      Icons.star,
+                      color: ativo ? const Color(0xFFf5c116) : Colors.grey[700],
+                      size: 32,
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: comentarioCtrl,
+                maxLines: 3,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Comentário (opcional)',
+                  hintStyle: TextStyle(color: Colors.grey[500]),
+                  filled: true,
+                  fillColor: const Color(0xFF121212),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (estrelas < 1) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Selecione de 1 a 5 estrelas'),
+                    ),
+                  );
+                  return;
+                }
+                try {
+                  final resp = await http.post(
+                    Uri.parse('${AppConstants.baseUrl}/avaliacoes/'),
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode({
+                      'orcamento_id': orc.id,
+                      'cliente_id': widget.usuarioId,
+                      'prestador_id': orc.prestadorId,
+                      'estrelas': estrelas,
+                      'comentario': comentarioCtrl.text,
+                    }),
+                  );
+                  if (!mounted) return;
+                  if (resp.statusCode == 201) {
+                    if (dialogContext.mounted) Navigator.pop(dialogContext);
+                    if (bottomSheetContext.mounted) {
+                      Navigator.pop(bottomSheetContext);
+                    }
+                    await _carregarHistorico();
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Avaliação enviada!'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    }
+                  }
+                } catch (e) {
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Erro: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: const Text(
+                'Enviar',
+                style: TextStyle(color: Color(0xFFf5c116)),
+              ),
+            ),
+          ],
         ),
       ),
     );

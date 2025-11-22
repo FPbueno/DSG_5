@@ -117,6 +117,9 @@ class Orcamento(Base):
     valor_proposto = Column(Float, nullable=False)
     
     prazo_execucao = Column(String(100), nullable=False)
+    # Janela de agendamento do serviço (para agenda do prestador)
+    datetime_inicio = Column(DateTime(timezone=True), nullable=True)
+    datetime_fim = Column(DateTime(timezone=True), nullable=True)
     observacoes = Column(Text, nullable=True)
     condicoes = Column(Text, nullable=True)
     status = Column(

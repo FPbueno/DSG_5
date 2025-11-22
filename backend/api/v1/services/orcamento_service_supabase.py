@@ -4,6 +4,7 @@ Serviço de Orçamentos usando Supabase REST
 from typing import Optional, List, Dict, Any
 from ..services.supabase_service import supabase_service
 from ..schemas import OrcamentoCreate
+from datetime import datetime
 
 # ============= ORÇAMENTOS =============
 
@@ -100,10 +101,22 @@ def aceitar_orcamento(orcamento_id: int, cliente_id: int) -> Optional[Dict[str, 
         if not solicitacao or solicitacao['cliente_id'] != cliente_id:
             return None
         
-        # Atualiza status para aceito
-        response = supabase_service.get_client().table("orcamentos").update({
-            "status": "aceito"
-        }).eq("id", orcamento_id).execute()
+        # Define início do serviço usando created_at da solicitação (ISO do Supabase).
+        # Não usamos prazo_desejado porque vem em formato livre (ex: 22/11/2025).
+        inicio_iso = None
+        try:
+            if solicitacao.get("created_at"):
+                inicio_iso = solicitacao["created_at"]
+        except Exception:
+            inicio_iso = None
+
+        update_data = {"status": "aceito"}
+        if inicio_iso:
+            # garante string em ISO; se já vier ISO do Supabase só reaproveita
+            update_data["datetime_inicio"] = inicio_iso
+
+        # Atualiza status para aceito + datetime_inicio (se definido)
+        response = supabase_service.get_client().table("orcamentos").update(update_data).eq("id", orcamento_id).execute()
         
         if response.data:
             # Atualiza status da solicitação para "com_orcamentos"
@@ -125,9 +138,11 @@ def marcar_realizado(orcamento_id: int, prestador_id: int) -> Optional[Dict[str,
         if not orcamento or orcamento['prestador_id'] != prestador_id:
             return None
         
-        # Atualiza status para realizado
+        # Atualiza status para realizado e grava datetime_fim
+        agora_iso = datetime.utcnow().isoformat()
         response = supabase_service.get_client().table("orcamentos").update({
-            "status": "realizado"
+            "status": "realizado",
+            "datetime_fim": agora_iso
         }).eq("id", orcamento_id).execute()
         
         if response.data:

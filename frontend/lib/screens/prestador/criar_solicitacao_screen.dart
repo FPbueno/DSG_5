@@ -21,6 +21,7 @@ class _CriarSolicitacaoScreenState extends State<CriarSolicitacaoScreen> {
   String? _categoriaSelecionada;
   String? _subcategoriaSelecionada;
   DateTime? _prazoSelecionado;
+  TimeOfDay? _horaSelecionada;
 
   Future<void> _selecionarData() async {
     final data = await showDatePicker(
@@ -45,6 +46,35 @@ class _CriarSolicitacaoScreenState extends State<CriarSolicitacaoScreen> {
 
     if (data != null) {
       setState(() => _prazoSelecionado = data);
+    }
+  }
+
+  Future<void> _selecionarHora() async {
+    final hora = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            timePickerTheme: const TimePickerThemeData(
+              backgroundColor: Color(0xFF1a1a1a),
+              hourMinuteColor: Color(0xFF121212),
+              dialBackgroundColor: Color(0xFF121212),
+            ),
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0xFFf5c116),
+              onPrimary: Colors.black,
+              surface: Color(0xFF1a1a1a),
+              onSurface: Colors.white,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (hora != null) {
+      setState(() => _horaSelecionada = hora);
     }
   }
 
@@ -75,6 +105,10 @@ class _CriarSolicitacaoScreenState extends State<CriarSolicitacaoScreen> {
           'localizacao': _localizacaoController.text,
           'prazo_desejado': _prazoSelecionado != null
               ? '${_prazoSelecionado!.day}/${_prazoSelecionado!.month}/${_prazoSelecionado!.year}'
+              : null,
+          // Hora desejada apenas informativa por enquanto
+          'hora_desejada': _horaSelecionada != null
+              ? '${_horaSelecionada!.hour.toString().padLeft(2, '0')}:${_horaSelecionada!.minute.toString().padLeft(2, '0')}'
               : null,
         }),
       );
@@ -141,6 +175,8 @@ class _CriarSolicitacaoScreenState extends State<CriarSolicitacaoScreen> {
             _buildField(_localizacaoController, 'Localização', 'Cidade/Bairro'),
             const SizedBox(height: 16),
             _buildDateField(),
+            const SizedBox(height: 12),
+            _buildTimeField(),
             const SizedBox(height: 24),
             SizedBox(
               height: 56,
@@ -212,6 +248,37 @@ class _CriarSolicitacaoScreenState extends State<CriarSolicitacaoScreen> {
                   : '${_prazoSelecionado!.day}/${_prazoSelecionado!.month}/${_prazoSelecionado!.year}',
               style: TextStyle(
                 color: _prazoSelecionado == null
+                    ? Colors.grey[400]
+                    : Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeField() {
+    return GestureDetector(
+      onTap: _selecionarHora,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1a1a1a),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey[800]!),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.schedule, color: Color(0xFFf5c116)),
+            const SizedBox(width: 12),
+            Text(
+              _horaSelecionada == null
+                  ? 'Selecionar horário (opcional)'
+                  : '${_horaSelecionada!.hour.toString().padLeft(2, '0')}:${_horaSelecionada!.minute.toString().padLeft(2, '0')}',
+              style: TextStyle(
+                color: _horaSelecionada == null
                     ? Colors.grey[400]
                     : Colors.white,
                 fontSize: 16,
