@@ -1,0 +1,73 @@
+# ============================================
+# IGNORAR FRONTEND - Apenas backend será deployado
+# ============================================
+frontend/
+*.iml
+
+# ============================================
+# ARQUIVOS DE DESENVOLVIMENTO
+# ============================================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# ============================================
+# NOTEBOOKS E DADOS DE TREINAMENTO
+# ============================================
+*.ipynb
+*.ipynb_checkpoints/
+backend/models/training_model/
+
+# ============================================
+# ARQUIVOS DE IDE E CONFIGURAÇÃO
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================
+# ARQUIVOS DE SISTEMA
+# ============================================
+.DS_Store
+Thumbs.db
+
+# ============================================
+# DOCUMENTAÇÃO (opcional - reduzir tamanho)
+# ============================================
+*.md
+!backend/README.md
+!README.md
+
+# ============================================
+# ARQUIVOS EXCEL (exceto o necessário)
+# ============================================
+*.xlsx
+!backend/quotes_data.xlsx
+
+# ============================================
+# MODELOS ML (podem ser gerados no runtime)
+# ============================================
+backend/models/*.pkl
+
+# ============================================
+# OUTROS ARQUIVOS DESNECESSÁRIOS
+# ============================================
+config.py
+*.sql
+backend/setup_db.py
+backend/test_endpoint.py
+backend/TESTING.md
+
