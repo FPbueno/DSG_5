@@ -13,12 +13,8 @@ backend_path = str(backend_dir)
 if backend_path not in sys.path:
     sys.path.insert(0, backend_path)
 
-# Tenta importar usando import absoluto
-try:
-    from api.v1.core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
-except ImportError:
-    # Se o import absoluto falhar, tenta import relativo
-    from ..core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+# Importa usando import relativo (mais confiável em testes)
+from ..core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
 
 class SupabaseService:
     """Serviço para operações com Supabase"""

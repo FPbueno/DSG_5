@@ -10,12 +10,8 @@ backend_path = str(backend_dir)
 if backend_path not in sys.path:
     sys.path.insert(0, backend_path)
 
-# Tenta importar usando import absoluto
-try:
-    from api.v1.core.config import DATABASE_URL
-except ImportError:
-    # Se o import absoluto falhar, tenta import relativo
-    from .config import DATABASE_URL
+# Importa usando import relativo (mais confiável em testes)
+from .config import DATABASE_URL
 
 # Configuração do banco de dados
 DEFAULT_SQLITE_URL = "sqlite:///./app_test.db"
