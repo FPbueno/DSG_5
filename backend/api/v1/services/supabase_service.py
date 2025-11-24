@@ -13,8 +13,25 @@ backend_path = str(backend_dir)
 if backend_path not in sys.path:
     sys.path.insert(0, backend_path)
 
-# Importa usando import relativo (mais confiável em testes)
-from ..core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+# Importa config - tenta múltiplas estratégias para garantir compatibilidade
+try:
+    from api.v1.core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+except ImportError:
+    # Fallback: import direto do arquivo usando importlib
+    import importlib.util
+    config_path = backend_dir / "api" / "v1" / "core" / "config.py"
+    if config_path.exists():
+        spec = importlib.util.spec_from_file_location("api.v1.core.config", config_path)
+        if spec and spec.loader:
+            config_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(config_module)
+            SUPABASE_URL = config_module.SUPABASE_URL
+            SUPABASE_ANON_KEY = config_module.SUPABASE_ANON_KEY
+            SUPABASE_SERVICE_ROLE_KEY = config_module.SUPABASE_SERVICE_ROLE_KEY
+        else:
+            raise ImportError(f"Não foi possível carregar config de {config_path}")
+    else:
+        raise ImportError(f"Arquivo config não encontrado em {config_path}")
 
 class SupabaseService:
     """Serviço para operações com Supabase"""
