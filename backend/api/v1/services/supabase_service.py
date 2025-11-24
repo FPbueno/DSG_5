@@ -19,8 +19,19 @@ try:
 except ImportError:
     # Fallback: import direto do arquivo usando importlib
     import importlib.util
-    config_path = backend_dir / "api" / "v1" / "core" / "config.py"
-    if config_path.exists():
+    # Tenta múltiplos caminhos possíveis (começa pelo mais confiável)
+    current_file = Path(__file__).resolve()
+    possible_paths = [
+        current_file.parent.parent / "core" / "config.py",  # Relativo ao arquivo atual (mais confiável)
+        backend_dir / "api" / "v1" / "core" / "config.py",
+    ]
+    config_path = None
+    for path in possible_paths:
+        if path.exists():
+            config_path = path
+            break
+    
+    if config_path and config_path.exists():
         spec = importlib.util.spec_from_file_location("api.v1.core.config", config_path)
         if spec and spec.loader:
             config_module = importlib.util.module_from_spec(spec)
@@ -29,9 +40,15 @@ except ImportError:
             SUPABASE_ANON_KEY = config_module.SUPABASE_ANON_KEY
             SUPABASE_SERVICE_ROLE_KEY = config_module.SUPABASE_SERVICE_ROLE_KEY
         else:
-            raise ImportError(f"Não foi possível carregar config de {config_path}")
+            # Se não conseguir carregar, usa variáveis de ambiente
+            SUPABASE_URL = os.getenv("SUPABASE_URL")
+            SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+            SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
     else:
-        raise ImportError(f"Arquivo config não encontrado em {config_path}")
+        # Último recurso: usa valores padrão do ambiente
+        SUPABASE_URL = os.getenv("SUPABASE_URL")
+        SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+        SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 class SupabaseService:
     """Serviço para operações com Supabase"""
