@@ -103,9 +103,17 @@ def test_client():
     return TestClient(app)
 
 
-# Configuração de markers padrão
+# Hook executado ANTES de qualquer importação de módulos de teste
 def pytest_configure(config):
-    """Registra markers customizados"""
+    """Registra markers customizados e garante que o path está configurado"""
+    # Importa setup_path para garantir que o path está configurado
+    # Isso é executado ANTES da coleta de testes
+    try:
+        import setup_path  # noqa: F401
+    except ImportError:
+        # Se não conseguir importar, o path já foi configurado acima
+        pass
+    
     config.addinivalue_line("markers", "unit: Testes unitários")
     config.addinivalue_line("markers", "integration: Testes de integração")
     config.addinivalue_line("markers", "e2e: Testes end-to-end")

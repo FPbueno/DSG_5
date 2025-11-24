@@ -9,7 +9,14 @@ backend_dir = Path(__file__).resolve().parent.parent.parent.parent
 if str(backend_dir) not in sys.path:
     sys.path.insert(0, str(backend_dir))
 
-from .config import DATABASE_URL
+# Importa setup_path para garantir que o path está configurado
+try:
+    import setup_path  # noqa: F401
+except ImportError:
+    pass
+
+# Usa import absoluto para garantir que funcione
+from api.v1.core.config import DATABASE_URL
 
 # Configuração do banco de dados
 DEFAULT_SQLITE_URL = "sqlite:///./app_test.db"
