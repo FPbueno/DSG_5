@@ -16,7 +16,45 @@ backend_dir = Path(__file__).resolve().parent.parent.parent.parent
 if str(backend_dir) not in sys.path:
     sys.path.insert(0, str(backend_dir))
 
-from ..core.config import EXCEL_FILE
+# Importa config - tenta múltiplas estratégias para garantir compatibilidade
+EXCEL_FILE = None
+
+try:
+    from ..core.config import EXCEL_FILE
+except (ImportError, ModuleNotFoundError):
+    try:
+        from api.v1.core.config import EXCEL_FILE
+    except (ImportError, ModuleNotFoundError):
+        # Fallback: import direto do arquivo usando importlib
+        try:
+            import importlib.util
+            # Tenta múltiplos caminhos possíveis (começa pelo mais confiável)
+            current_file = Path(__file__).resolve()
+            possible_paths = [
+                current_file.parent.parent / "core" / "config.py",  # Relativo ao arquivo atual (mais confiável)
+                backend_dir / "api" / "v1" / "core" / "config.py",
+            ]
+            config_path = None
+            for path in possible_paths:
+                if path.exists():
+                    config_path = path
+                    break
+            
+            if config_path and config_path.exists():
+                try:
+                    spec = importlib.util.spec_from_file_location("api.v1.core.config", config_path)
+                    if spec and spec.loader:
+                        config_module = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(config_module)
+                        EXCEL_FILE = getattr(config_module, "EXCEL_FILE", None)
+                except Exception:
+                    pass  # Se falhar, usa valor padrão abaixo
+        except Exception:
+            pass  # Se falhar, usa valor padrão abaixo
+
+# Se ainda não tiver valor, usa valor padrão
+if not EXCEL_FILE:
+    EXCEL_FILE = os.getenv("EXCEL_FILE", "quotes_data.xlsx")
 
 class ExcelService:
     def __init__(self):
