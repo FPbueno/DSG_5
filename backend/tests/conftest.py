@@ -6,14 +6,17 @@ import sys
 import os
 from pathlib import Path
 
-# Configuração do PYTHONPATH - DEVE ser feita ANTES de qualquer importação de módulos da aplicação
-# Resolve o diretório backend (pai do diretório tests)
+# Importa setup_path primeiro para garantir que o path está configurado
 backend_dir = Path(__file__).resolve().parent.parent
 backend_path = str(backend_dir)
 
 # Adiciona o diretório backend ao sys.path se não estiver lá
 if backend_path not in sys.path:
     sys.path.insert(0, backend_path)
+
+# Importa o setup_path para garantir que o path está configurado
+# Isso DEVE ser feito antes de qualquer importação de módulos da aplicação
+import setup_path  # noqa: F401
 
 # Configura variável de ambiente PYTHONPATH
 current_pythonpath = os.environ.get('PYTHONPATH', '')

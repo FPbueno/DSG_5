@@ -10,6 +10,6 @@ CURRENT_DIR=$(pwd)
 export PYTHONPATH="${CURRENT_DIR}:${PYTHONPATH}"
 
 # Executa pytest com os argumentos passados
-# O PYTHONPATH já está configurado acima
+# O conftest.py garante que o setup_path seja importado
 exec python -m pytest "$@"
 

@@ -7,17 +7,16 @@ from pathlib import Path
 from supabase import create_client, Client
 from typing import Optional, List, Dict, Any
 
-# Garante que o diretório backend está no sys.path antes de importar config
-backend_dir = Path(__file__).resolve().parent.parent.parent.parent
-if str(backend_dir) not in sys.path:
-    sys.path.insert(0, str(backend_dir))
-
-# Usa import absoluto ao invés de relativo para garantir que funcione
+# Importa o setup_path primeiro para garantir que o path está configurado
 try:
-    from api.v1.core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+    import setup_path  # noqa: F401
 except ImportError:
-    # Fallback para import relativo caso o absoluto não funcione
-    from ..core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+    # Se não conseguir importar setup_path, configura manualmente
+    backend_dir = Path(__file__).resolve().parent.parent.parent.parent
+    if str(backend_dir) not in sys.path:
+        sys.path.insert(0, str(backend_dir))
+
+from api.v1.core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
 
 class SupabaseService:
     """Serviço para operações com Supabase"""
