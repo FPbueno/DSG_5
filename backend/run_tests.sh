@@ -5,9 +5,11 @@ set -e
 # Navega para o diretório backend (caso não esteja lá)
 cd "$(dirname "$0")"
 
-# Configura PYTHONPATH
-export PYTHONPATH="$(pwd):$PYTHONPATH"
+# Configura PYTHONPATH de forma explícita
+CURRENT_DIR=$(pwd)
+export PYTHONPATH="${CURRENT_DIR}:${PYTHONPATH}"
 
 # Executa pytest com os argumentos passados
+# O PYTHONPATH já está configurado acima
 exec python -m pytest "$@"
 
