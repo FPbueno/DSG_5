@@ -12,12 +12,22 @@ from api.v1.core.security import generate_rsa_keys
 def client():
     """Fixture que fornece TestClient do FastAPI"""
     import sys
+    import os
     from pathlib import Path
     
-    # Garante que o path está configurado
+    # Garante que o path está configurado de forma explícita
     backend_dir = Path(__file__).resolve().parent.parent.parent.parent
-    if str(backend_dir) not in sys.path:
-        sys.path.insert(0, str(backend_dir))
+    backend_path = str(backend_dir)
+    
+    # Adiciona ao sys.path se não estiver lá
+    if backend_path not in sys.path:
+        sys.path.insert(0, backend_path)
+    
+    # Configura PYTHONPATH também
+    current_pythonpath = os.environ.get('PYTHONPATH', '')
+    if backend_path not in current_pythonpath:
+        new_pythonpath = backend_path + (os.pathsep if current_pythonpath else '') + current_pythonpath
+        os.environ['PYTHONPATH'] = new_pythonpath
     
     # Importa setup_path para garantir que o path está configurado
     try:
@@ -25,7 +35,15 @@ def client():
     except ImportError:
         pass
     
-    from main import app
+    # Importa main - se falhar, tenta novamente com path garantido
+    try:
+        from main import app
+    except (ImportError, ModuleNotFoundError):
+        # Garante path novamente e tenta importar
+        if backend_path not in sys.path:
+            sys.path.insert(0, backend_path)
+        from main import app
+    
     return TestClient(app)
 
 
