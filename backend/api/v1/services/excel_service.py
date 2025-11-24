@@ -8,6 +8,14 @@ from ..models import (
     Quote, QuoteCreate, QuoteUpdate,
     QuoteItem, QuoteItemCreate, QuoteItemUpdate
 )
+import sys
+from pathlib import Path
+
+# Garante que o diretório backend está no sys.path antes de importar config
+backend_dir = Path(__file__).resolve().parent.parent.parent.parent
+if str(backend_dir) not in sys.path:
+    sys.path.insert(0, str(backend_dir))
+
 from ..core.config import EXCEL_FILE
 
 class ExcelService:

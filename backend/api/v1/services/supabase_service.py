@@ -1,9 +1,17 @@
 """
 Serviço para integração com Supabase REST API
 """
+import sys
 import os
+from pathlib import Path
 from supabase import create_client, Client
 from typing import Optional, List, Dict, Any
+
+# Garante que o diretório backend está no sys.path antes de importar config
+backend_dir = Path(__file__).resolve().parent.parent.parent.parent
+if str(backend_dir) not in sys.path:
+    sys.path.insert(0, str(backend_dir))
+
 from ..core.config import SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
 
 class SupabaseService:
