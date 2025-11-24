@@ -3,11 +3,5 @@ set PUB_CACHE=C:\.pub-cache
 if not exist "%PUB_CACHE%" mkdir "%PUB_CACHE%"
 set PUB_HOSTED_URL=https://pub.dartlang.org
 cd /d "%~dp0"
-echo Limpando projeto...
-flutter clean
-echo.
-echo Instalando dependencias...
 flutter pub get
-echo.
-echo Executando em modo release...
-flutter run --release
+
