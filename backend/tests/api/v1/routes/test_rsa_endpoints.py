@@ -10,7 +10,7 @@ from api.v1.core.security import generate_rsa_keys
 # Importa app de forma robusta
 try:
     from main import app
-except (ImportError, ModuleNotFoundError) as e:
+except (ImportError, ModuleNotFoundError):
     # Se falhar, tenta configurar path e importar novamente
     import sys
     from pathlib import Path

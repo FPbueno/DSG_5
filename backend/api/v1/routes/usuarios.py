@@ -16,12 +16,12 @@ from ..services.auth_service_supabase import (
 )
 from ..services.supabase_service import supabase_service
 from ..core.security import get_rsa_public_key_pem, decrypt_rsa_password
-from api.v1.schemas.usuarios import TwoFAVerifyRequest
+from ..schemas.usuarios import TwoFAVerifyRequest
 import pyotp
 import qrcode
 import io
 import base64
-from api.v1.core.database import get_db
+from ..core.database import get_db
 from sqlalchemy.orm import Session
 
 router = APIRouter()
