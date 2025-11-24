@@ -12,36 +12,44 @@ if backend_path not in sys.path:
     sys.path.insert(0, backend_path)
 
 # Importa config - tenta múltiplas estratégias para garantir compatibilidade
+DATABASE_URL = None
+
 try:
     from .config import DATABASE_URL
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     try:
         from api.v1.core.config import DATABASE_URL
-    except ImportError:
+    except (ImportError, ModuleNotFoundError):
         # Fallback: import direto do arquivo usando importlib
-        import importlib.util
-        # Tenta múltiplos caminhos possíveis (começa pelo mais confiável)
-        current_file = Path(__file__).resolve()
-        possible_paths = [
-            current_file.parent / "config.py",  # Relativo ao arquivo atual (mais confiável)
-            backend_dir / "api" / "v1" / "core" / "config.py",
-        ]
-        config_path = None
-        for path in possible_paths:
-            if path.exists():
-                config_path = path
-                break
-        
-        if config_path and config_path.exists():
-            spec = importlib.util.spec_from_file_location("api.v1.core.config", config_path)
-            if spec and spec.loader:
-                config_module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(config_module)
-                DATABASE_URL = config_module.DATABASE_URL
-            else:
-                DATABASE_URL = os.getenv("DATABASE_URL")
-        else:
-            DATABASE_URL = os.getenv("DATABASE_URL")
+        try:
+            import importlib.util
+            # Tenta múltiplos caminhos possíveis (começa pelo mais confiável)
+            current_file = Path(__file__).resolve()
+            possible_paths = [
+                current_file.parent / "config.py",  # Relativo ao arquivo atual (mais confiável)
+                backend_dir / "api" / "v1" / "core" / "config.py",
+            ]
+            config_path = None
+            for path in possible_paths:
+                if path.exists():
+                    config_path = path
+                    break
+            
+            if config_path and config_path.exists():
+                try:
+                    spec = importlib.util.spec_from_file_location("api.v1.core.config", config_path)
+                    if spec and spec.loader:
+                        config_module = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(config_module)
+                        DATABASE_URL = getattr(config_module, "DATABASE_URL", None)
+                except Exception:
+                    pass  # Se falhar, usa variável de ambiente abaixo
+        except Exception:
+            pass  # Se falhar, usa variável de ambiente abaixo
+
+# Se ainda não tiver valor, usa variável de ambiente
+if not DATABASE_URL:
+    DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Configuração do banco de dados
 DEFAULT_SQLITE_URL = "sqlite:///./app_test.db"
