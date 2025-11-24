@@ -44,8 +44,8 @@ jobs:
       - name: Run tests with coverage
         working-directory: ./backend
         run: |
-          export PYTHONPATH=$PWD:$PYTHONPATH
-          pytest --cov=api --cov-report=xml --cov-report=term --cov-report=html -v
+          chmod +x run_tests.sh
+          ./run_tests.sh --cov=api --cov-report=xml --cov-report=term --cov-report=html -v
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -121,6 +121,5 @@ jobs:
       - name: Run unit tests only
         working-directory: ./backend
         run: |
-          export PYTHONPATH=$PWD:$PYTHONPATH
-          python -c "import sys; print('PYTHONPATH:', sys.path)"
-          pytest tests/unit -v -m "not slow"
+          chmod +x run_tests.sh
+          ./run_tests.sh tests/unit -v -m "not slow"
