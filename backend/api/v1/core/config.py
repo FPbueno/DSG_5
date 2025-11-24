@@ -7,7 +7,11 @@ from dotenv import load_dotenv
 
 # Configurações da aplicação
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
-load_dotenv(BASE_DIR / '.env')
+# No Heroku, variáveis de ambiente são definidas diretamente, não via .env
+# Mas carrega .env se existir (para desenvolvimento local)
+env_path = BASE_DIR / '.env'
+if env_path.exists():
+    load_dotenv(env_path)
 EXCEL_FILE = "quotes_data.xlsx"
 
 # Configurações do Banco de Dados

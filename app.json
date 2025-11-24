@@ -1,0 +1,27 @@
+{
+  "name": "API de Orçamentos Residenciais",
+  "description": "API REST para gerenciamento de orçamentos residenciais com banco de dados MySQL",
+  "repository": "https://github.com/seu-usuario/seu-repositorio",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["python", "fastapi", "api", "machine-learning"],
+  "image": "heroku/python",
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "addons": [],
+  "environments": {
+    "test": {
+      "scripts": {
+        "test": "cd backend && pytest"
+      }
+    }
+  }
+}
