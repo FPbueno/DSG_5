@@ -4,19 +4,18 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Garante que o diretório backend está no sys.path antes de importar config
+# Garante que o diretório backend está no sys.path ANTES de tentar importar
 backend_dir = Path(__file__).resolve().parent.parent.parent.parent
-if str(backend_dir) not in sys.path:
-    sys.path.insert(0, str(backend_dir))
+backend_path = str(backend_dir)
+if backend_path not in sys.path:
+    sys.path.insert(0, backend_path)
 
-# Importa setup_path para garantir que o path está configurado
+# Tenta importar usando import absoluto
 try:
-    import setup_path  # noqa: F401
+    from api.v1.core.config import DATABASE_URL
 except ImportError:
-    pass
-
-# Usa import absoluto para garantir que funcione
-from api.v1.core.config import DATABASE_URL
+    # Se o import absoluto falhar, tenta import relativo
+    from .config import DATABASE_URL
 
 # Configuração do banco de dados
 DEFAULT_SQLITE_URL = "sqlite:///./app_test.db"
