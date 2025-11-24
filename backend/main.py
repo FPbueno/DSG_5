@@ -1,3 +1,15 @@
+# Configura o PYTHONPATH antes de qualquer importação
+import sys
+import os
+from pathlib import Path
+
+# Adiciona o diretório atual ao sys.path se não estiver lá
+# Isso é necessário para que os imports funcionem no Heroku
+current_dir = Path(__file__).parent.absolute()
+current_dir_str = str(current_dir)
+if current_dir_str not in sys.path:
+    sys.path.insert(0, current_dir_str)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.v1.routes import router
