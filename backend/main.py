@@ -49,17 +49,12 @@ app.add_middleware(
     allow_headers=CORS_ALLOW_HEADERS,
 )
 
-# Cria as tabelas do banco de dados na inicialização
+# Inicialização não bloqueante para evitar timeout no Heroku
 @app.on_event("startup")
 async def startup_event():
-    try:
-        create_tables()
-    except Exception:
-        pass
-    try:
-        generate_rsa_keys()
-    except Exception:
-        pass
+    # Operações de inicialização são feitas sob demanda ou em background
+    # para garantir que a aplicação responda rapidamente (< 20s no Heroku)
+    pass
 
 # Inclui as rotas
 app.include_router(router, prefix="/api/v1")
