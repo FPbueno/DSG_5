@@ -7,7 +7,17 @@ from fastapi.testclient import TestClient
 from cryptography.hazmat.primitives.asymmetric import padding
 from api.v1.core.security import generate_rsa_keys
 
-from main import app
+# Importa app de forma robusta
+try:
+    from main import app
+except (ImportError, ModuleNotFoundError) as e:
+    # Se falhar, tenta configurar path e importar novamente
+    import sys
+    from pathlib import Path
+    backend_dir = Path(__file__).resolve().parent.parent.parent.parent
+    if str(backend_dir) not in sys.path:
+        sys.path.insert(0, str(backend_dir))
+    from main import app
 
 client = TestClient(app)
 
