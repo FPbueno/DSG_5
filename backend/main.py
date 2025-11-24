@@ -12,12 +12,25 @@ if current_dir_str not in sys.path:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+# Importa config com fallback robusto
+try:
+    from api.v1.core.config import (
+        API_TITLE, API_DESCRIPTION, API_VERSION,
+        CORS_ORIGINS, CORS_ALLOW_CREDENTIALS, 
+        CORS_ALLOW_METHODS, CORS_ALLOW_HEADERS
+    )
+except (ImportError, ModuleNotFoundError):
+    # Valores padrão se config não estiver disponível
+    API_TITLE = os.getenv("API_TITLE", "API de Orçamentos Residenciais")
+    API_DESCRIPTION = os.getenv("API_DESCRIPTION", "API REST para gerenciamento de orçamentos residenciais")
+    API_VERSION = os.getenv("API_VERSION", "1.0.0")
+    CORS_ORIGINS = ["*"]
+    CORS_ALLOW_CREDENTIALS = True
+    CORS_ALLOW_METHODS = ["*"]
+    CORS_ALLOW_HEADERS = ["*"]
+
 from api.v1.routes import router
-from api.v1.core.config import (
-    API_TITLE, API_DESCRIPTION, API_VERSION,
-    CORS_ORIGINS, CORS_ALLOW_CREDENTIALS, 
-    CORS_ALLOW_METHODS, CORS_ALLOW_HEADERS
-)
 from api.v1.core.database import create_tables
 from api.v1.core.security import generate_rsa_keys
 
