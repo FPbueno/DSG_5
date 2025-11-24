@@ -5,7 +5,8 @@ import '../models/service.dart';
 import '../models/quote.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:8000/api/v1';
+  static const String baseUrl =
+      'https://worca-app-263d52d597b9.herokuapp.com/api/v1';
 
   static final http.Client _client = http.Client();
 

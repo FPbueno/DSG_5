@@ -5,7 +5,8 @@ import 'dart:convert';
 class AuthService {
   static const String _tokenKey = 'auth_token';
   static const String _userKey = 'user_data';
-  static const String baseUrl = 'http://localhost:8000/api/v1';
+  static const String baseUrl =
+      'https://worca-app-263d52d597b9.herokuapp.com/api/v1';
 
   // Salva o token de autenticação
   static Future<void> saveToken(String token) async {
@@ -49,21 +50,22 @@ class AuthService {
   }
 
   // Login do usuário com 2FA
-  static Future<Map<String, dynamic>> login(String email, String password) async {
+  static Future<Map<String, dynamic>> login(
+    String email,
+    String password,
+  ) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/login'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'username': email,
-        'password': password,
-      },
+      body: {'username': email, 'password': password},
     );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
       // Verifica se a autenticação de 2FA é necessária
-      if (data.containsKey('two_factor_required') && data['two_factor_required']) {
+      if (data.containsKey('two_factor_required') &&
+          data['two_factor_required']) {
         return {'success': false, 'two_factor_required': true};
       }
 
@@ -130,10 +132,16 @@ class AuthService {
         return {'success': true, 'user': userData};
       }
 
-      return {'success': false, 'error': 'Erro ao obter dados do usuário após 2FA'};
+      return {
+        'success': false,
+        'error': 'Erro ao obter dados do usuário após 2FA',
+      };
     } else {
       final error = json.decode(response.body);
-      return {'success': false, 'error': error['detail'] ?? 'Erro ao verificar o código 2FA'};
+      return {
+        'success': false,
+        'error': error['detail'] ?? 'Erro ao verificar o código 2FA',
+      };
     }
   }
 

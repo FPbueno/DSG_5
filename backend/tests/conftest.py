@@ -1,15 +1,25 @@
 """
 Configuração global para testes pytest
 """
-import pytest
+# IMPORTANTE: Configurações de path DEVEM vir antes de qualquer importação de módulos da aplicação
 import sys
 import os
 from pathlib import Path
-from unittest.mock import Mock, MagicMock
 
-# Adiciona o diretório do projeto ao path
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+# Configuração do PYTHONPATH - DEVE ser feita ANTES de qualquer importação de módulos da aplicação
+# Resolve o diretório backend (pai do diretório tests)
+backend_dir = Path(__file__).resolve().parent.parent
+backend_path = str(backend_dir)
+
+# Adiciona o diretório backend ao sys.path se não estiver lá
+if backend_path not in sys.path:
+    sys.path.insert(0, backend_path)
+
+# Configura variável de ambiente PYTHONPATH
+current_pythonpath = os.environ.get('PYTHONPATH', '')
+if backend_path not in current_pythonpath:
+    new_pythonpath = backend_path + (os.pathsep if current_pythonpath else '') + current_pythonpath
+    os.environ['PYTHONPATH'] = new_pythonpath
 
 # Configura variáveis de ambiente mockadas para evitar erros durante importação
 # Isso permite que módulos que dependem do Supabase sejam importados sem erro
@@ -17,6 +27,10 @@ os.environ.setdefault("SUPABASE_URL", "https://mock.supabase.co")
 os.environ.setdefault("SUPABASE_ANON_KEY", "mock-anon-key")
 os.environ.setdefault("SUPABASE_SERVICE_ROLE_KEY", "mock-service-key")
 os.environ.setdefault("CI", "true")  # Marca como ambiente de CI
+
+# Agora pode importar pytest e outros módulos
+import pytest
+from unittest.mock import Mock, MagicMock
 
 
 @pytest.fixture(autouse=True)
