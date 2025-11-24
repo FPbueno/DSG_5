@@ -6,18 +6,6 @@ import pytest
 from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
 
-# Importa app de forma robusta
-try:
-    from main import app
-except (ImportError, ModuleNotFoundError) as e:
-    # Se falhar, tenta configurar path e importar novamente
-    import sys
-    from pathlib import Path
-    backend_dir = Path(__file__).resolve().parent.parent.parent.parent
-    if str(backend_dir) not in sys.path:
-        sys.path.insert(0, str(backend_dir))
-    from main import app
-
 from api.v1.core.adapters import FakeDatabaseAdapter, FakeMLAdapter
 
 
@@ -28,6 +16,7 @@ class TestFluxoCompletoE2E:
     @pytest.fixture
     def client(self):
         """TestClient do FastAPI"""
+        from main import app
         return TestClient(app)
     
     @pytest.fixture

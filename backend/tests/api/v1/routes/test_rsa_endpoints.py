@@ -7,25 +7,18 @@ from fastapi.testclient import TestClient
 from cryptography.hazmat.primitives.asymmetric import padding
 from api.v1.core.security import generate_rsa_keys
 
-# Importa app de forma robusta
-try:
-    from main import app
-except (ImportError, ModuleNotFoundError):
-    # Se falhar, tenta configurar path e importar novamente
-    import sys
-    from pathlib import Path
-    backend_dir = Path(__file__).resolve().parent.parent.parent.parent
-    if str(backend_dir) not in sys.path:
-        sys.path.insert(0, str(backend_dir))
-    from main import app
 
-client = TestClient(app)
+@pytest.fixture(scope="module")
+def client():
+    """Fixture que fornece TestClient do FastAPI"""
+    from main import app
+    return TestClient(app)
 
 
 class TestPublicKeyEndpoint:
     """Testes para endpoint GET /api/v1/public-key"""
     
-    def test_get_public_key_success(self):
+    def test_get_public_key_success(self, client):
         """Testa que o endpoint retorna chave pública válida"""
         # Garante que as chaves estão geradas
         generate_rsa_keys()
@@ -39,7 +32,7 @@ class TestPublicKeyEndpoint:
         assert "BEGIN PUBLIC KEY" in data["public_key"]
         assert "END PUBLIC KEY" in data["public_key"]
     
-    def test_get_public_key_format(self):
+    def test_get_public_key_format(self, client):
         """Testa formato correto da chave pública"""
         generate_rsa_keys()
         
@@ -50,7 +43,7 @@ class TestPublicKeyEndpoint:
         assert public_key_pem.startswith("-----BEGIN PUBLIC KEY-----")
         assert public_key_pem.endswith("-----END PUBLIC KEY-----\n")
     
-    def test_get_public_key_stable(self):
+    def test_get_public_key_stable(self, client):
         """Testa que múltiplas requisições retornam mesma chave"""
         generate_rsa_keys()
         
@@ -84,7 +77,7 @@ class TestLoginWithEncryptedPassword:
         encrypted = public_key.encrypt(senha_bytes, padding.PKCS1v15())
         return base64.b64encode(encrypted).decode('utf-8')
     
-    def test_login_with_encrypted_password_invalid_format(self):
+    def test_login_with_encrypted_password_invalid_format(self, client):
         """Testa erro ao enviar senha não criptografada"""
         response = client.post(
             "/api/v1/login",
@@ -98,7 +91,7 @@ class TestLoginWithEncryptedPassword:
         # Deve falhar ao tentar descriptografar
         assert response.status_code in [400, 401]
     
-    def test_login_with_encrypted_password_invalid_base64(self):
+    def test_login_with_encrypted_password_invalid_base64(self, client):
         """Testa erro ao enviar base64 inválido"""
         response = client.post(
             "/api/v1/login",
@@ -112,7 +105,7 @@ class TestLoginWithEncryptedPassword:
         assert response.status_code == 400
         assert "Erro ao descriptografar senha" in response.json()["detail"]
     
-    def test_login_with_encrypted_password_correct_format(self):
+    def test_login_with_encrypted_password_correct_format(self, client):
         """Testa que senha criptografada corretamente é aceita"""
         senha_criptografada = self._encrypt_password("minhasenha123")
         
@@ -140,14 +133,14 @@ class TestLoginWithEncryptedPassword:
 class TestRSAEndpointSecurity:
     """Testes de segurança/penetração dos endpoints RSA - Card SD-004"""
     
-    def test_public_key_endpoint_no_auth_required(self):
+    def test_public_key_endpoint_no_auth_required(self, client):
         """Testa que endpoint de chave pública não requer autenticação"""
         # Endpoint deve ser público para o frontend obter a chave
         response = client.get("/api/v1/public-key")
         
         assert response.status_code == 200
     
-    def test_login_with_manipulated_encrypted_data(self):
+    def test_login_with_manipulated_encrypted_data(self, client):
         """Testa que dados manipulados não são aceitos"""
         # Tenta enviar dados que parecem base64 mas não são criptografia válida
         manipulated_data = base64.b64encode(b"fake encrypted data").decode('utf-8')
@@ -164,7 +157,7 @@ class TestRSAEndpointSecurity:
         # Deve retornar erro ao tentar descriptografar
         assert response.status_code == 400
     
-    def test_login_with_non_encrypted_password_rejected(self):
+    def test_login_with_non_encrypted_password_rejected(self, client):
         """Testa que senha em texto plano é rejeitada"""
         response = client.post(
             "/api/v1/login",
