@@ -209,6 +209,45 @@ def gerar_dados_sinteticos(n_samples=1000):
         'descriptions': descriptions
     }
 
+def carregar_dataset_real():
+    """
+    Carrega dataset real de serviços se disponível
+    """
+    dataset_path = os.path.join(os.path.dirname(__file__), "models", "training_model", "services_dataset.csv")
+    
+    if not os.path.exists(dataset_path):
+        print(f"⚠️ Dataset real não encontrado em {dataset_path}")
+        return None
+    
+    try:
+        df = pd.read_csv(dataset_path)
+        
+        # Prepara dados no formato esperado
+        service_names = df['service_name'].fillna('').astype(str).tolist()
+        categories = df['category'].fillna('Serviços Gerais').astype(str).tolist()
+        prices = df['total_price'].fillna(500.0).astype(float).tolist()
+        
+        # Cria descrições combinando informações disponíveis
+        descriptions = []
+        for idx, row in df.iterrows():
+            desc = f"{row['service_name']} {row['category']}"
+            if pd.notna(row.get('complexity_level')):
+                desc += f" {row['complexity_level']}"
+            descriptions.append(desc)
+        
+        print(f"✓ Dataset real carregado: {len(service_names)} amostras")
+        print(f"  Faixa de preços: R$ {min(prices):.2f} - R$ {max(prices):.2f}")
+        
+        return {
+            'service_names': service_names,
+            'categories': categories,
+            'prices': prices,
+            'descriptions': descriptions
+        }
+    except Exception as e:
+        print(f"⚠️ Erro ao carregar dataset real: {e}")
+        return None
+
 def limpar_texto(texto):
     """
     Limpa e normaliza texto para processamento
@@ -343,6 +382,23 @@ def salvar_modelos(category_model, category_vectorizer, price_model, price_vecto
     
     print(f"\nModelos salvos em: {MODELS_DIR}")
 
+def combinar_dados(dados_real, dados_sinteticos):
+    """
+    Combina dados reais e sintéticos
+    """
+    if dados_real is None:
+        return dados_sinteticos
+    
+    # Combina os dados
+    dados_combinados = {
+        'service_names': dados_real['service_names'] + dados_sinteticos['service_names'],
+        'categories': dados_real['categories'] + dados_sinteticos['categories'],
+        'prices': dados_real['prices'] + dados_sinteticos['prices'],
+        'descriptions': dados_real['descriptions'] + dados_sinteticos['descriptions']
+    }
+    
+    return dados_combinados
+
 def main():
     """
     Função principal de treinamento
@@ -351,10 +407,19 @@ def main():
     print("TREINAMENTO DE MODELOS DE MACHINE LEARNING")
     print("=" * 60)
     
+    # Carrega dataset real
+    print("\nCarregando dataset real...")
+    dados_real = carregar_dataset_real()
+    
     # Gera dados sintéticos
     print("\nGerando dados sintéticos de treinamento...")
-    dados = gerar_dados_sinteticos(n_samples=2000)
-    print(f"✓ {len(dados['service_names'])} amostras geradas")
+    dados_sinteticos = gerar_dados_sinteticos(n_samples=1000)
+    print(f"✓ {len(dados_sinteticos['service_names'])} amostras sintéticas geradas")
+    
+    # Combina dados
+    dados = combinar_dados(dados_real, dados_sinteticos)
+    print(f"\n✓ Total de {len(dados['service_names'])} amostras para treinamento")
+    print(f"  Faixa de preços: R$ {min(dados['prices']):.2f} - R$ {max(dados['prices']):.2f}")
     
     # Treina modelo de categoria
     category_model, category_vectorizer = treinar_modelo_categoria(dados)
