@@ -298,3 +298,4 @@ Para informações detalhadas sobre cada módulo:
 
 - [📹 Sprint 1 - Apresentação](https://www.youtube.com/watch?v=uDxAFuqi48g) - Vídeo da Sprint 1
 - [📹 Sprint 2 - Apresentação](https://www.youtube.com/watch?v=EiAMgibpMMM) - Vídeo da Sprint 2
+- [📹 Sprint 3 - Apresentação](https://www.youtube.com/shorts/IQw_s5aWHUE) - Vídeo da Sprint 3
