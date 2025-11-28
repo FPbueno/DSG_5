@@ -100,39 +100,6 @@ O backend é uma API REST construída com FastAPI e Supabase:
 - **⭐ Avaliações**: Sistema de rating para prestadores
 - **☁️ Supabase**: Integração completa com serviços em nuvem
 
-### **Endpoints Implementados (11 rotas)**
-
-```
-# Autenticação
-POST   /api/v1/auth/login              # Login de usuário
-POST   /api/v1/auth/register           # Registro de usuário
-
-# Usuários
-GET    /api/v1/usuarios/                # Listar usuários
-GET    /api/v1/usuarios/{id}           # Buscar usuário específico
-
-# Solicitações (Cliente)
-POST   /api/v1/solicitacoes/           # Criar solicitação
-GET    /api/v1/solicitacoes/           # Listar solicitações
-GET    /api/v1/solicitacoes/{id}       # Detalhes da solicitação
-
-# Orçamentos (Prestador)
-POST   /api/v1/orcamentos/             # Enviar orçamento
-GET    /api/v1/orcamentos/             # Listar orçamentos
-PUT    /api/v1/orcamentos/{id}/aceitar # Aceitar orçamento
-
-# Avaliações
-POST   /api/v1/avaliacoes/             # Avaliar serviço
-GET    /api/v1/avaliacoes/             # Listar avaliações
-
-# Machine Learning
-POST   /api/v1/ml/predict-category     # Prever categoria
-POST   /api/v1/ml/predict-price        # Prever preço
-
-# Analytics
-GET    /api/v1/analytics/              # Dados analíticos
-```
-
 ### **Fluxo de Dados**
 
 1. **Recebe requisição** do frontend via HTTP/REST
@@ -261,15 +228,6 @@ O projeto segue práticas de **TDD (Test-Driven Development)** e **CI/CD (Contin
 - ✅ **CI/CD**: GitHub Actions executando testes automaticamente
 - ✅ **Estrutura Organizada**: Testes unitários, integração e E2E
 - ✅ **Documentação**: Guia completo de testes em [`backend/TESTING.md`](backend/TESTING.md)
-
-### Executando Testes
-
-```bash
-cd backend
-pytest                          # Todos os testes
-pytest --cov=api --cov-report=html  # Com cobertura
-pytest -m unit                  # Apenas unitários
-```
 
 ### CI/CD
 
