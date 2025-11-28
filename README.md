@@ -289,8 +289,12 @@ Veja [`.github/workflows/ci.yml`](.github/workflows/ci.yml) para detalhes.
 
 Para informações detalhadas sobre cada módulo:
 
-- [📋 Trello Cards](Trello_Cards_ABP.md) - Backlog completo do projeto
 - [📖 Backend README](backend/README.md) - Documentação completa da API
 - [📱 Frontend README](frontend/README.md) - Documentação completa do app
 - [🧪 Guia de Testes](backend/TESTING.md) - Convenções e práticas de teste
 - [🚀 Plano TDD/CI/CD](PLANO_TDD_CI_CD.md) - Roteiro de implementação
+
+## 🎥 Vídeos do Projeto
+
+- [📹 Sprint 1 - Apresentação](https://www.youtube.com/watch?v=uDxAFuqi48g) - Vídeo da Sprint 1
+- [📹 Sprint 2 - Apresentação](https://www.youtube.com/watch?v=EiAMgibpMMM) - Vídeo da Sprint 2
