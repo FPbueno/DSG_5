@@ -23,7 +23,7 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.metrics import (
     accuracy_score, 
     mean_absolute_error, 
@@ -192,20 +192,40 @@ def gerar_dados_sinteticos(n_samples=1000):
         ]
         service_name = np.random.choice(variacoes)
         
-        # Gera preço baseado na categoria
+        # Gera preço baseado na categoria com mais variação (mais realista)
         min_price, max_price = faixas_preco.get(categoria, (100, 500))
-        price = np.random.uniform(min_price, max_price)
+        # Adiciona mais variabilidade usando distribuição normal truncada
+        price_mean = (min_price + max_price) / 2
+        price_std = (max_price - min_price) / 4
+        price = np.random.normal(price_mean, price_std)
+        # Garante que está dentro da faixa
+        price = np.clip(price, min_price, max_price)
         
-        # Adiciona variação de preço baseada em palavras-chave
+        # Adiciona variação de preço baseada em palavras-chave (com ruído)
         if "completo" in service_name.lower() or "com material" in service_name.lower():
-            price *= 1.2
+            price *= (1.15 + np.random.uniform(-0.1, 0.15))  # Variação ao invés de fixo
         elif "sem material" in service_name.lower():
-            price *= 0.8
+            price *= (0.85 + np.random.uniform(-0.1, 0.1))  # Variação ao invés de fixo
         
-        # Gera descrição
-        descricao = f"{service_name} na categoria {categoria}"
-        if np.random.random() > 0.5:
-            descricao += f" com qualidade profissional"
+        # Adiciona ruído aleatório (5-10%) para tornar mais realista
+        price *= (1 + np.random.uniform(-0.05, 0.1))
+        
+        # Gera descrição mais variada e realista
+        descricoes_variadas = [
+            f"{service_name} na categoria {categoria}",
+            f"{service_name} - {categoria}",
+            f"Serviço de {service_name}",
+            f"{service_name} profissional",
+            f"{service_name} completo",
+            f"{service_name} com material incluso",
+            f"{service_name} sem material"
+        ]
+        descricao = np.random.choice(descricoes_variadas)
+        
+        # Adiciona variações aleatórias de texto
+        if np.random.random() > 0.7:
+            variações = [" de qualidade", " especializado", " rápido", " eficiente"]
+            descricao += np.random.choice(variações)
         
         service_names.append(service_name)
         categories.append(categoria)
@@ -294,12 +314,14 @@ def treinar_modelo_categoria(dados):
         X, y, test_size=0.2, random_state=42, stratify=y
     )
     
-    # Treina modelo
+    # Treina modelo com hiperparâmetros ajustados para reduzir overfitting
+    # Reduzido max_depth, aumentado min_samples para maior regularização
     model = RandomForestClassifier(
         n_estimators=100,
-        max_depth=20,
-        min_samples_split=5,
-        min_samples_leaf=2,
+        max_depth=10,  # Reduzido de 20 para 10 (reduz complexidade)
+        min_samples_split=10,  # Aumentado de 5 para 10 (mais regularização)
+        min_samples_leaf=5,  # Aumentado de 2 para 5 (mais regularização)
+        max_features='sqrt',  # Limita features por split (reduz overfitting)
         random_state=42,
         n_jobs=-1
     )
@@ -307,12 +329,39 @@ def treinar_modelo_categoria(dados):
     print("Treinando Random Forest para categorias...")
     model.fit(X_train, y_train)
     
-    # Avalia modelo
+    # Avalia modelo no conjunto de teste
     y_pred = model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
+    accuracy_test = accuracy_score(y_test, y_pred)
     
-    print(f"Acurácia do modelo de categoria: {accuracy:.4f}")
-    print("\nRelatório de classificação:")
+    # Avalia modelo no conjunto de treino (para detectar overfitting)
+    y_pred_train = model.predict(X_train)
+    accuracy_train = accuracy_score(y_train, y_pred_train)
+    
+    # Validação cruzada para melhor estimativa
+    print("\nExecutando validação cruzada (5-fold)...")
+    cv_scores = cross_val_score(model, X_train, y_train, cv=5, scoring='accuracy', n_jobs=-1)
+    cv_mean = cv_scores.mean()
+    cv_std = cv_scores.std()
+    
+    print(f"\n{'='*60}")
+    print("RESULTADOS - MODELO DE CATEGORIA")
+    print(f"{'='*60}")
+    print(f"Acurácia no TREINO: {accuracy_train:.4f} ({accuracy_train*100:.2f}%)")
+    print(f"Acurácia no TESTE:  {accuracy_test:.4f} ({accuracy_test*100:.2f}%)")
+    print(f"Validação Cruzada:  {cv_mean:.4f} ± {cv_std:.4f}")
+    
+    # Detecta overfitting
+    diff = accuracy_train - accuracy_test
+    if diff > 0.15:  # Diferença maior que 15% indica overfitting
+        print(f"\n⚠️  ATENÇÃO: Possível overfitting detectado!")
+        print(f"    Diferença Treino-Teste: {diff:.4f} ({diff*100:.2f}%)")
+    elif diff > 0.10:
+        print(f"\n⚠️  ATENÇÃO: Diferença moderada detectada.")
+        print(f"    Diferença Treino-Teste: {diff:.4f} ({diff*100:.2f}%)")
+    else:
+        print(f"\n✓ Diferença Treino-Teste aceitável: {diff:.4f} ({diff*100:.2f}%)")
+    
+    print(f"\nRelatório de classificação (TESTE):")
     print(classification_report(y_test, y_pred))
     
     return model, vectorizer, (X_test, y_test, y_pred)
@@ -343,12 +392,14 @@ def treinar_modelo_preco(dados):
         X, y, indices, test_size=0.2, random_state=42
     )
     
-    # Treina modelo
+    # Treina modelo com hiperparâmetros ajustados para reduzir overfitting
+    # Reduzido max_depth, aumentado min_samples para maior regularização
     model = RandomForestRegressor(
         n_estimators=100,
-        max_depth=20,
-        min_samples_split=5,
-        min_samples_leaf=2,
+        max_depth=10,  # Reduzido de 20 para 10 (reduz complexidade)
+        min_samples_split=10,  # Aumentado de 5 para 10 (mais regularização)
+        min_samples_leaf=5,  # Aumentado de 2 para 5 (mais regularização)
+        max_features='sqrt',  # Limita features por split (reduz overfitting)
         random_state=42,
         n_jobs=-1
     )
@@ -356,18 +407,59 @@ def treinar_modelo_preco(dados):
     print("Treinando Random Forest para preços...")
     model.fit(X_train, y_train)
     
-    # Avalia modelo
+    # Avalia modelo no conjunto de teste
     y_pred = model.predict(X_test)
-    mae = mean_absolute_error(y_test, y_pred)
+    mae_test = mean_absolute_error(y_test, y_pred)
+    mse_test = mean_squared_error(y_test, y_pred)
+    rmse_test = np.sqrt(mse_test)
+    r2_test = r2_score(y_test, y_pred)
     
-    mse = mean_squared_error(y_test, y_pred)
-    rmse = np.sqrt(mse)
-    r2 = r2_score(y_test, y_pred)
+    # Avalia modelo no conjunto de treino (para detectar overfitting)
+    y_pred_train = model.predict(X_train)
+    mae_train = mean_absolute_error(y_train, y_pred_train)
+    mse_train = mean_squared_error(y_train, y_pred_train)
+    rmse_train = np.sqrt(mse_train)
+    r2_train = r2_score(y_train, y_pred_train)
     
-    print(f"MAE (Mean Absolute Error) do modelo de preço: {mae:.2f}")
-    print(f"RMSE (Root Mean Squared Error): {rmse:.2f}")
-    print(f"R² (Coeficiente de Determinação): {r2:.4f}")
-    print(f"Erro médio: R$ {mae:.2f}")
+    # Validação cruzada para melhor estimativa
+    print("\nExecutando validação cruzada (5-fold) para R²...")
+    cv_scores_r2 = cross_val_score(model, X_train, y_train, cv=5, scoring='r2', n_jobs=-1)
+    cv_r2_mean = cv_scores_r2.mean()
+    cv_r2_std = cv_scores_r2.std()
+    
+    print(f"\n{'='*60}")
+    print("RESULTADOS - MODELO DE PREÇO")
+    print(f"{'='*60}")
+    print(f"\nMÉTRICAS NO TREINO:")
+    print(f"  MAE:  R$ {mae_train:.2f}")
+    print(f"  RMSE: R$ {rmse_train:.2f}")
+    print(f"  R²:   {r2_train:.4f}")
+    
+    print(f"\nMÉTRICAS NO TESTE:")
+    print(f"  MAE:  R$ {mae_test:.2f}")
+    print(f"  RMSE: R$ {rmse_test:.2f}")
+    print(f"  R²:   {r2_test:.4f}")
+    
+    print(f"\nVALIDAÇÃO CRUZADA (R²):")
+    print(f"  Média: {cv_r2_mean:.4f} ± {cv_r2_std:.4f}")
+    
+    # Detecta overfitting
+    r2_diff = r2_train - r2_test
+    mae_diff = mae_test - mae_train  # Normalmente teste tem MAE maior
+    
+    if r2_diff > 0.20:  # Diferença grande no R² indica overfitting
+        print(f"\n⚠️  ATENÇÃO: Possível overfitting detectado!")
+        print(f"    Diferença R² Treino-Teste: {r2_diff:.4f} ({r2_diff*100:.2f}%)")
+    elif r2_diff > 0.15:
+        print(f"\n⚠️  ATENÇÃO: Diferença moderada no R².")
+        print(f"    Diferença R² Treino-Teste: {r2_diff:.4f} ({r2_diff*100:.2f}%)")
+    else:
+        print(f"\n✓ Diferença R² Treino-Teste aceitável: {r2_diff:.4f} ({r2_diff*100:.2f}%)")
+    
+    # Usa métricas de teste para retorno
+    mae = mae_test
+    rmse = rmse_test
+    r2 = r2_test
     
     # Retorna também índices de teste e categorias para visualização
     categories_test = [dados['categories'][i] for i in indices_test]

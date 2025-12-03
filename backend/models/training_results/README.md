@@ -136,6 +136,8 @@ Após revisar os resultados:
 
 ## 📚 Documentação Relacionada
 
+- [`ANÁLISE_DE_RESULTADOS.md`](ANÁLISE_DE_RESULTADOS.md) - **Análise completa dos resultados** (recomendado)
 - [`train_models.py`](../train_models.py) - Script de treinamento
 - [`training_visualizer.py`](../training_visualizer.py) - Módulo de visualização
+- [`MELHORIAS_ANTI_OVERFITTING.md`](../MELHORIAS_ANTI_OVERFITTING.md) - Melhorias implementadas
 - [`DOCUMENTACAO_ML.md`](../../DOCUMENTACAO_ML.md) - Documentação geral de ML

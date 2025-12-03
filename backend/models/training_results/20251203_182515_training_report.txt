@@ -2,7 +2,7 @@
 RELATÓRIO DE TREINAMENTO - MODELOS DE MACHINE LEARNING
 ======================================================================
 
-Data/Hora do Treinamento: 2025-12-03 18:18:29
+Data/Hora do Treinamento: 2025-12-03 18:25:19
 
 INFORMAÇÕES DOS MODELOS
 ----------------------------------------------------------------------
@@ -17,22 +17,22 @@ MÉTRICAS DE PERFORMANCE
 ----------------------------------------------------------------------
 
 MODELO DE CATEGORIA:
-  - Acurácia: 1.0000 (100.00%)
+  - Acurácia: 0.8119 (81.19%)
   - Status: ✓ APROVADO (Threshold: 60%)
 
 MODELO DE PREÇO:
-  - MAE (Mean Absolute Error): R$ 427.95
+  - MAE (Mean Absolute Error): R$ 435.42
     Status: ✗ REPROVADO (Threshold: R$ 200.00)
-  - RMSE (Root Mean Squared Error): R$ 937.51
+  - RMSE (Root Mean Squared Error): R$ 939.84
     Status: ✗ REPROVADO (Threshold: R$ 300.00)
-  - R² (Coeficiente de Determinação): 0.4626
+  - R² (Coeficiente de Determinação): 0.4565
     Status: ✓ APROVADO (Threshold: 0.40)
 
 ======================================================================
 ARQUIVOS GERADOS
 ----------------------------------------------------------------------
 Diretório de resultados: C:\ABP\backend\models\training_results
-Timestamp: 20251203_181824
+Timestamp: 20251203_182515
 
 Gráficos gerados:
   - Matriz de confusão (categoria)
