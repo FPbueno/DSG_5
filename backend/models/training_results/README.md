@@ -111,6 +111,7 @@ Os gráficos e relatórios serão gerados automaticamente na pasta `models/train
 ```
 training_results/
 ├── README.md
+├── .gitkeep
 ├── 20250115_143022_confusion_matrix_category.png
 ├── 20250115_143022_metrics_by_category.png
 ├── 20250115_143022_scatter_price.png
@@ -119,6 +120,8 @@ training_results/
 ├── 20250115_143022_training_summary.png
 └── 20250115_143022_training_report.txt
 ```
+
+**Nota**: Os gráficos e relatórios gerados **são commitados no git** para histórico de treinamentos.
 
 ## 🚀 Próximos Passos
 
