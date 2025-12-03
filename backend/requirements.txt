@@ -24,3 +24,5 @@ faker>=19.0.0
 pyotp>=2.9.0
 qrcode[pil]>=7.4.2
 Pillow>=10.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0

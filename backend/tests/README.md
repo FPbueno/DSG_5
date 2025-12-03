@@ -37,6 +37,7 @@ pytest
 pytest -m unit          # Apenas unitários
 pytest -m integration   # Apenas integração
 pytest -m "not slow"    # Excluir lentos
+pytest -m ml_accuracy   # Testes de acurácia ML (lentos)
 
 # Por arquivo
 pytest tests/api/v1/core/test_security_rsa.py
@@ -80,15 +81,34 @@ pytest -s              # Mostrar prints
 ### Testes de Integração
 
 - ✅ **Endpoints RSA** (`test_rsa_endpoints.py`)
+
   - GET /api/v1/public-key
   - POST /api/v1/login com senha criptografada
   - Testes de segurança/penetração
+
+- ✅ **Machine Learning - Serviço** (`test_ml_service_characterization.py`)
+
+  - Predição de preços e categorias
+  - Cálculo de limites de preço
+  - Tratamento de erros e fallbacks
+
+- ✅ **Machine Learning - Acurácia** (`test_ml_model_accuracy.py`)
+
+  - Validação de acurácia mínima (60%)
+  - Validação de MAE máximo (R$ 200)
+  - Validação de R² mínimo (0.40)
+  - Validação de RMSE máximo (R$ 300)
+  - Métricas completas de avaliação
+
+- ✅ **Machine Learning - Validação** (`test_ml_model_validation.py`)
+  - Validação de modelos carregados em produção
+  - Testes de predição básica
+  - Validação de consistência dos modelos
 
 ### Em Desenvolvimento (DIA 2+)
 
 - 🔄 **Orçamentos** - Characterization tests
 - 🔄 **Solicitações** - Characterization tests
-- 🔄 **Machine Learning** - Characterization tests
 - 🔄 **Autenticação** - Expansão de testes
 
 ## 🎯 Cobertura Atual

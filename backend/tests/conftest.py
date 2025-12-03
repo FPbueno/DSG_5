@@ -120,4 +120,5 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "slow: Testes lentos")
     config.addinivalue_line("markers", "requires_db: Testes que requerem banco")
     config.addinivalue_line("markers", "requires_network: Testes que requerem rede")
+    config.addinivalue_line("markers", "ml_accuracy: Testes de acurácia e treinamento de modelos ML")
 

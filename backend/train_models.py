@@ -24,12 +24,22 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, mean_absolute_error, classification_report
+from sklearn.metrics import (
+    accuracy_score, 
+    mean_absolute_error, 
+    mean_squared_error,
+    r2_score,
+    classification_report
+)
 import re
 
 # Diretório dos modelos
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "models")
 os.makedirs(MODELS_DIR, exist_ok=True)
+
+# Diretório para resultados e gráficos
+RESULTS_DIR = os.path.join(MODELS_DIR, "training_results")
+os.makedirs(RESULTS_DIR, exist_ok=True)
 
 # Categorias de serviços
 CATEGORIAS = [
@@ -305,7 +315,7 @@ def treinar_modelo_categoria(dados):
     print("\nRelatório de classificação:")
     print(classification_report(y_test, y_pred))
     
-    return model, vectorizer
+    return model, vectorizer, (X_test, y_test, y_pred)
 
 def treinar_modelo_preco(dados):
     """
@@ -327,9 +337,10 @@ def treinar_modelo_preco(dados):
     )
     X = vectorizer.fit_transform(textos)
     
-    # Divisão treino/teste
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
+    # Divisão treino/teste (com índices para obter categorias depois)
+    indices = np.arange(len(y))
+    X_train, X_test, y_train, y_test, indices_train, indices_test = train_test_split(
+        X, y, indices, test_size=0.2, random_state=42
     )
     
     # Treina modelo
@@ -349,10 +360,19 @@ def treinar_modelo_preco(dados):
     y_pred = model.predict(X_test)
     mae = mean_absolute_error(y_test, y_pred)
     
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_test, y_pred)
+    
     print(f"MAE (Mean Absolute Error) do modelo de preço: {mae:.2f}")
+    print(f"RMSE (Root Mean Squared Error): {rmse:.2f}")
+    print(f"R² (Coeficiente de Determinação): {r2:.4f}")
     print(f"Erro médio: R$ {mae:.2f}")
     
-    return model, vectorizer
+    # Retorna também índices de teste e categorias para visualização
+    categories_test = [dados['categories'][i] for i in indices_test]
+    
+    return model, vectorizer, (X_test, y_test, y_pred, indices_test, categories_test)
 
 def salvar_modelos(category_model, category_vectorizer, price_model, price_vectorizer):
     """
@@ -422,13 +442,91 @@ def main():
     print(f"  Faixa de preços: R$ {min(dados['prices']):.2f} - R$ {max(dados['prices']):.2f}")
     
     # Treina modelo de categoria
-    category_model, category_vectorizer = treinar_modelo_categoria(dados)
+    category_model, category_vectorizer, (X_test_cat, y_test_cat, y_pred_cat) = treinar_modelo_categoria(dados)
     
     # Treina modelo de preço
-    price_model, price_vectorizer = treinar_modelo_preco(dados)
+    price_model, price_vectorizer, (X_test_price, y_test_price, y_pred_price, indices_test_price, categories_test_price) = treinar_modelo_preco(dados)
     
     # Salva modelos
     salvar_modelos(category_model, category_vectorizer, price_model, price_vectorizer)
+    
+    # Gera gráficos e documentação
+    print("\n" + "=" * 60)
+    print("GERANDO GRÁFICOS E DOCUMENTAÇÃO...")
+    print("=" * 60)
+    
+    try:
+        from models.training_visualizer import TrainingVisualizer
+        
+        visualizer = TrainingVisualizer(RESULTS_DIR)
+        
+        # Calcula métricas
+        category_accuracy = accuracy_score(y_test_cat, y_pred_cat)
+        price_mae = mean_absolute_error(y_test_price, y_pred_price)
+        price_rmse = np.sqrt(mean_squared_error(y_test_price, y_pred_price))
+        price_r2 = r2_score(y_test_price, y_pred_price)
+        
+        metrics = {
+            'category_accuracy': category_accuracy,
+            'price_mae': price_mae,
+            'price_rmse': price_rmse,
+            'price_r2': price_r2
+        }
+        
+        model_info = {
+            'Modelo de Categoria': 'Random Forest Classifier',
+            'Modelo de Preço': 'Random Forest Regressor',
+            'Total de Amostras': len(dados['service_names']),
+            'Amostras de Treino': int(len(dados['service_names']) * 0.8),
+            'Amostras de Teste': int(len(dados['service_names']) * 0.2),
+            'Categorias': len(CATEGORIAS)
+        }
+        
+        # Gera gráficos
+        print("\nGerando gráficos...")
+        
+        # Matriz de confusão - categoria
+        print("  - Matriz de confusão (categoria)...")
+        visualizer.plot_category_confusion_matrix(y_test_cat, y_pred_cat, CATEGORIAS)
+        
+        # Métricas por categoria
+        print("  - Métricas por categoria...")
+        visualizer.plot_category_accuracy_by_class(y_test_cat, y_pred_cat, CATEGORIAS)
+        
+        # Scatter plot - preço
+        print("  - Scatter plot (preço)...")
+        visualizer.plot_price_prediction_scatter(y_test_price, y_pred_price)
+        
+        # Distribuição de erros - preço
+        print("  - Distribuição de erros (preço)...")
+        visualizer.plot_price_error_distribution(y_test_price, y_pred_price)
+        
+        # Preço por categoria - usa dados de teste do modelo de preço
+        dados_test_price = {
+            'categories': categories_test_price,
+            'prices': y_test_price.tolist() if isinstance(y_test_price, np.ndarray) else list(y_test_price)
+        }
+        
+        print("  - Preço por categoria...")
+        visualizer.plot_price_by_category(dados_test_price, y_pred_price, y_test_price)
+        
+        # Resumo das métricas
+        print("  - Resumo das métricas...")
+        visualizer.plot_training_summary(metrics)
+        
+        # Gera relatório
+        print("  - Relatório de treinamento...")
+        report_file = visualizer.generate_report(metrics, model_info)
+        
+        print(f"\n✓ Gráficos e relatórios salvos em: {RESULTS_DIR}")
+        print(f"  Timestamp: {visualizer.timestamp}")
+        print(f"  Relatório: {os.path.basename(report_file)}")
+        
+    except ImportError as e:
+        print(f"\n⚠️ Aviso: Não foi possível gerar gráficos: {e}")
+        print("  Instale matplotlib e seaborn: pip install matplotlib seaborn")
+    except Exception as e:
+        print(f"\n⚠️ Aviso: Erro ao gerar gráficos: {e}")
     
     print("\n" + "=" * 60)
     print("TREINAMENTO CONCLUÍDO COM SUCESSO!")

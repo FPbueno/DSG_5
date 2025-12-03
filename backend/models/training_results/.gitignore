@@ -1,0 +1,8 @@
+# Ignora arquivos gerados, mas mantém estrutura
+*.png
+*.txt
+
+# Mantém README
+!README.md
+!.gitkeep
+
