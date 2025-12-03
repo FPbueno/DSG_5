@@ -1,0 +1,42 @@
+======================================================================
+RELATÓRIO DE TREINAMENTO - MODELOS DE MACHINE LEARNING
+======================================================================
+
+Data/Hora do Treinamento: 2025-12-03 18:18:29
+
+INFORMAÇÕES DOS MODELOS
+----------------------------------------------------------------------
+Modelo de Categoria: Random Forest Classifier
+Modelo de Preço: Random Forest Regressor
+Total de Amostras: 2100
+Amostras de Treino: 1680
+Amostras de Teste: 420
+Categorias: 19
+
+MÉTRICAS DE PERFORMANCE
+----------------------------------------------------------------------
+
+MODELO DE CATEGORIA:
+  - Acurácia: 1.0000 (100.00%)
+  - Status: ✓ APROVADO (Threshold: 60%)
+
+MODELO DE PREÇO:
+  - MAE (Mean Absolute Error): R$ 427.95
+    Status: ✗ REPROVADO (Threshold: R$ 200.00)
+  - RMSE (Root Mean Squared Error): R$ 937.51
+    Status: ✗ REPROVADO (Threshold: R$ 300.00)
+  - R² (Coeficiente de Determinação): 0.4626
+    Status: ✓ APROVADO (Threshold: 0.40)
+
+======================================================================
+ARQUIVOS GERADOS
+----------------------------------------------------------------------
+Diretório de resultados: C:\ABP\backend\models\training_results
+Timestamp: 20251203_181824
+
+Gráficos gerados:
+  - Matriz de confusão (categoria)
+  - Métricas por categoria
+  - Scatter plot (preço)
+  - Distribuição de erros (preço)
+  - Resumo das métricas

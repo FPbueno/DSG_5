@@ -1,8 +1,3 @@
-# Ignora arquivos gerados, mas mantém estrutura
-*.png
-*.txt
-
-# Mantém README
-!README.md
-!.gitkeep
+# As imagens e relatórios gerados SERÃO commitados no git
+# Este arquivo está vazio para permitir que todos os arquivos sejam versionados
 
