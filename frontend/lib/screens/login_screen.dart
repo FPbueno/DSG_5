@@ -373,10 +373,24 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
   Future<void> _verifyTwoFactorCode() async {
     final code = _twoFactorController.text.trim();
 
-    if (code.isEmpty || code.length != 6) {
+    // Validação: aceita código TOTP (6 dígitos) ou backup code (formato XXXX-XXXX-XXXX)
+    final codeClean = code
+        .replaceAll('-', '')
+        .replaceAll(' ', '')
+        .toUpperCase();
+    final isTOTP =
+        codeClean.length == 6 && RegExp(r'^\d+$').hasMatch(codeClean);
+    final isBackupCode =
+        codeClean.length == 12 &&
+        RegExp(r'^[A-F0-9]+$').hasMatch(codeClean) &&
+        code.contains('-');
+
+    if (code.isEmpty || (!isTOTP && !isBackupCode)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Por favor, insira um código 2FA válido (6 dígitos)'),
+          content: Text(
+            'Por favor, insira um código 2FA válido (6 dígitos) ou código de backup (XXXX-XXXX-XXXX)',
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -536,7 +550,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
 
                   // Instruções
                   const Text(
-                    'Digite o código de 6 dígitos gerado pelo seu app autenticador (Google Authenticator, Authy, etc.)',
+                    'Digite o código de 6 dígitos do app autenticador ou um código de backup (XXXX-XXXX-XXXX)',
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                     textAlign: TextAlign.center,
                   ),
@@ -545,16 +559,27 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                   // Campo para código 2FA
                   _buildTextField(
                     controller: _twoFactorController,
-                    label: 'Código 2FA (6 dígitos)',
+                    label: 'Código 2FA ou Backup Code',
                     icon: Icons.lock_clock,
-                    keyboardType: TextInputType.number,
-                    maxLength: 6,
+                    keyboardType: TextInputType.text,
+                    maxLength: null,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
-                        return 'Digite o código 2FA';
+                        return 'Digite o código 2FA ou backup code';
                       }
-                      if (v.length != 6) {
-                        return 'O código deve ter 6 dígitos';
+                      final codeClean = v
+                          .replaceAll('-', '')
+                          .replaceAll(' ', '')
+                          .toUpperCase();
+                      final isTOTP =
+                          codeClean.length == 6 &&
+                          RegExp(r'^\d+$').hasMatch(codeClean);
+                      final isBackupCode =
+                          codeClean.length == 12 &&
+                          RegExp(r'^[A-F0-9]+$').hasMatch(codeClean) &&
+                          v.contains('-');
+                      if (!isTOTP && !isBackupCode) {
+                        return 'Código inválido. Use 6 dígitos ou formato XXXX-XXXX-XXXX';
                       }
                       return null;
                     },

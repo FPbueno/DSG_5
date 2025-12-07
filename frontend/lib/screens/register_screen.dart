@@ -72,8 +72,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         final data = jsonDecode(response.body);
         final totpSecret = data['codigo_2fa'];
         final qrCode = data['qr_code'] as String?;
+        final backupCodes = data['backup_codes'] != null
+            ? List<String>.from(data['backup_codes'])
+            : null;
 
         debugPrint('QR Code recebido: ${qrCode != null ? "Sim" : "Não"}');
+        debugPrint(
+          'Backup codes recebidos: ${backupCodes != null ? backupCodes.length : 0}',
+        );
 
         if (mounted && totpSecret != null) {
           // Navega para tela de configuração do 2FA
@@ -84,6 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 email: _emailController.text.trim(),
                 tipoUsuario: widget.tipoUsuario,
                 qrCode: qrCode,
+                backupCodes: backupCodes,
               ),
             ),
           );

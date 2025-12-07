@@ -30,8 +30,8 @@ def verificar_senha(senha_plana: str, senha_hash: str) -> bool:
 
 # ============= CLIENTES =============
 
-def criar_cliente(cliente_data: ClienteCreate, totp_secret: str = None) -> Optional[dict]:
-    """Cria novo cliente no Supabase com suporte a 2FA."""
+def criar_cliente(cliente_data: ClienteCreate, totp_secret: str = None, backup_codes: list = None) -> Optional[dict]:
+    """Cria novo cliente no Supabase com suporte a 2FA e backup codes."""
     senha_hash = hash_senha(cliente_data.senha)
 
     data = {
@@ -40,7 +40,8 @@ def criar_cliente(cliente_data: ClienteCreate, totp_secret: str = None) -> Optio
         "telefone": cliente_data.telefone,
         "endereco": cliente_data.endereco,
         "senha_hash": senha_hash,  # ✅ coluna existente
-        "totp_secret": totp_secret
+        "totp_secret": totp_secret,
+        "backup_codes": backup_codes or []
     }
 
     response = supabase_service.supabase.table("clientes").insert(data).execute()
@@ -66,8 +67,8 @@ def autenticar_cliente(email: str, senha: str) -> Optional[dict]:
 
 # ============= PRESTADORES =============
 
-def criar_prestador(prestador_data: PrestadorCreate) -> Optional[dict]:
-    """Cria novo prestador usando Supabase"""
+def criar_prestador(prestador_data: PrestadorCreate, backup_codes: list = None) -> Optional[dict]:
+    """Cria novo prestador usando Supabase com suporte a backup codes"""
     try:
         prestador_dict = {
             "nome": prestador_data.nome,
@@ -79,7 +80,8 @@ def criar_prestador(prestador_data: PrestadorCreate) -> Optional[dict]:
             "regioes_atendimento": prestador_data.regioes_atendimento,
             "avaliacao_media": 0.0,
             "portfolio": prestador_data.portfolio,
-            "totp_secret": prestador_data.totp_secret
+            "totp_secret": prestador_data.totp_secret,
+            "backup_codes": backup_codes or []
         }
         
         return supabase_service.criar_prestador(prestador_dict)

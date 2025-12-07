@@ -43,6 +43,7 @@ class RegistrarClienteResponse(BaseModel):
     cliente: ClienteResponse
     codigo_2fa: str
     qr_code: str
+    backup_codes: list[str]
     mensagem: str
 # ============= SCHEMAS PARA PRESTADOR =============
 
@@ -79,6 +80,7 @@ class PrestadorRegistroResponse(BaseModel):
     prestador: PrestadorResponse
     codigo_2fa: str
     qr_code: str
+    backup_codes: list[str]
     mensagem: str
 
 

@@ -9,6 +9,7 @@ class Setup2FAScreen extends StatelessWidget {
   final String email;
   final String tipoUsuario;
   final String? qrCode;
+  final List<String>? backupCodes;
 
   const Setup2FAScreen({
     super.key,
@@ -16,6 +17,7 @@ class Setup2FAScreen extends StatelessWidget {
     required this.email,
     required this.tipoUsuario,
     this.qrCode,
+    this.backupCodes,
   });
 
   @override
@@ -204,6 +206,110 @@ class Setup2FAScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
+              // Backup Codes
+              if (backupCodes != null && backupCodes!.isNotEmpty) ...[
+                const Text(
+                  'Códigos de Backup (Salve em local seguro):',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.orange, width: 2),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'IMPORTANTE: Estes códigos permitem recuperar acesso se você perder o app autenticador. Cada código só pode ser usado uma vez.',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ...backupCodes!.map(
+                        (code) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: SelectableText(
+                                  code,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.copy,
+                                  color: Color(0xFFf5c116),
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  Clipboard.setData(ClipboardData(text: code));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Código $code copiado!'),
+                                      backgroundColor: Colors.green,
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            final allCodes = backupCodes!.join('\n');
+                            Clipboard.setData(ClipboardData(text: allCodes));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Todos os códigos copiados!'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.copy_all, color: Colors.black),
+                          label: const Text(
+                            'Copiar Todos',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFf5c116),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+
               // Botão de ajuda
               Container(
                 padding: const EdgeInsets.all(12),
@@ -217,7 +323,7 @@ class Setup2FAScreen extends StatelessWidget {
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Após configurar, você precisará do código gerado pelo app para fazer login.',
+                        'Após configurar, você precisará do código gerado pelo app ou um código de backup para fazer login.',
                         style: TextStyle(color: Colors.white70, fontSize: 12),
                       ),
                     ),
