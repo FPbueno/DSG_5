@@ -31,7 +31,6 @@ except (ImportError, ModuleNotFoundError):
     CORS_ALLOW_HEADERS = ["*"]
 
 from api.v1.routes import router
-from api.v1.core.database import create_tables
 from api.v1.core.security import generate_rsa_keys
 
 app = FastAPI(

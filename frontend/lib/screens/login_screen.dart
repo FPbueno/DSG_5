@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../constants/app_constants.dart';
-import '../services/rsa_service.dart';
 import 'cliente/main_cliente_screen.dart';
 import 'prestador/main_prestador_screen.dart';
 import 'register_screen.dart';
@@ -37,16 +36,12 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final senhaCriptografada = await RSAService.encryptPassword(
-        _passwordController.text,
-      );
-
       final response = await http.post(
         Uri.parse('${AppConstants.baseUrl}/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text.trim(),
-          'senha': senhaCriptografada,
+          'senha': _passwordController.text,
           'tipo_usuario': widget.tipoUsuario,
         }),
       );
@@ -54,28 +49,27 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        // Verifica se a autenticação de 2FA é necessária
-        // A API retorna "require_2fa": true quando precisa de 2FA
-        if (data.containsKey('require_2fa') && data['require_2fa'] == true) {
-          // Navega para a tela de 2FA
-          if (mounted) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => TwoFactorScreen(
-                  email: _emailController.text.trim(),
-                  tipoUsuario: widget.tipoUsuario,
-                  usuarioId: data['usuario_id'] ?? 0,
-                ),
+        // Se backend pedir 2FA, segue para tela de codigo; caso contrario, finaliza login
+        final require2fa = data['require_2fa'] == true;
+        if (require2fa && mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => TwoFactorScreen(
+                email: _emailController.text.trim(),
+                tipoUsuario: widget.tipoUsuario,
+                usuarioId: data['usuario_id'] ?? 0,
               ),
-            );
-          }
+            ),
+          );
         } else {
-          // Se não requer 2FA, já faz login completo (não deveria acontecer)
-          _onLoginSuccess(data);
+          await _onLoginSuccess(data);
         }
       } else {
-        final errorData = jsonDecode(response.body);
-        final errorMsg = errorData['detail'] ?? 'Email ou senha incorretos';
+        String errorMsg = 'Email ou senha incorretos';
+        try {
+          final errorData = jsonDecode(response.body);
+          errorMsg = errorData['detail'] ?? errorMsg;
+        } catch (_) {}
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -99,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     try {
-      // Salva token e dados do usuário
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', data['token'] ?? '');
       await prefs.setString('user_data', jsonEncode(data));
@@ -108,7 +101,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (mounted) {
-      // Navega para a tela principal específica do tipo de usuário
       if (widget.tipoUsuario == 'cliente') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -143,16 +135,13 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight:
-                    MediaQuery.of(context).size.height -
+                minHeight: MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top -
                     MediaQuery.of(context).padding.bottom,
               ),
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-
-                  // Botão Voltar
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
@@ -165,8 +154,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-
-                  // Logo
                   Image.asset(
                     'assets/images/Worca.png',
                     height: 200,
@@ -178,8 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Título com tipo de usuário
                   Text(
                     isCliente ? 'Login Cliente' : 'Login Prestador',
                     style: const TextStyle(
@@ -189,8 +174,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-
-                  // Formulário
                   Form(
                     key: _formKey,
                     child: Column(
@@ -199,12 +182,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _emailController,
                           label: 'Email',
                           icon: Icons.email,
-                          validator: (v) => v!.isEmpty || !v.contains('@')
-                              ? 'Email inválido'
-                              : null,
+                          validator: (v) => null,
                         ),
                         const SizedBox(height: 20),
-
                         _buildTextField(
                           controller: _passwordController,
                           label: 'Senha',
@@ -217,16 +197,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   : Icons.visibility_off,
                               color: Colors.grey[600],
                             ),
-                            onPressed: () => setState(
-                              () => _obscurePassword = !_obscurePassword,
-                            ),
+                            onPressed: () =>
+                                setState(() => _obscurePassword = !_obscurePassword),
                           ),
-                          validator: (v) =>
-                              v!.isEmpty ? 'Senha obrigatória' : null,
+                          validator: (v) => v!.isEmpty ? 'Senha obrigatória' : null,
                         ),
                         const SizedBox(height: 30),
-
-                        // Botão Login
                         SizedBox(
                           width: double.infinity,
                           height: 56,
@@ -253,8 +229,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 24),
-
-                        // Link para registro
                         TextButton(
                           onPressed: () => Navigator.push(
                             context,
@@ -343,7 +317,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-// Tela para autenticação de 2 fatores
 class TwoFactorScreen extends StatefulWidget {
   final String email;
   final String tipoUsuario;
@@ -372,25 +345,10 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
 
   Future<void> _verifyTwoFactorCode() async {
     final code = _twoFactorController.text.trim();
-
-    // Validação: aceita código TOTP (6 dígitos) ou backup code (formato XXXX-XXXX-XXXX)
-    final codeClean = code
-        .replaceAll('-', '')
-        .replaceAll(' ', '')
-        .toUpperCase();
-    final isTOTP =
-        codeClean.length == 6 && RegExp(r'^\d+$').hasMatch(codeClean);
-    final isBackupCode =
-        codeClean.length == 12 &&
-        RegExp(r'^[A-F0-9]+$').hasMatch(codeClean) &&
-        code.contains('-');
-
-    if (code.isEmpty || (!isTOTP && !isBackupCode)) {
+    if (code.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Por favor, insira um código 2FA válido (6 dígitos) ou código de backup (XXXX-XXXX-XXXX)',
-          ),
+          content: Text('Digite qualquer código para continuar'),
           backgroundColor: Colors.red,
         ),
       );
@@ -400,28 +358,23 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Chama o endpoint /login-2fa conforme a API
       final response = await http.post(
         Uri.parse('${AppConstants.baseUrl}/login-2fa'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': widget.email,
           'tipo_usuario': widget.tipoUsuario,
-          'codigo': code, // Código de 6 dígitos do app autenticador
+          'codigo': code,
         }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
-        // Salva token e dados do usuário
         await _saveLoginData(data);
-
-        _onLoginSuccess(data); // Login completo após verificar o código 2FA
+        await _onLoginSuccess(data);
       } else {
         final errorData = jsonDecode(response.body);
-        final errorMsg = errorData['detail'] ?? 'Código 2FA inválido';
-
+        final errorMsg = errorData['detail'] ?? 'Código inválido';
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
@@ -432,21 +385,18 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erro ao verificar código 2FA: $e'),
+            content: Text('Erro ao verificar código: $e'),
             backgroundColor: Colors.red,
           ),
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   Future<void> _saveLoginData(Map<String, dynamic> data) async {
     try {
-      // Salva token usando SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', data['token'] ?? '');
       await prefs.setString('user_data', jsonEncode(data));
@@ -459,7 +409,6 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
     if (!mounted) return;
 
     try {
-      // Salva token e dados do usuário
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', data['token'] ?? '');
       await prefs.setString('user_data', jsonEncode(data));
@@ -468,7 +417,6 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
     }
 
     if (mounted) {
-      // Navega para a tela principal específica do tipo de usuário
       if (widget.tipoUsuario == 'cliente') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -501,16 +449,13 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight:
-                    MediaQuery.of(context).size.height -
+                minHeight: MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top -
                     MediaQuery.of(context).padding.bottom,
               ),
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-
-                  // Botão Voltar
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
@@ -523,8 +468,6 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-
-                  // Logo
                   Image.asset(
                     'assets/images/Worca.png',
                     height: 200,
@@ -536,8 +479,6 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Título
                   const Text(
                     'Autenticação de Dois Fatores',
                     style: TextStyle(
@@ -547,46 +488,19 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-
-                  // Instruções
                   const Text(
-                    'Digite o código de 6 dígitos do app autenticador ou um código de backup (XXXX-XXXX-XXXX)',
+                    'Digite qualquer código (2FA desabilitado).',
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-
-                  // Campo para código 2FA
                   _buildTextField(
                     controller: _twoFactorController,
-                    label: 'Código 2FA ou Backup Code',
+                    label: 'Código 2FA',
                     icon: Icons.lock_clock,
-                    keyboardType: TextInputType.text,
-                    maxLength: null,
-                    validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return 'Digite o código 2FA ou backup code';
-                      }
-                      final codeClean = v
-                          .replaceAll('-', '')
-                          .replaceAll(' ', '')
-                          .toUpperCase();
-                      final isTOTP =
-                          codeClean.length == 6 &&
-                          RegExp(r'^\d+$').hasMatch(codeClean);
-                      final isBackupCode =
-                          codeClean.length == 12 &&
-                          RegExp(r'^[A-F0-9]+$').hasMatch(codeClean) &&
-                          v.contains('-');
-                      if (!isTOTP && !isBackupCode) {
-                        return 'Código inválido. Use 6 dígitos ou formato XXXX-XXXX-XXXX';
-                      }
-                      return null;
-                    },
+                    keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 30),
-
-                  // Botão Verificar
                   SizedBox(
                     width: double.infinity,
                     height: 56,
@@ -619,7 +533,6 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
     );
   }
 
-  // Método _buildTextField para TwoFactorScreen
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,

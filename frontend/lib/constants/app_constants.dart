@@ -24,8 +24,8 @@ class AppConstants {
   static const String titleFont = 'Quicksand';
 
   // API
-  static const String apiBaseUrl =
-      'https://worca-app-263d52d597b9.herokuapp.com/api/v1';
+  // API local (backend em memória)
+  static const String apiBaseUrl = 'http://localhost:8000/api/v1';
   static const String baseUrl = apiBaseUrl; // Alias para compatibilidade
 
   // Categorias de serviços

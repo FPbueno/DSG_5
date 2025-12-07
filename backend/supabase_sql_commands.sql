@@ -105,7 +105,3 @@ ORDER BY table_name;
 
 ALTER TABLE clientes ADD COLUMN IF NOT EXISTS totp_secret VARCHAR(255);
 ALTER TABLE prestadores ADD COLUMN IF NOT EXISTS totp_secret VARCHAR(255);
-
--- Adicionar coluna para backup codes (armazenado como JSON array de hashes)
-ALTER TABLE clientes ADD COLUMN IF NOT EXISTS backup_codes JSONB DEFAULT '[]'::jsonb;
-ALTER TABLE prestadores ADD COLUMN IF NOT EXISTS backup_codes JSONB DEFAULT '[]'::jsonb;

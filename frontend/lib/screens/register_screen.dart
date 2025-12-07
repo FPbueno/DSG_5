@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../constants/app_constants.dart';
-import '../services/rsa_service.dart';
-import 'setup_2fa_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   final String tipoUsuario;
@@ -20,9 +18,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _senhaController = TextEditingController();
   final _telefoneController = TextEditingController();
   final _enderecoController = TextEditingController();
-  final _categoriasController = TextEditingController(); // Para prestador
-  final _regioesController = TextEditingController(); // Para prestador
+  final _categoriasController = TextEditingController();
+  final _regioesController = TextEditingController();
   bool _isLoading = false;
+  bool _enable2fa = true;
 
   Future<void> _registrar() async {
     if (!_formKey.currentState!.validate()) return;
@@ -34,23 +33,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ? '/registrar'
           : '/prestadores/registrar';
 
-      // Criptografa a senha usando o RSAService
-      final senhaCriptografada = await RSAService.encryptPassword(
-        _senhaController.text,
-      );
-
       final body = widget.tipoUsuario == 'cliente'
           ? {
               'nome': _nomeController.text,
               'email': _emailController.text,
               'telefone': _telefoneController.text,
               'endereco': _enderecoController.text,
-              'senha': senhaCriptografada,
+              'senha': _senhaController.text,
+              'enable_2fa': _enable2fa,
             }
           : {
               'nome': _nomeController.text,
               'email': _emailController.text,
-              'senha': senhaCriptografada,
+              'senha': _senhaController.text,
               'telefone': _telefoneController.text,
               'categorias': _categoriasController.text
                   .split(',')
@@ -60,6 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   .split(',')
                   .map((e) => e.trim())
                   .toList(),
+              'enable_2fa': _enable2fa,
             };
 
       final response = await http.post(
@@ -69,42 +65,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        final totpSecret = data['codigo_2fa'];
-        final qrCode = data['qr_code'] as String?;
-        final backupCodes = data['backup_codes'] != null
-            ? List<String>.from(data['backup_codes'])
-            : null;
-
-        debugPrint('QR Code recebido: ${qrCode != null ? "Sim" : "Não"}');
-        debugPrint(
-          'Backup codes recebidos: ${backupCodes != null ? backupCodes.length : 0}',
-        );
-
-        if (mounted && totpSecret != null) {
-          // Navega para tela de configuração do 2FA
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => Setup2FAScreen(
-                totpSecret: totpSecret,
-                email: _emailController.text.trim(),
-                tipoUsuario: widget.tipoUsuario,
-                qrCode: qrCode,
-                backupCodes: backupCodes,
-              ),
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Cadastro realizado com sucesso.'),
+              backgroundColor: Colors.green,
             ),
           );
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'Cadastro realizado, mas código 2FA não foi retornado',
-                ),
-                backgroundColor: Colors.orange,
-              ),
-            );
-          }
+          Navigator.pop(context); // Volta para tela de login
         }
       } else {
         final error = jsonDecode(response.body);
@@ -130,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
-          'Cadastro ${widget.tipoUsuario == 'cliente' ? 'Cliente' : 'Prestador'}',
+          'Cadastro ${widget.tipoUsuario == "cliente" ? "Cliente" : "Prestador"}',
         ),
       ),
       body: Form(
@@ -146,6 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   'Email',
                   Icons.email,
                   type: TextInputType.emailAddress,
+                  required: false,
                 ),
                 _buildField(
                   _senhaController,
@@ -178,6 +147,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Icons.map,
                   ),
                 ],
+                const SizedBox(height: 12),
+                _buildTwoFactorSelector(),
                 const SizedBox(height: 24),
                 SizedBox(
                   height: 56,
@@ -247,6 +218,70 @@ class _RegisterScreenState extends State<RegisterScreen> {
           validator: (v) =>
               required && (v == null || v.isEmpty) ? 'Campo obrigatório' : null,
         ),
+      ),
+    );
+  }
+
+  Widget _buildTwoFactorSelector() {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFFf5c116).withValues(alpha: 0.3),
+          width: 1.4,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Autenticação em 2 Fatores',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              ChoiceChip(
+                label: const Text('Habilitar'),
+                selected: _enable2fa,
+                selectedColor: const Color(0xFFf5c116),
+                labelStyle: TextStyle(
+                  color: _enable2fa ? Colors.black : Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+                onSelected: (_) => setState(() => _enable2fa = true),
+              ),
+              ChoiceChip(
+                label: const Text('Desabilitar'),
+                selected: !_enable2fa,
+                selectedColor: Colors.grey[800],
+                labelStyle: TextStyle(
+                  color: !_enable2fa ? Colors.black : Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+                onSelected: (_) => setState(() => _enable2fa = false),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _enable2fa
+                ? 'Solicitaremos o código 2FA nos logins.'
+                : 'Cadastro sem exigir segundo fator (se permitido pelo backend).',
+            style: TextStyle(
+              color: Colors.grey[400],
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
   }

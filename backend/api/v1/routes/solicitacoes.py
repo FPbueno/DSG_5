@@ -1,20 +1,67 @@
 """
-Rotas de Solicitações de Orçamento
+Rotas de Solicitações de Orçamento (modo memória)
 """
 from fastapi import APIRouter, HTTPException, status, Query
-from typing import List
+from typing import List, Dict, Any, Optional
+from datetime import datetime
 from ..schemas import (
     SolicitacaoCreate, SolicitacaoResponse,
     SolicitacaoDisponivel
 )
-from ..services.solicitacao_service_supabase import (
-    criar_solicitacao, listar_solicitacoes_cliente,
-    buscar_solicitacao_por_id, listar_solicitacoes_disponiveis,
-    cancelar_solicitacao, deletar_solicitacao
-)
-from ..services.auth_service_supabase import buscar_prestador_por_id
+from .usuarios import _buscar_prestador_por_id  # usar armazenamento em memória dos usuários
 
 router = APIRouter(prefix="/solicitacoes")
+
+# Armazenamento em memória
+_solicitacoes: Dict[int, Dict[str, Any]] = {}
+_seq_solicitacao = iter(range(1, 10_000_000))
+
+# Helpers
+def _nova_solicitacao(cliente_id: int, data: SolicitacaoCreate) -> Dict[str, Any]:
+    sid = next(_seq_solicitacao)
+    now = datetime.utcnow()
+    sol = {
+        "id": sid,
+        "cliente_id": cliente_id,
+        "categoria": data.categoria,
+        "descricao": data.descricao,
+        "localizacao": data.localizacao,
+        "prazo_desejado": data.prazo_desejado,
+        "informacoes_adicionais": data.informacoes_adicionais,
+        "status": "aguardando_orcamentos",
+        "created_at": now,
+        "updated_at": now,
+    }
+    _solicitacoes[sid] = sol
+    return sol
+
+def _listar_solicitacoes_cliente(cliente_id: int) -> List[Dict[str, Any]]:
+    return [s for s in _solicitacoes.values() if s["cliente_id"] == cliente_id]
+
+def _buscar_solicitacao_por_id(sid: int) -> Optional[Dict[str, Any]]:
+    return _solicitacoes.get(sid)
+
+def _listar_disponiveis(categorias: List[str]) -> List[Dict[str, Any]]:
+    cats = set(categorias or [])
+    return [
+        s for s in _solicitacoes.values()
+        if s["status"] == "aguardando_orcamentos" and (not cats or s["categoria"] in cats)
+    ]
+
+def _cancelar(sid: int, cliente_id: int) -> bool:
+    sol = _solicitacoes.get(sid)
+    if not sol or sol["cliente_id"] != cliente_id:
+        return False
+    sol["status"] = "cancelada"
+    sol["updated_at"] = datetime.utcnow()
+    return True
+
+def _deletar(sid: int, cliente_id: int) -> bool:
+    sol = _solicitacoes.get(sid)
+    if not sol or sol["cliente_id"] != cliente_id:
+        return False
+    _solicitacoes.pop(sid, None)
+    return True
 
 # ============= ROTAS ESPECÍFICAS (antes das rotas com path params) =============
 
@@ -23,7 +70,7 @@ def listar_minhas_solicitacoes(
     cliente_id: int = Query(...),  # TODO: Extrair do token JWT
 ):
     """Cliente lista suas solicitações"""
-    solicitacoes = listar_solicitacoes_cliente(cliente_id)
+    solicitacoes = _listar_solicitacoes_cliente(cliente_id)
     
     # Formata resposta para Supabase
     resultado = []
@@ -53,7 +100,7 @@ def listar_solicitacoes_disponiveis_endpoint(
     Prestador lista solicitações disponíveis
     Filtradas por suas categorias de atuação
     """
-    prestador = buscar_prestador_por_id(prestador_id)
+    prestador = _buscar_prestador_por_id(prestador_id)
     if not prestador:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -61,7 +108,7 @@ def listar_solicitacoes_disponiveis_endpoint(
         )
     
     print(f"Categorias do prestador: {prestador['categorias']}")
-    solicitacoes = listar_solicitacoes_disponiveis(prestador['categorias'])
+    solicitacoes = _listar_disponiveis(prestador.get('categorias') or [])
     print(f"Solicitações encontradas: {len(solicitacoes)}")
     
     # Formata resposta
@@ -93,12 +140,7 @@ def criar_solicitacao_endpoint(
     cliente_id: int = Query(...),  # TODO: Extrair do token JWT
 ):
     """Cliente cria nova solicitação de orçamento"""
-    solicitacao = criar_solicitacao(cliente_id, solicitacao_data)
-    if not solicitacao:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro ao criar solicitação"
-        )
+    solicitacao = _nova_solicitacao(cliente_id, solicitacao_data)
     return solicitacao
 
 @router.get("/{solicitacao_id}", response_model=SolicitacaoResponse)
@@ -106,7 +148,7 @@ def buscar_solicitacao(
     solicitacao_id: int,
 ):
     """Busca solicitação por ID"""
-    solicitacao = buscar_solicitacao_por_id(solicitacao_id)
+    solicitacao = _buscar_solicitacao_por_id(solicitacao_id)
     if not solicitacao:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -126,7 +168,7 @@ def cancelar_solicitacao_endpoint(
     cliente_id: int = Query(...),  # TODO: Extrair do token JWT
 ):
     """Cliente cancela sua solicitação"""
-    sucesso = cancelar_solicitacao(solicitacao_id, cliente_id)
+    sucesso = _cancelar(solicitacao_id, cliente_id)
     if not sucesso:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -140,11 +182,10 @@ def deletar_solicitacao_endpoint(
     cliente_id: int = Query(...),  # TODO: Extrair do token JWT
 ):
     """Cliente deleta sua solicitação (remove permanentemente)"""
-    sucesso = deletar_solicitacao(solicitacao_id, cliente_id)
+    sucesso = _deletar(solicitacao_id, cliente_id)
     if not sucesso:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Solicitação não encontrada"
         )
     return {"message": "Solicitação deletada com sucesso"}
-

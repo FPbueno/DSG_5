@@ -12,63 +12,68 @@ class TipoUsuarioScreen extends StatelessWidget {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Logo
-                Image.asset(
-                  'assets/images/Worca.png',
-                  height: 200,
-                  width: 250,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Icon(
-                      Icons.home_work,
-                      size: 200,
-                      color: Color(0xFFf5c116),
-                    );
-                  },
-                ),
-                const SizedBox(height: 40),
+            child: SingleChildScrollView(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Logo
+                    Image.asset(
+                      'assets/images/Worca.png',
+                      height: 200,
+                      width: 250,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.home_work,
+                          size: 200,
+                          color: Color(0xFFf5c116),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 40),
 
-                // Título
-                const Text(
-                  'Bem-vindo ao Worca!',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
+                    // Título
+                    const Text(
+                      'Bem-vindo ao Worca!',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
 
-                Text(
-                  'Escolha como deseja continuar',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[300]),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 60),
+                    Text(
+                      'Escolha como deseja continuar',
+                      style: TextStyle(fontSize: 16, color: Colors.grey[300]),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 60),
 
-                // Card Cliente
-                _buildUserTypeCard(
-                  context,
-                  icon: Icons.person,
-                  title: 'Sou Cliente',
-                  subtitle: 'Quero solicitar orçamentos',
-                  tipoUsuario: 'cliente',
-                ),
-                const SizedBox(height: 24),
+                    // Card Cliente
+                    _buildUserTypeCard(
+                      context,
+                      icon: Icons.person,
+                      title: 'Sou Cliente',
+                      subtitle: 'Quero solicitar orçamentos',
+                      tipoUsuario: 'cliente',
+                    ),
+                    const SizedBox(height: 24),
 
-                // Card Prestador
-                _buildUserTypeCard(
-                  context,
-                  icon: Icons.work,
-                  title: 'Sou Prestador',
-                  subtitle: 'Quero oferecer meus serviços',
-                  tipoUsuario: 'prestador',
+                    // Card Prestador
+                    _buildUserTypeCard(
+                      context,
+                      icon: Icons.work,
+                      title: 'Sou Prestador',
+                      subtitle: 'Quero oferecer meus serviços',
+                      tipoUsuario: 'prestador',
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

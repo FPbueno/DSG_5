@@ -1,22 +1,82 @@
 """
-Rotas de Orçamentos
+Rotas de Orçamentos (modo memória)
 """
 from fastapi import APIRouter, HTTPException, status, Query
-from typing import List
+from typing import List, Dict, Any, Optional
+from datetime import datetime
 from ..schemas import (
     OrcamentoCreate, OrcamentoResponse,
     OrcamentoComLimites, CalcularLimitesRequest, CalcularLimitesResponse
 )
-from ..services.orcamento_service_supabase import (
-    criar_orcamento, listar_orcamentos_solicitacao,
-    listar_orcamentos_prestador, buscar_orcamento_por_id,
-    atualizar_status_orcamento, deletar_orcamento, aceitar_orcamento,
-    marcar_realizado
-)
-from ..services.solicitacao_service_supabase import buscar_solicitacao_por_id
 from ..services.ml_service import calcular_limites_preco
+from .solicitacoes import _buscar_solicitacao_por_id
+from .usuarios import _buscar_prestador_por_id
 
 router = APIRouter(prefix="/orcamentos")
+
+# Armazenamento em memória
+_orcamentos: Dict[int, Dict[str, Any]] = {}
+_seq_orc = iter(range(1, 10_000_000))
+
+# Helpers
+def _novo_orcamento(prestador_id: int, solicitacao_id: int, data: OrcamentoCreate, limites: Dict[str, Any]) -> Dict[str, Any]:
+    oid = next(_seq_orc)
+    now = datetime.utcnow()
+    orc = {
+        "id": oid,
+        "solicitacao_id": solicitacao_id,
+        "prestador_id": prestador_id,
+        "valor_ml_minimo": limites.get("valor_minimo"),
+        "valor_ml_sugerido": limites.get("valor_sugerido"),
+        "valor_ml_maximo": limites.get("valor_maximo"),
+        "valor_proposto": data.valor_proposto,
+        "prazo_execucao": data.prazo_execucao,
+        "observacoes": data.observacoes,
+        "condicoes": data.condicoes,
+        "datetime_inicio": data.datetime_inicio,
+        "datetime_fim": data.datetime_fim,
+        "status": "aguardando",
+        "created_at": now,
+        "realizado": False,
+    }
+    _orcamentos[oid] = orc
+    return orc
+
+def _listar_orcamentos_prestador(pid: int) -> List[Dict[str, Any]]:
+    return [o for o in _orcamentos.values() if o["prestador_id"] == pid]
+
+def _listar_orcamentos_solicitacao(sid: int) -> List[Dict[str, Any]]:
+    return [o for o in _orcamentos.values() if o["solicitacao_id"] == sid]
+
+def _buscar_orcamento(oid: int) -> Optional[Dict[str, Any]]:
+    return _orcamentos.get(oid)
+
+def _deletar_orcamento(oid: int, prestador_id: int) -> bool:
+    orc = _orcamentos.get(oid)
+    if not orc or orc["prestador_id"] != prestador_id or orc["status"] != "aguardando":
+        return False
+    _orcamentos.pop(oid, None)
+    return True
+
+def _aceitar_orcamento(oid: int, cliente_id: int) -> Optional[Dict[str, Any]]:
+    orc = _orcamentos.get(oid)
+    if not orc:
+        return None
+    sol = _buscar_solicitacao_por_id(orc["solicitacao_id"])
+    if not sol or sol["cliente_id"] != cliente_id:
+        return None
+    orc["status"] = "aceito"
+    orc["updated_at"] = datetime.utcnow()
+    return orc
+
+def _marcar_realizado(oid: int, prestador_id: int) -> Optional[Dict[str, Any]]:
+    orc = _orcamentos.get(oid)
+    if not orc or orc["prestador_id"] != prestador_id:
+        return None
+    orc["status"] = "realizado"
+    orc["realizado"] = True
+    orc["datetime_fim"] = datetime.utcnow()
+    return orc
 
 # ============= PRESTADOR =============
 
@@ -28,7 +88,7 @@ def calcular_limites_endpoint(
     Calcula limites de preço (mínimo, sugerido, máximo) para uma solicitação
     Apenas para prestador usar como referência
     """
-    solicitacao = buscar_solicitacao_por_id(solicitacao_id)
+    solicitacao = _buscar_solicitacao_por_id(solicitacao_id)
     if not solicitacao:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -51,7 +111,7 @@ def criar_orcamento_endpoint(
 ):
     """Prestador cria orçamento para uma solicitação"""
     # Busca solicitação
-    solicitacao = buscar_solicitacao_por_id(orcamento_data.solicitacao_id)
+    solicitacao = _buscar_solicitacao_por_id(orcamento_data.solicitacao_id)
     if not solicitacao:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -66,13 +126,11 @@ def criar_orcamento_endpoint(
     )
     
     # Cria orçamento com limites ML
-    orcamento = criar_orcamento(prestador_id, orcamento_data.solicitacao_id, orcamento_data, limites)
-    
-    if not orcamento:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro ao criar orçamento"
-        )
+    orcamento = _novo_orcamento(prestador_id, orcamento_data.solicitacao_id, orcamento_data, {
+        "valor_minimo": limites.valor_minimo if hasattr(limites, "valor_minimo") else limites["valor_minimo"],
+        "valor_sugerido": limites.valor_sugerido if hasattr(limites, "valor_sugerido") else limites["valor_sugerido"],
+        "valor_maximo": limites.valor_maximo if hasattr(limites, "valor_maximo") else limites["valor_maximo"],
+    })
     
     return {
         **orcamento,
@@ -86,8 +144,8 @@ def marcar_realizado_endpoint(
     prestador_id: int = Query(...),
 ):
     """Prestador marca orçamento como realizado (serviço concluído)."""
-    orc = marcar_realizado(orcamento_id, prestador_id)
-    if not orc.get('id'):
+    orc = _marcar_realizado(orcamento_id, prestador_id)
+    if not orc or not orc.get('id'):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Orçamento não encontrado"
@@ -103,7 +161,7 @@ def listar_meus_orcamentos(
     prestador_id: int = Query(...),  # TODO: Extrair do token JWT
 ):
     """Prestador lista seus orçamentos enviados"""
-    orcamentos = listar_orcamentos_prestador(prestador_id)
+    orcamentos = _listar_orcamentos_prestador(prestador_id)
     
     resultado = []
     for orc in orcamentos:
@@ -136,7 +194,7 @@ def deletar_orcamento_endpoint(
     prestador_id: int = Query(...),  # TODO: Extrair do token JWT
 ):
     """Prestador deleta um orçamento (apenas status AGUARDANDO)"""
-    sucesso = deletar_orcamento(orcamento_id, prestador_id)
+    sucesso = _deletar_orcamento(orcamento_id, prestador_id)
     
     if not sucesso:
         raise HTTPException(
@@ -155,7 +213,7 @@ def listar_orcamentos_da_solicitacao(
 ):
     """Cliente lista orçamentos recebidos para sua solicitação"""
     # Verifica se solicitação existe e pertence ao cliente
-    solicitacao = buscar_solicitacao_por_id(solicitacao_id)
+    solicitacao = _buscar_solicitacao_por_id(solicitacao_id)
     if not solicitacao:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -168,21 +226,11 @@ def listar_orcamentos_da_solicitacao(
             detail="Não autorizado"
         )
     
-    orcamentos = listar_orcamentos_solicitacao(solicitacao_id)
+    orcamentos = _listar_orcamentos_solicitacao(solicitacao_id)
     
     # Formata resposta (SEM os limites do ML)
     resultado = []
     for orc in orcamentos:
-        # Verificar se já foi avaliado
-        ja_avaliado = False
-        try:
-            from ..services.supabase_service import supabase_service
-            avaliacao_response = supabase_service.get_client().table("avaliacoes").select("id").eq("orcamento_id", orc['id']).execute()
-            ja_avaliado = len(avaliacao_response.data) > 0
-        except Exception as e:
-            print(f"Erro ao verificar avaliação: {e}")
-            ja_avaliado = False
-        
         resultado.append({
             "id": orc['id'],
             "solicitacao_id": orc['solicitacao_id'],
@@ -195,7 +243,7 @@ def listar_orcamentos_da_solicitacao(
             "created_at": orc['created_at'],
             "prestador_nome": orc.get('prestadores', {}).get('nome', 'N/A'),
             "prestador_avaliacao": orc.get('prestadores', {}).get('avaliacao_media', 0.0),
-            "ja_avaliado": ja_avaliado
+            "ja_avaliado": False
         })
     
     return resultado
@@ -206,7 +254,7 @@ def aceitar_orcamento_endpoint(
     cliente_id: int = Query(...),  # TODO: Extrair do token JWT
 ):
     """Cliente aceita um orçamento"""
-    orcamento = aceitar_orcamento(orcamento_id, cliente_id)
+    orcamento = _aceitar_orcamento(orcamento_id, cliente_id)
     
     if not orcamento:
         raise HTTPException(
@@ -225,28 +273,10 @@ def listar_orcamentos_realizados_cliente(
     cliente_id: int,
 ):
     """Cliente lista orçamentos realizados para avaliação"""
-    try:
-        # Busca orçamentos realizados do cliente via Supabase
-        from ..services.supabase_service import supabase_service
-        
-        response = supabase_service.get_client().table("orcamentos").select(
-            "*, solicitacoes!inner(*), prestadores(*)"
-        ).eq("status", "realizado").eq("solicitacoes.cliente_id", cliente_id).execute()
-        
-        orcamentos = response.data if response.data else []
-        
-        resultado = []
-        for orc in orcamentos:
-            # Verificar se já foi avaliado
-            ja_avaliado = False
-            try:
-                from ..services.supabase_service import supabase_service
-                avaliacao_response = supabase_service.get_client().table("avaliacoes").select("id").eq("orcamento_id", orc['id']).execute()
-                ja_avaliado = len(avaliacao_response.data) > 0
-            except Exception as e:
-                print(f"Erro ao verificar avaliação: {e}")
-                ja_avaliado = False
-            
+    resultado = []
+    for orc in _orcamentos.values():
+        sol = _buscar_solicitacao_por_id(orc["solicitacao_id"])
+        if orc.get("status") == "realizado" and sol and sol["cliente_id"] == cliente_id:
             resultado.append({
                 "id": orc['id'],
                 "solicitacao_id": orc['solicitacao_id'],
@@ -258,13 +288,8 @@ def listar_orcamentos_realizados_cliente(
                 "status": orc['status'],
                 "created_at": orc['created_at'],
                 "realizado": True,
-                "prestador_nome": orc.get('prestadores', {}).get('nome', 'N/A'),
-                "prestador_avaliacao": orc.get('prestadores', {}).get('avaliacao_media', 0.0),
-                "ja_avaliado": ja_avaliado
+                "prestador_nome": "N/A",
+                "prestador_avaliacao": 0.0,
+                "ja_avaliado": False
             })
-        
-        return resultado
-    except Exception as e:
-        print(f"Erro ao listar orçamentos realizados: {e}")
-        return []
-
+    return resultado

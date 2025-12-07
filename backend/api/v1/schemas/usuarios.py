@@ -1,7 +1,7 @@
 """
-Schemas Pydantic para Clientes e Prestadores
+Schemas Pydantic para Clientes e Prestadores (modo memória, sem validação rígida de email/endereço)
 """
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel, validator
 from typing import Optional, List
 from datetime import datetime
 
@@ -9,7 +9,7 @@ from datetime import datetime
 
 class ClienteBase(BaseModel):
     nome: str
-    email: EmailStr
+    email: Optional[str] = None
     telefone: Optional[str] = None
     endereco: Optional[str] = None
 
@@ -35,7 +35,7 @@ class ClienteResponse(BaseModel):
         from_attributes = True
 
 class ClienteLogin(BaseModel):
-    email: EmailStr
+    email: Optional[str] = None
     senha: str
     codigo_2fa: str
     
@@ -43,13 +43,12 @@ class RegistrarClienteResponse(BaseModel):
     cliente: ClienteResponse
     codigo_2fa: str
     qr_code: str
-    backup_codes: list[str]
     mensagem: str
 # ============= SCHEMAS PARA PRESTADOR =============
 
 class PrestadorBase(BaseModel):
     nome: str
-    email: EmailStr
+    email: Optional[str] = None
     telefone: Optional[str] = None
     categorias: List[str]
     regioes_atendimento: List[str]
@@ -80,19 +79,18 @@ class PrestadorRegistroResponse(BaseModel):
     prestador: PrestadorResponse
     codigo_2fa: str
     qr_code: str
-    backup_codes: list[str]
     mensagem: str
 
 
 class PrestadorLogin(BaseModel):
-    email: EmailStr
+    email: Optional[str] = None
     senha: str
     codigo_2fa: str
 
 # ============= SCHEMA DE LOGIN GERAL =============
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    email: Optional[str] = None
     senha: str
     tipo_usuario: str  # "cliente" ou "prestador"
 
@@ -104,7 +102,7 @@ class LoginResponse(BaseModel):
     email: str
 
 class TwoFAVerifyRequest(BaseModel):
-    email: EmailStr
+    email: Optional[str] = None
     tipo_usuario: str
     codigo: str  # 6 dígitos
 
